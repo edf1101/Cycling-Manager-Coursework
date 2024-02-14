@@ -1,2 +1,2 @@
-# OOP-Coursework
-Cycling Manager - Exeter University Coursework for ECM1410
+# Cycling Manager - OOP Coursework
+_Ed Fillingham and Kit Matthewson_
