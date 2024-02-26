@@ -42,7 +42,7 @@ public class Rider {
      *
      * @return this instance of a rider's ID
      */
-    public int getID(){
+    public int getID() {
         return myID;
     }
 
@@ -81,7 +81,7 @@ public class Rider {
     /**
      * Removes the rider from the system
      */
-    public void remove(){
+    public void remove() {
         // TODO actually do something when we remove a rider
         //  ie cascade down removing riders scores and shifting points
         //  Then remove it from static riders hashmap
