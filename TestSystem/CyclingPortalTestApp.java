@@ -1,7 +1,4 @@
-import cycling.BadMiniCyclingPortalImpl;
-import cycling.IllegalNameException;
-import cycling.InvalidNameException;
-import cycling.MiniCyclingPortal;
+import cycling.*;
 
 /**
  * A short program to illustrate an app testing some minimal functionality of a
@@ -16,25 +13,36 @@ import cycling.MiniCyclingPortal;
 public class CyclingPortalTestApp {
 
 	/**
-	 * Test method.
+	 * Main method to run all tests
 	 * 
 	 * @param args not used
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IDNotRecognisedException {
 		System.out.println("The system compiled and started the execution...");
 
-		// TODO replace BadMiniCyclingPortalImpl by CyclingPortalImpl
-		MiniCyclingPortal portal1 = new BadMiniCyclingPortalImpl();
-		MiniCyclingPortal portal2 = new BadMiniCyclingPortalImpl();
+		System.out.println("Starting team class tests");
+		teamClassTests();
 
+	}
+
+
+	/**
+	 * Tests the team class
+	 */
+	private static void teamClassTests() throws IDNotRecognisedException {
+		MiniCyclingPortal portal1 = new CyclingPortalImpl();
+		MiniCyclingPortal portal2 = new CyclingPortalImpl();
+
+		// Test initial portal starts with no teams
 		assert (portal1.getRaceIds().length == 0)
-				: "Innitial Portal not empty as required or not returning an empty array.";
-		assert (portal1.getTeams().length == 0)
-				: "Innitial Portal not empty as required or not returning an empty array.";
+				: "Initial Portal not empty as required or not returning an empty array.";
+		assert (portal2.getTeams().length == 0)
+				: "Initial Portal not empty as required or not returning an empty array.";
 
+		// Try adding teams and check they were added properly
 		try {
 			portal1.createTeam("TeamOne", "My favorite");
-			portal2.createTeam("TeamOne", "My favorite");
+			portal2.createTeam("TeamOnePortal2", "My next fav");
 		} catch (IllegalNameException e) {
 			e.printStackTrace();
 		} catch (InvalidNameException e) {
@@ -47,6 +55,10 @@ public class CyclingPortalTestApp {
 		assert (portal2.getTeams().length == 1)
 				: "Portal2 should have one team.";
 
+		// Test printing the description
+		int team1Portal1Id = portal2.getTeams()[0];
+
+		System.out.println(Team.getTeamById(team1Portal1Id));
 	}
 
 }
