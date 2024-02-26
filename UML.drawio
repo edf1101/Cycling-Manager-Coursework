@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2024-02-26T15:36:43.868Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0" etag="1hhCwIjgDAawqGmIHVSO" version="23.1.6" type="device">
+<mxfile host="app.diagrams.net" modified="2024-02-26T16:36:58.063Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0" etag="otGVGU7kW1SRpQVmcVgK" version="23.1.6" type="device">
   <diagram name="Page-1" id="arwjkRtwd51AYSBVNWPB">
-    <mxGraphModel dx="2452" dy="2370" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="697" dy="1404" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -17,10 +17,19 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="PluiV_uVmu6kRXKaNqSc-14" value="CyclingPortalImpl" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="1070" y="-50" width="710" height="612" as="geometry" />
+          <mxGeometry x="1070" y="-50" width="710" height="672" as="geometry" />
+        </mxCell>
+        <mxCell id="VWBThBxiizGn_0epKAHP-2" value="- races: int[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="PluiV_uVmu6kRXKaNqSc-14">
+          <mxGeometry y="26" width="710" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="VWBThBxiizGn_0epKAHP-3" value="- teams: int[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="PluiV_uVmu6kRXKaNqSc-14">
+          <mxGeometry y="52" width="710" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="VWBThBxiizGn_0epKAHP-1" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="PluiV_uVmu6kRXKaNqSc-14">
+          <mxGeometry y="78" width="710" height="8" as="geometry" />
         </mxCell>
         <mxCell id="PluiV_uVmu6kRXKaNqSc-17" value="&lt;b&gt;From MiniCyclingPortal:&lt;/b&gt;&lt;br&gt;+&amp;nbsp;getRaceIds() : int[]&lt;div&gt;+&amp;nbsp;createRace(String name, String description) : int&lt;/div&gt;&lt;div&gt;+&amp;nbsp;viewRaceDetails(int raceId) : String&lt;/div&gt;&lt;div&gt;+&amp;nbsp;removeRaceById(int raceId) : void&lt;/div&gt;&lt;div&gt;+ getNumberOfStages(int raceId) : int&lt;/div&gt;&lt;div&gt;+&amp;nbsp;addStageToRace(int raceId, String stageName, String description, double length, LocalDateTime startTime, StageType type) : int&lt;br&gt;+&amp;nbsp;getRaceStages(int raceId) : int[]&lt;/div&gt;&lt;div&gt;+&amp;nbsp;getStageLength(int stageId) : double&lt;/div&gt;&lt;div&gt;+&amp;nbsp;removeStageById(int stageId) : void&lt;/div&gt;&lt;div&gt;+&amp;nbsp;addCategorizedClimbToStage(int stageId, Double location, CheckpointType type, Double averageGradient,&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;Double length) : int&lt;/span&gt;&lt;/div&gt;&lt;div&gt;+&amp;nbsp;addIntermediateSprintToStage(int stageId, double location) : int&lt;/div&gt;&lt;div&gt;+&amp;nbsp;removeCheckpoint(int checkpointId) : void&lt;br&gt;+&amp;nbsp;concludeStagePreparation(int stageId) : void&lt;/div&gt;&lt;div&gt;+&amp;nbsp;getStageCheckpoints(int stageId) : int[]&lt;/div&gt;&lt;div&gt;+&amp;nbsp;createTeam(String name, String description) : int&lt;/div&gt;&lt;div&gt;+&amp;nbsp;removeTeam(int teamId) : void&lt;/div&gt;&lt;div&gt;+&amp;nbsp;getTeams() : int[]&lt;/div&gt;&lt;div&gt;+&amp;nbsp;getTeamRiders(int teamId) : int[]&lt;/div&gt;&lt;div&gt;+&amp;nbsp;createRider(int teamID, String name, int yearOfBirth) : int&lt;/div&gt;&lt;div&gt;+&amp;nbsp;removeRider(int riderId) : void&lt;/div&gt;&lt;div&gt;+&amp;nbsp;registerRiderResultsInStage(int stageId, int riderId, LocalTime... checkpointTimes)&lt;br&gt;+&amp;nbsp;getRiderResultsInStage(int stageId, int riderId) : LocalTime[]&lt;/div&gt;&lt;div&gt;+&amp;nbsp;getRiderAdjustedElapsedTimeInStage(int stageId, int riderId) : LocalTime&lt;/div&gt;&lt;div&gt;+&amp;nbsp;deleteRiderResultsInStage(int stageId, int riderId) : void&lt;/div&gt;&lt;div&gt;+&amp;nbsp;getRidersRankInStage(int stageId) : int[]&lt;/div&gt;&lt;div&gt;+&amp;nbsp;getRankedAdjustedElapsedTimesInStage(int stageId) : LocalTime[]&lt;/div&gt;&lt;div&gt;+&amp;nbsp;getRidersPointsInStage(int stageId) : int[]&lt;br&gt;+&amp;nbsp;getRidersMountainPointsInStage(int stageId) : int[]&lt;/div&gt;&lt;div&gt;+&amp;nbsp;eraseCyclingPortal() : void&lt;/div&gt;&lt;div&gt;+&amp;nbsp;saveCyclingPortal(String filename) : void&lt;/div&gt;&lt;div&gt;+&amp;nbsp;loadCyclingPortal(String filename) : void&lt;/div&gt;&lt;div&gt;&lt;b&gt;From CyclingPortal:&lt;/b&gt;&lt;/div&gt;&lt;div&gt;+&amp;nbsp;removeRaceByName(String name) : void&lt;/div&gt;&lt;div&gt;+&amp;nbsp;getRidersGeneralClassificationRank(int raceId) : int[]&lt;/div&gt;&lt;div&gt;+&amp;nbsp;getGeneralClassificationTimesInRace(int raceId) : LocalTime[]&lt;/div&gt;&lt;div&gt;+&amp;nbsp;getRidersPointsInRace(int raceId) : int[]&lt;/div&gt;&lt;div&gt;+&amp;nbsp;getRidersMountainPointsInRace(int raceId) : int[]&lt;/div&gt;&lt;div&gt;+&amp;nbsp;getRidersPointClassificationRank(int raceId) : int[]&lt;/div&gt;&lt;div&gt;+&amp;nbsp;getRidersMountainPointClassificationRank(int raceId) : int[]&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="PluiV_uVmu6kRXKaNqSc-14" vertex="1">
-          <mxGeometry y="26" width="710" height="586" as="geometry" />
+          <mxGeometry y="86" width="710" height="586" as="geometry" />
         </mxCell>
         <mxCell id="PluiV_uVmu6kRXKaNqSc-20" value="Race" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="2580" y="73.5" width="280" height="268" as="geometry" />
@@ -199,7 +208,7 @@
         <mxCell id="PluiV_uVmu6kRXKaNqSc-96" value="- id: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="PluiV_uVmu6kRXKaNqSc-94" vertex="1">
           <mxGeometry y="52" width="280" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="k0yF1Xdb5lIH336SSwAc-2" value="- team: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="PluiV_uVmu6kRXKaNqSc-94">
+        <mxCell id="k0yF1Xdb5lIH336SSwAc-2" value="- team: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="PluiV_uVmu6kRXKaNqSc-94" vertex="1">
           <mxGeometry y="78" width="280" height="26" as="geometry" />
         </mxCell>
         <mxCell id="PluiV_uVmu6kRXKaNqSc-97" value="- name: String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="PluiV_uVmu6kRXKaNqSc-94" vertex="1">
@@ -278,7 +287,7 @@
         <mxCell id="PluiV_uVmu6kRXKaNqSc-93" value="Using the current unix time when generating IDs would make them unique for all time?" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=#f8cecc;strokeColor=#b85450;sketch=1;curveFitting=1;jiggle=2;" parent="PluiV_uVmu6kRXKaNqSc-141" vertex="1">
           <mxGeometry y="170" width="230" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="k0yF1Xdb5lIH336SSwAc-3" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=bottom;rounded=0;" edge="1" parent="1" source="PluiV_uVmu6kRXKaNqSc-20" target="PluiV_uVmu6kRXKaNqSc-33">
+        <mxCell id="k0yF1Xdb5lIH336SSwAc-3" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=bottom;rounded=0;" parent="1" source="PluiV_uVmu6kRXKaNqSc-20" target="PluiV_uVmu6kRXKaNqSc-33" edge="1">
           <mxGeometry x="-1" y="3" relative="1" as="geometry">
             <mxPoint x="2850" y="430" as="sourcePoint" />
             <mxPoint x="2060" y="552" as="targetPoint" />
