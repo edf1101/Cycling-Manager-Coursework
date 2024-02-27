@@ -26,7 +26,13 @@ public class Team {
      * @param name Name of the team
      * @param description Description of the team
      */
-    public Team(String name, String description) {
+    public Team(String name, String description) throws InvalidNameException {
+
+        // Check for invalid (rule breaking) name
+        if (name == null || name.length()>30 || name.isEmpty() || name.contains(" ")) {
+            throw new InvalidNameException(" name broke naming rules. Length must be 0<length<=30, and no whitespace");
+        }
+
         // Set up this new instance with the essential details
         this.myID = UniqueIDGenerator.calculateUniqueID(teams);
         this.name = name;

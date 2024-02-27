@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2024-02-26T20:33:02.968Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="OgKa5zERuJUYdODappHB" version="23.1.6" type="device">
+<mxfile host="app.diagrams.net" modified="2024-02-27T16:17:42.638Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="fl-CRj334sCn0VKyxGD0" version="23.1.6" type="device">
   <diagram name="Page-1" id="arwjkRtwd51AYSBVNWPB">
-    <mxGraphModel dx="626" dy="1486" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="968" dy="1715" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -295,6 +295,9 @@
         </mxCell>
         <mxCell id="ZcvjRLv1KL6Ku-jFIt54-1" value="The static &lt;u&gt;getIds()&amp;nbsp;&lt;/u&gt;&amp;nbsp;method?&amp;nbsp;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=#f8cecc;strokeColor=#b85450;sketch=1;curveFitting=1;jiggle=2;" parent="1" vertex="1">
           <mxGeometry x="1780" y="-620" width="230" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="liAm0SHGFM0F9AEL3bM4-1" value="Can do a kind of backtrack thing to get if a checkpoint or rider etc is in a cycling portal instance without the big ID lists" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=#f8cecc;strokeColor=#b85450;sketch=1;curveFitting=1;jiggle=2;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="-620" width="230" height="100" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

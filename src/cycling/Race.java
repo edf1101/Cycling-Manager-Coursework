@@ -17,7 +17,12 @@ public class Race {
      * @param name Name of the race
      * @param description Description of the race
      */
-    public Race(String name, String description) {
+    public Race(String name, String description) throws InvalidNameException {
+        // Check for invalid (rule breaking) name
+        if (name == null || name.length()>30 || name.isEmpty() || name.contains(" ")){
+            throw new InvalidNameException(" name broke naming rules. Length must be 0<length<=30, and no whitespace");
+        }
+
         // Set up attributes for the object
         this.myID = UniqueIDGenerator.calculateUniqueID(races);
         this.name = name;
@@ -95,5 +100,31 @@ public class Race {
         return stageIds;
     }
 
+    /**
+     * Gets the ID of a Race by its name
+     *
+     * @param name The name of the race to be removed.
+     * @param portalsIDs the list of the raceIds that are contained by this portal instance, so we don't mix up this
+     * with another portals race with a same name
+     * @return The id of the race with the given name (in the context of the portal)
+     * @throws NameNotRecognisedException When the name has not been found in the system
+     */
+    public static int getIDByName(String name, ArrayList<Integer> portalsIDs) throws NameNotRecognisedException {
+        // Check the name exists in this system by iterating through
+        // all raceIDs in system and checking name
+        boolean foundName = false;
+        int foundID = 0;
+        for(int raceID : portalsIDs){
+            if (Race.getRaceByID(raceID).getName().equals(name)){
+                foundName = true;
+                foundID = raceID;
+                break;
+            }
+        }
+        if (!foundName){
+            throw new NameNotRecognisedException("The Race name: "+ name+ ", does not exist in this system");
+        }
+        return foundID;
+    }
 
 }

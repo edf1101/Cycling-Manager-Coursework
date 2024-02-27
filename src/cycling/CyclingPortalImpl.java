@@ -37,17 +37,12 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public int createRace(String name, String description) throws IllegalNameException, InvalidNameException {
-		// Check for illegal name, already in use
+		// Check for illegal name, already in use has to be done in this
+		// class as we store our list of races here
 		for(int raceID : myRaceIDs){
 			if(Race.getRaceByID(raceID).getName().equals(name)){
 				throw new IllegalNameException("The name "+ name+ " has already been taken");
 			}
-		}
-
-		// Check for invalid name
-		if (name == null || name.length()>30 || name.isEmpty() || name.contains(" ")){
-			throw new InvalidNameException(" name broke naming rules. Length must be 0<length<=30, and no whitespace");
-
 		}
 
 		Race newRace = new Race(name,description); // Create instance
@@ -92,12 +87,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new IDNotRecognisedException("The Race ID "+ raceId + " Was not found in this CyclingPortalImpl");
 		}
 
-		// Get team instance
-		Race removingRace = Race.getRaceByID(raceId);
-		removingRace.remove(); // call the team's removal function
+		Race.getRaceByID(raceId).remove(); // Remove the race using its own object's remove function
 		myRaceIDs.remove(Integer.valueOf(raceId)); // remove it from the cycling portals list of associated teams
-
-
 	}
 
 	/**
@@ -135,7 +126,6 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		// Get the race instance
 		Race myRace = Race.getRaceByID(raceId);
-
 		// convert its list of stage IDs to an array of ints and return it
         return myRace.getStageIDs().stream().mapToInt(Integer::intValue).toArray();
 	}
@@ -203,15 +193,9 @@ public class CyclingPortalImpl implements CyclingPortal {
 			}
 		}
 
-		// Check for invalid name
-		if (name == null || name.length()>30 || name.isEmpty() || name.contains(" "))
-			throw new InvalidNameException(" name broke naming rules. Length must be 0<length<=30, and no whitespace");
-
-
 		Team newTeam = new Team(name,description); // Create instance of the team
 		int newID = newTeam.getId(); // The new ID for the created team
 		myTeamIDs.add(newTeam.getId());
-
 
 		return newID;
 	}
@@ -230,9 +214,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new IDNotRecognisedException("The ID "+ teamId + " Was not found in this CyclingPortalImpl");
 		}
 
-		// Get team instance
-		Team removingTeam = Team.getTeamById(teamId);
-		removingTeam.remove(); // call the team's removal function
+		Team.getTeamById(teamId).remove(); // remove the team from its own class
 		myTeamIDs.remove(Integer.valueOf(teamId)); // remove it from the cycling portals list of associated teams
 
 	}
@@ -282,17 +264,11 @@ public class CyclingPortalImpl implements CyclingPortal {
 		if (!myTeamIDs.contains(teamID)){
 			throw new IDNotRecognisedException("The ID "+ teamID+ " does not exist in this system");
 		}
-		// Check the arguments are legal
-		if (name == null || name.isEmpty() || yearOfBirth<1900){
-			throw  new IllegalArgumentException("The name mustn't be empty or null, and the year must be >= 1900");
-		}
 
 		// Create the rider
 		Rider newRider = new Rider(name,yearOfBirth,teamID);
-		int newRiderID = newRider.getID();
-		myRiderIDs.add(newRiderID); // add the new rider to the cycling portal's list of riders
-
-		return newRiderID;
+		myRiderIDs.add(newRider.getID()); // add the new rider to the cycling portal's list of riders
+		return newRider.getID();
 
 	}
 
@@ -310,12 +286,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new IDNotRecognisedException("The rider ID "+ riderId+ " does not exist in this system");
 		}
 
-		// Get team instance
-		Rider removingRider = Rider.getRiderById(riderId);
-		removingRider.remove(); // call the team's removal function
-
-		// Remove the rider ID from our list of rider IDs
-		myRiderIDs.remove(Integer.valueOf(riderId));
+		Rider.getRiderById(riderId).remove(); // remove the rider using its own object's remove function
+		myRiderIDs.remove(Integer.valueOf(riderId)); // Remove the rider ID from our list of rider IDs
 	}
 
 	@Override
@@ -394,30 +366,15 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public void removeRaceByName(String name) throws NameNotRecognisedException {
-
-		// Check the name exists in this system by iterating through
-		// all raceIDs in system and checking name
-		boolean foundName = false;
-		int foundID = 0;
-		for(int raceID : myRaceIDs){
-			if (Race.getRaceByID(raceID).getName().equals(name)){
-				foundName = true;
-				foundID = raceID;
-				break;
-			}
-		}
-		if (!foundName){
-			throw new NameNotRecognisedException("The Race name: "+ name+ ", does not exist in this system");
-		}
+		// Pass in list of this portal's race IDs so it doesn't get mixed
+		// up with another portal's races which may share names
+		int raceIDWithName = Race.getIDByName(name, myRaceIDs);
 		try {
-			removeRaceById(foundID);
+			removeRaceById(raceIDWithName);
 		}
 		catch (IDNotRecognisedException e){
-			// This should never happen as we have iterated only
-			// through the races that are in the system
-			throw new NameNotRecognisedException("The Race name: "+ name+ ", does not exist in this system");
+			// This should never happen as we are giving it an ID that we have found in the system
 		}
-
 	}
 
 	@Override

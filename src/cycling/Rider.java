@@ -27,6 +27,11 @@ public class Rider {
      * @param team The team the rider belongs to
      */
     public Rider(String name, int yearOfBirth, int team) {
+        // Check the arguments are legal
+        if (name == null || name.isEmpty() || yearOfBirth<1900){
+            throw new IllegalArgumentException("The name mustn't be empty or null, and the year must be >= 1900");
+        }
+
         this.myID = UniqueIDGenerator.calculateUniqueID(riders);
         this.name = name;
         this.yearOfBirth = yearOfBirth;
