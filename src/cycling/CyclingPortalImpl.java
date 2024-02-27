@@ -7,11 +7,12 @@ import java.util.ArrayList;
 
 public class CyclingPortalImpl implements CyclingPortal {
 
-	// a list of the race IDs that belong to this instance of CyclingPortalImpl
-	private final ArrayList<Integer> races = new ArrayList<>();
-
-	// a list of the team IDs that belong to this instance of CyclingPortalImpl
-	private final ArrayList<Integer> teams = new ArrayList<>();
+	// Lists of the various IDs that belong to this instance of CyclingPortalImpl
+	private final ArrayList<Integer> myRaceIDs = new ArrayList<>();
+	private final ArrayList<Integer> myStageIDs = new ArrayList<>();
+	private final ArrayList<Integer> myCheckpointIDs = new ArrayList<>();
+	private final ArrayList<Integer> myTeamIDs = new ArrayList<>();
+	private final ArrayList<Integer> myRiderIDs = new ArrayList<>();
 
 
 	/**
@@ -22,7 +23,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int[] getRaceIds() {
 		// convert the ArrayList of Integers to an array of ints and return it
-        return races.stream().mapToInt(Integer::intValue).toArray();
+        return myRaceIDs.stream().mapToInt(Integer::intValue).toArray();
 	}
 
 	@Override
@@ -133,7 +134,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		Team newTeam = new Team(name,description); // Create instance of the team
 		int newID = newTeam.getId(); // The new ID for the created team
-		teams.add(newTeam.getId());
+		myTeamIDs.add(newTeam.getId());
 
 
 		return newID;
@@ -149,14 +150,14 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public void removeTeam(int teamId) throws IDNotRecognisedException {
 
 		// Throw error if invalid team id
-		if (!teams.contains(teamId)){
+		if (!myTeamIDs.contains(teamId)){
 			throw new IDNotRecognisedException("The ID "+ teamId + " Was not found in this CyclingPortalImpl");
 		}
 
 		// Get team instance
 		Team removingTeam = Team.getTeamById(teamId);
 		removingTeam.remove(); // call the team's removal function
-		teams.remove(Integer.valueOf(teamId)); // remove it from the cycling portals list of associated teams
+		myTeamIDs.remove(Integer.valueOf(teamId)); // remove it from the cycling portals list of associated teams
 
 	}
 
@@ -168,7 +169,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int[] getTeams() {
 		// convert the ArrayList of Integers to an array of ints and return it
-		return teams.stream().mapToInt(Integer::intValue).toArray();
+		return myTeamIDs.stream().mapToInt(Integer::intValue).toArray();
 	}
 
 	/**
@@ -181,7 +182,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int[] getTeamRiders(int teamId) throws IDNotRecognisedException {
 		// Check the teamID exists in this system
-		if (!teams.contains(teamId)){
+		if (!myTeamIDs.contains(teamId)){
 			throw new IDNotRecognisedException("The ID "+ teamId+ " does not exist in this system");
 		}
 
@@ -202,7 +203,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public int createRider(int teamID, String name, int yearOfBirth)
 			throws IDNotRecognisedException, IllegalArgumentException {
 		// Check the teamID exists in this system
-		if (!teams.contains(teamID)){
+		if (!myTeamIDs.contains(teamID)){
 			throw new IDNotRecognisedException("The ID "+ teamID+ " does not exist in this system");
 		}
 		// Check the arguments are legal
@@ -212,7 +213,10 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		// Create the rider
 		Rider newRider = new Rider(name,yearOfBirth,teamID);
-		return newRider.getID();
+		int newRiderID = newRider.getID();
+		myRiderIDs.add(newRiderID); // add the new rider to the cycling portal's list of riders
+
+		return newRiderID;
 
 	}
 
@@ -225,9 +229,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	@Override
 	public void removeRider(int riderId) throws IDNotRecognisedException {
-		// NOTE this won't work properly in some cases will explain in person
 
-        if (!Rider.getRiderIds().contains(riderId)){
+        if (!myRiderIDs.contains(riderId)){ // check the riderID exists in this system
 			throw new IDNotRecognisedException("The rider ID "+ riderId+ " does not exist in this system");
 		}
 
@@ -235,6 +238,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 		Rider removingRider = Rider.getRiderById(riderId);
 		removingRider.remove(); // call the team's removal function
 
+		// Remove the rider ID from our list of rider IDs
+		myRiderIDs.remove(Integer.valueOf(riderId));
 	}
 
 	@Override
