@@ -12,12 +12,12 @@ import java.util.HashMap;
 public class Rider {
 
     // Holds reference to all the riders created by their ID
-    static private HashMap<Integer,Rider> riders = new HashMap<Integer,Rider>();
+    static private final HashMap<Integer,Rider> riders = new HashMap<Integer,Rider>();
 
-    private int myID;
-    private int team;
-    private String name;
-    private int yearOfBirth;
+    private final int myID;
+    private final int myTeam;
+    private final String name;
+    private final int yearOfBirth;
 
     /**
      * Constructor for the Rider class.
@@ -30,7 +30,7 @@ public class Rider {
         this.myID = UniqueIDGenerator.calculateUniqueID(riders);
         this.name = name;
         this.yearOfBirth = yearOfBirth;
-        this.team = team;
+        this.myTeam = team;
         riders.put(this.myID, this); // add to static hashmap of riders in system
 
         // Add the rider to the team
@@ -63,7 +63,7 @@ public class Rider {
      */
     public String getDetails() {
         // Get the name of the team
-        String teamName = Team.getTeamById(team).getName();
+        String teamName = Team.getTeamById(myTeam).getName();
 
         return "Rider: " + name + " Year of Birth:" + yearOfBirth + " Team "+ teamName;
     }
@@ -81,10 +81,13 @@ public class Rider {
     /**
      * Removes the rider from the system
      */
-    public void remove() {
+    public void remove() throws IDNotRecognisedException{
         // TODO actually do something when we remove a rider
         //  ie cascade down removing riders scores and shifting points
         //  Then remove it from static riders hashmap
+
+        // remove this ID from the parent team
+        Team.getTeamById(myTeam).removeRider(this.myID);
 
         // then remove it from my list of all riders
         riders.remove(this.myID);

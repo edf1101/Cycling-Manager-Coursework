@@ -16,7 +16,7 @@ public class  UniqueIDGenerator <T> {
         // Go through all the teams and store their IDs in an array
         // also store the maximum ID
         ArrayList<Integer> genericIds = new ArrayList<Integer>();
-        int maxId = 0;
+        int maxId = -1;
 
         for (Integer currentId : genericHashMap.keySet()) {
             genericIds.add(currentId);
@@ -27,7 +27,7 @@ public class  UniqueIDGenerator <T> {
 
         // If there are gaps in the IDs ie ids = [0, 1, 3, 4] then return the first gap (in this case 2)
         for (int i = 0; i < maxId; i++){
-            if (genericIds.contains(i)){
+            if (!genericIds.contains(i)){
                 return i;
             }
         }

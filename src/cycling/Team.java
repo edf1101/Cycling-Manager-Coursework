@@ -13,12 +13,12 @@ import java.util.HashMap;
 public class Team {
 
     // Holds reference to all the teams created
-    static private HashMap<Integer,Team> teams = new HashMap<Integer,Team>();
+    static private final HashMap<Integer,Team> teams = new HashMap<Integer,Team>();
 
-    private int myID; // Unique ID of the team
-    private String name; // Name of the team
-    private String description; // Description of the team
-    private ArrayList<Integer> riderIds = new ArrayList<Integer>(); // Holds all the rider IDs belonging to this team
+    private final int myID; // Unique ID of the team
+    private final String name; // Name of the team
+    private final String description; // Description of the team
+    private final ArrayList<Integer> riderIds = new ArrayList<Integer>(); // Holds all the rider IDs belonging to this team
 
     /**
      * Constructor for the Team class.
@@ -27,7 +27,6 @@ public class Team {
      * @param description Description of the team
      */
     public Team(String name, String description) {
-
         // Set up this new instance with the essential details
         this.myID = UniqueIDGenerator.calculateUniqueID(teams);
         this.name = name;
@@ -94,14 +93,36 @@ public class Team {
         return getDetails();
     }
 
+    /**
+     * Remove the team from the system
+     */
     public void remove(){
         // TODO actually do something when we remove a team
         //  ie cascade down removing riders and shifting points
-        //  Then remove it from static teams hashmap
+        // Then remove it from static teams hashmap
+        teams.remove(myID);
     }
 
+    /**
+     * Add a rider to the team
+     *
+     * @param riderId the ID of the rider to add
+     */
     public void addRider(int riderId){
         riderIds.add(riderId);
+    }
+
+    /**
+     * Remove a rider from the team
+     *
+     * @param riderId the ID of the rider to remove
+     * @throws IDNotRecognisedException if the rider ID is not in the team
+     */
+    public void removeRider(int riderId) throws IDNotRecognisedException{
+        if (!riderIds.contains(riderId)){
+            throw new IDNotRecognisedException("Rider ID "+riderId+" not found in team ");
+        }
+        riderIds.remove(Integer.valueOf(riderId));
     }
 
 }

@@ -26,28 +26,89 @@ public class CyclingPortalImpl implements CyclingPortal {
         return myRaceIDs.stream().mapToInt(Integer::intValue).toArray();
 	}
 
+	/**
+	 * Creates a Race Instance
+	 *
+	 * @param name        Race's name.
+	 * @param description Race's description (can be null).
+	 * @return The ID of the race created
+	 * @throws IllegalNameException When the name is already taken
+	 * @throws InvalidNameException When the name is null, empty, >30 chars, or contains whitespace
+	 */
 	@Override
 	public int createRace(String name, String description) throws IllegalNameException, InvalidNameException {
-		// TODO Auto-generated method stub
-		return 0;
+		// Check for illegal name, already in use
+		for(int raceID : myRaceIDs){
+			if(Race.getRaceByID(raceID).getName().equals(name)){
+				throw new IllegalNameException("The name "+ name+ " has already been taken");
+			}
+		}
+
+		// Check for invalid name
+		if (name == null || name.length()>30 || name.isEmpty() || name.contains(" ")){
+			throw new InvalidNameException(" name broke naming rules. Length must be 0<length<=30, and no whitespace");
+
+		}
+
+		Race newRace = new Race(name,description); // Create instance
+		int newID = newRace.getId(); // The new ID for the created
+		myRaceIDs.add(newRace.getId());
+
+		return newID;
+
 	}
 
+	/**
+	 * Get the details from a race.
+	 * <p>
+	 * The state of this MiniCyclingPortal must be unchanged if any
+	 * exceptions are thrown.
+	 *
+	 * @param raceId The ID of the race being queried.
+	 * @return A string describing the race including:
+	 * name, description, stage count, and total length
+	 * @throws IDNotRecognisedException If the ID does not match to any race in the
+	 *                                  system.
+	 */
 	@Override
 	public String viewRaceDetails(int raceId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		// Check the race exists in this system
+		if (!myRaceIDs.contains(raceId)){
+			throw new IDNotRecognisedException("The ID "+ raceId+ " does not exist in this system");
+		}
+		return Race.getRaceByID(raceId).getDetails();
 	}
 
+	/**
+	 * Removes a race by its ID
+	 *
+	 * @param raceId The ID of the race to be removed.
+	 * @throws IDNotRecognisedException Thrown if the ID is not recognised
+	 */
 	@Override
 	public void removeRaceById(int raceId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
+		// Throw error if invalid race id
+		if (!myRaceIDs.contains(raceId)){
+			throw new IDNotRecognisedException("The Race ID "+ raceId + " Was not found in this CyclingPortalImpl");
+		}
+
+		// Get team instance
+		Race removingRace = Race.getRaceByID(raceId);
+		removingRace.remove(); // call the team's removal function
+		myRaceIDs.remove(Integer.valueOf(raceId)); // remove it from the cycling portals list of associated teams
+
 
 	}
 
+	/**
+	 * Get the number of stages in a queried race
+	 * @param raceId The ID of the race being queried.
+	 * @return The number of stages in the race
+	 * @throws IDNotRecognisedException When the race ID is not in the system
+	 */
 	@Override
 	public int getNumberOfStages(int raceId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return 0;
+		return getRaceStages(raceId).length;
 	}
 
 	@Override
@@ -58,10 +119,25 @@ public class CyclingPortalImpl implements CyclingPortal {
 		return 0;
 	}
 
+	/**
+	 * Get the stages present in a race
+	 *
+	 * @param raceId The ID of the race being queried.
+	 * @return The array of integer IDs in the race
+	 * @throws IDNotRecognisedException When the race ID is not in the system
+	 */
 	@Override
 	public int[] getRaceStages(int raceId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		// Throw error if invalid race id
+		if (!myRaceIDs.contains(raceId)){
+			throw new IDNotRecognisedException("The Race ID "+ raceId + " Was not found in this CyclingPortalImpl");
+		}
+
+		// Get the race instance
+		Race myRace = Race.getRaceByID(raceId);
+
+		// convert its list of stage IDs to an array of ints and return it
+        return myRace.getStageIDs().stream().mapToInt(Integer::intValue).toArray();
 	}
 
 	@Override
@@ -310,9 +386,37 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	}
 
+	/**
+	 * Removes a race by its name instead of by its ID
+	 *
+	 * @param name The name of the race to be removed.
+	 * @throws NameNotRecognisedException When the name has not been found in the system
+	 */
 	@Override
 	public void removeRaceByName(String name) throws NameNotRecognisedException {
-		// TODO Auto-generated method stub
+
+		// Check the name exists in this system by iterating through
+		// all raceIDs in system and checking name
+		boolean foundName = false;
+		int foundID = 0;
+		for(int raceID : myRaceIDs){
+			if (Race.getRaceByID(raceID).getName().equals(name)){
+				foundName = true;
+				foundID = raceID;
+				break;
+			}
+		}
+		if (!foundName){
+			throw new NameNotRecognisedException("The Race name: "+ name+ ", does not exist in this system");
+		}
+		try {
+			removeRaceById(foundID);
+		}
+		catch (IDNotRecognisedException e){
+			// This should never happen as we have iterated only
+			// through the races that are in the system
+			throw new NameNotRecognisedException("The Race name: "+ name+ ", does not exist in this system");
+		}
 
 	}
 
