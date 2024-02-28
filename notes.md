@@ -5,7 +5,6 @@ _General notes abt the Coursework_
 - Are Race IDs unique compared to stage ids etc? How are things like getStageData etc accessed by only the stage ID
 - MiniInterface line 251 theres error from bad impl ? that no int is returned for a func wanting an Int return
 - Check deepcopy Datetimes etc
-- Bad portals can go
 - No equal times
 - Referal to just "points" is for the stage finish position and intermediate sprints
 - for judging elapsed time, when you squash it down in case of a peloton can use a better algorithm than an n^2 one.
