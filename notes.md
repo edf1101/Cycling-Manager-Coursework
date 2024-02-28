@@ -17,3 +17,6 @@ _General notes abt the Coursework_
 - Think carefully about side affects of reusing or not reusing IDs
 - Need assertions for marks
 - Stages before preparation is concluded must be 'not ready' or sumn like that check online
+- Stage class when throwing invalid times exc registering results its not said whether the results should be in order 
+or if we need to sort that ourselves.
+- 

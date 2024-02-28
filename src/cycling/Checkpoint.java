@@ -11,8 +11,8 @@ public abstract class Checkpoint {
     private static final HashMap<Integer, Checkpoint> checkpoints = new HashMap<Integer, Checkpoint>();
     private int myId;
 
-    private HashMap<Integer, LocalTime> startTimes = new HashMap<Integer, LocalTime>();
-    private HashMap<Integer, LocalTime> finishTimes = new HashMap<Integer, LocalTime>();
+    private final HashMap<Integer, LocalTime> startTimes = new HashMap<Integer, LocalTime>();
+    private final HashMap<Integer, LocalTime> finishTimes = new HashMap<Integer, LocalTime>();
 
     /**
      * Getter for a checkpoint by its ID
@@ -33,9 +33,9 @@ public abstract class Checkpoint {
     /**
      * Record a rider's time at the checkpoint
      *
-     * @param riderId
-     * @param startTime
-     * @param finishTime
+     * @param riderId the Id of the rider to record
+     * @param startTime What time they entered the checkpoint
+     * @param finishTime What time they left the checkpoint
      */
     public void recordTime(int riderId, LocalTime startTime, LocalTime finishTime) {
         startTimes.put(riderId, startTime);
@@ -52,9 +52,10 @@ public abstract class Checkpoint {
      * @param riderId the rider's ID
      * @return the time that the rider reached the checkpoint
      */
-    public LocalTime getTime(int riderId) {
+    public LocalTime getFinishTime(int riderId) {
         return finishTimes.get(riderId);
     }
+
 
     /**
      * Get time for a rider to reach the checkpoint from the previous checkpoint
@@ -69,7 +70,7 @@ public abstract class Checkpoint {
     /**
      * Remove a rider's time from the checkpoint
      *
-     * @param riderId
+     * @param riderId the Id of the rider to remove from the checkpoint
      */
     public void removeRider(int riderId) {
         startTimes.remove(riderId);

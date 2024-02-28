@@ -6,24 +6,30 @@ import java.util.HashMap;
 
 public class Stage {
 
+    // Hashmap to store all stages
     private static final HashMap<Integer, Stage> stages = new HashMap<Integer, Stage>();
 
-    // If all of these are correct I get +1% and/or some guinness
-    public static final int[] FLAT_POINTS = { 50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2 };
-    public static final int[] MEDIUM_MOUNTAIN_POINTS = { 30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2 };
-    public static final int[] HIGH_MOUNTAIN_POINTS = { 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
-    public static final int[] TT_POINTS = { 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+    // Hashmap to store the points for each stage type
+    // TODO not sure if all caps name is correct given its a dict not an int[] any more, will check
+    private static final HashMap<StageType,int[]> POINTS = new HashMap<StageType,int[]>();
+    static {
+        POINTS.put(StageType.FLAT, new int[]{ 50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2 });
+        POINTS.put(StageType.MEDIUM_MOUNTAIN, new int[]{ 30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2 });
+        POINTS.put(StageType.HIGH_MOUNTAIN, new int[]{ 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 });
+        POINTS.put(StageType.TT, new int[]{ 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 });
+    }
 
-    private int myId;
-    private String name;
-    private String description;
-    private StageType type;
-    private double length;
-    private ArrayList<Integer> checkpoints;
+    private final int myId;
+    private final String name;
+    private final String description;
+    private final StageType type;
+    private final double length;
+    private final ArrayList<Integer> checkpoints = new ArrayList<Integer>();
     private boolean prepared = false;
-    private ArrayList<Integer> riders; // riders are added to this list when their times are registered
-    private HashMap<Integer, LocalTime> startTimes = new HashMap<Integer, LocalTime>();
-    private HashMap<Integer, LocalTime> finishTimes = new HashMap<Integer, LocalTime>();
+
+    // Hashmaps to store the start and finish times for each rider
+    private final HashMap<Integer, LocalTime> startTimes = new HashMap<Integer, LocalTime>();
+    private final HashMap<Integer, LocalTime> finishTimes = new HashMap<Integer, LocalTime>();
 
     /**
      * Constructor for the Stage class
@@ -33,8 +39,17 @@ public class Stage {
      * @param type        The type of the stage
      * @param length      The length of the stage
      */
-    public Stage(String name, String description, StageType type, double length) {
-        // TODO Check there are no rules for stage naming
+    public Stage(String name, String description, StageType type, double length) throws InvalidNameException, InvalidLengthException {
+
+        // Check name is not null, empty or >30 chars
+        if (name == null || name.length() > 30 || name.isEmpty() || name.contains(" ")) {
+            throw new InvalidNameException(" name broke naming rules. Length must be 0<length<=30, and no whitespace");
+        }
+
+        // Check length is not less than 5km
+        if (length < 5) {
+            throw new InvalidLengthException(" length broke rules. Length must be >= 5");
+        }
 
         // Set up attributes for the object
         this.myId = UniqueIdGenerator.calculateUniqueId(stages);
@@ -42,7 +57,6 @@ public class Stage {
         this.description = description;
         this.type = type;
         this.length = length;
-        this.checkpoints = new ArrayList<Integer>();
         this.prepared = false;
 
         // add the new object to the hashmap of all stages
@@ -71,23 +85,43 @@ public class Stage {
      *
      * @param riderId the ID of the rider
      * @param times   the start time, times at each checkpoint, and the finish time
+     * @throws DuplicatedResultException        if the rider has already registered a result
+     * @throws InvalidCheckpointTimesException if the number of times given ≠ the number of checkpoints + 2
+     * @throws InvalidStageStateException       if the stage is not fully set up
      */
     public void registerResults(int riderId, LocalTime... times)
-            throws DuplicatedResultException, InvalidCheckpointTimesException {
-        if (riders.contains(riderId)) {
+            throws DuplicatedResultException, InvalidCheckpointTimesException, InvalidStageStateException {
+
+        // check stage is fully set up
+        if (!prepared) {
+            throw new InvalidStageStateException("Stage not prepared");
+        }
+
+        // Check if the rider has already registered a results
+        if (startTimes.containsKey(riderId) || finishTimes.containsKey(riderId)){
             throw new DuplicatedResultException("Rider ID already has a finish time");
         }
 
-        // Must be done before any changes are made
-        for (int i = 0; i < times.length - 1; i++) {
-            if (times[i].isAfter(times[i + 1])) {
-                throw new InvalidCheckpointTimesException("Checkpoint times are not in order");
-            }
+        // Check the number of times is correct
+        if (times.length != checkpoints.size() + 2) {
+            throw new InvalidCheckpointTimesException("Number of times given is not number of checkpoints + 2");
         }
+
+        // TODO: Check if we need to sort this first as the exception is thrown
+        //  the number of times given ≠ the number of checkpoints + 2
+
+        // Must be done before any changes are made
+        //for (int i = 0; i < times.length - 1; i++) {
+        //    if (times[i].isAfter(times[i + 1])) {
+        //        throw new InvalidCheckpointTimesException("Checkpoint times are not in order");
+        //    }
+        //}
 
         startTimes.put(riderId, times[0]);
         finishTimes.put(riderId, times[times.length - 1]);
 
+        // TODO this code for adding times will fail if its a time trial type (i think),
+        //  will add a check for that when we add them
         // Consider that the array is [start, checkpoint1, checkpoint2, ..., finish]
         // The nth checkpoint starts at index n and ends at index n+1
         for (int i = 0; i < times.length - 2; i++) {
@@ -95,15 +129,18 @@ public class Stage {
             checkpoint.recordTime(riderId, times[i], times[i + 1]);
         }
 
-        riders.add(riderId);
     }
 
     /**
      * Adds a checkpoint to the stage
      *
      * @param checkpointId the ID of the checkpoint to add
+     * @throws InvalidStageTypeException if the stage is a time trial stage
      */
-    public void addCheckpoint(int checkpointId) {
+    public void addCheckpoint(int checkpointId) throws InvalidStageTypeException {
+        if (type == StageType.TT) {
+            throw new InvalidStageTypeException("Time trial stages cannot have checkpoints");
+        }
         checkpoints.add(checkpointId);
     }
 
@@ -113,7 +150,8 @@ public class Stage {
      * @param riderId the ID of the rider to calculate the time for
      */
     public LocalTime totalTime(int riderId) throws IDNotRecognisedException {
-        if (!riders.contains(riderId)) {
+        // check if the rider has a start and finish time recorded
+        if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
             throw new IDNotRecognisedException("Rider ID not recognised");
         }
 
@@ -131,39 +169,30 @@ public class Stage {
      * @return the number of sprint points the rider gets for this stage
      */
     public int sprintPoints(int riderId) throws IDNotRecognisedException {
-        if (!riders.contains(riderId)) {
+        // TODO this should throw an error if the rider isn't in the system,
+        //  If its only not in the stage then it should return empty array.
+        // check if the rider has a start and finish time recorded
+        if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
             throw new IDNotRecognisedException("Rider ID not recognised");
         }
 
         // Calculate the rider's position at the end of the stage by counting the number
         // of riders who finished before them
         int position = 1;
-        for (int id : riders) {
-            if (id != riderId && finishTimes.get(id).isBefore(finishTimes.get(riderId))) {
+        for (int id : finishTimes.keySet()) {
+            if (id != riderId && totalTime(id).isBefore(totalTime(riderId))) {
                 position++;
             }
         }
 
-        int[] pointsArray = null;
+        int[] pointsArray = POINTS.get(type);
 
-        switch (type) {
-            case FLAT:
-                pointsArray = FLAT_POINTS;
-                break;
-            case MEDIUM_MOUNTAIN:
-                pointsArray = MEDIUM_MOUNTAIN_POINTS;
-                break;
-            case HIGH_MOUNTAIN:
-                pointsArray = HIGH_MOUNTAIN_POINTS;
-                break;
-            case TT:
-                pointsArray = TT_POINTS;
-                break;
-        }
 
-        int points = pointsArray[position - 1]; // TODO Not sure what should happen if position is >15, possibly return
-                                                // 1
+        // Assume the rider gets 0 points if they finish outside the top 15
+        // TODO check this with diogo
+        int points = (position > 15) ? 0 : pointsArray[position - 1];
 
+        // Add the points from the checkpoints for intermediate sprints
         for (int checkpointId : checkpoints) {
             Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpointId);
             points += checkpoint.getSprintPoints(riderId);
@@ -181,7 +210,9 @@ public class Stage {
      * @return the number of mountain points the rider gets for this stage
      */
     public int mountainPoints(int riderId) throws IDNotRecognisedException {
-        if (!riders.contains(riderId)) {
+
+        // check if the rider has a start and finish time recorded
+        if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
             throw new IDNotRecognisedException("Rider ID not recognised");
         }
 
@@ -208,7 +239,6 @@ public class Stage {
     public void removeRider(int riderId) {
         startTimes.remove(riderId);
         finishTimes.remove(riderId);
-        riders.remove(riderId);
 
         for (int checkpointId : checkpoints) {
             Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpointId);
@@ -245,6 +275,6 @@ public class Stage {
     }
 
     public ArrayList<Integer> getRegisteredRiders() {
-        return riders;
+        return new ArrayList<Integer>(finishTimes.keySet());
     }
 }
