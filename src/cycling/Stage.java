@@ -8,7 +8,7 @@ public class Stage {
 
     private static final HashMap<Integer, Stage> stages = new HashMap<Integer, Stage>();
 
-    // If all of these are correct I get +1% and/or some guiness
+    // If all of these are correct I get +1% and/or some guinness
     public static final int[] FLAT_POINTS = { 50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2 };
     public static final int[] MEDIUM_MOUNTAIN_POINTS = { 30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2 };
     public static final int[] HIGH_MOUNTAIN_POINTS = { 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
