@@ -8,11 +8,11 @@ import java.util.ArrayList;
 public class CyclingPortalImpl implements CyclingPortal {
 
 	// Lists of the various IDs that belong to this instance of CyclingPortalImpl
-	private final ArrayList<Integer> myRaceIDs = new ArrayList<>();
-	private final ArrayList<Integer> myStageIDs = new ArrayList<>();
-	private final ArrayList<Integer> myCheckpointIDs = new ArrayList<>();
-	private final ArrayList<Integer> myTeamIDs = new ArrayList<>();
-	private final ArrayList<Integer> myRiderIDs = new ArrayList<>();
+	private final ArrayList<Integer> myRaceIds = new ArrayList<>();
+	private final ArrayList<Integer> myStageIds = new ArrayList<>();
+	private final ArrayList<Integer> myCheckpointIds = new ArrayList<>();
+	private final ArrayList<Integer> myTeamIds = new ArrayList<>();
+	private final ArrayList<Integer> myRiderIds = new ArrayList<>();
 
 
 	/**
@@ -23,7 +23,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int[] getRaceIds() {
 		// convert the ArrayList of Integers to an array of ints and return it
-        return myRaceIDs.stream().mapToInt(Integer::intValue).toArray();
+        return myRaceIds.stream().mapToInt(Integer::intValue).toArray();
 	}
 
 	/**
@@ -39,17 +39,17 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public int createRace(String name, String description) throws IllegalNameException, InvalidNameException {
 		// Check for illegal name, already in use has to be done in this
 		// class as we store our list of races here
-		for(int raceID : myRaceIDs){
-			if(Race.getRaceByID(raceID).getName().equals(name)){
+		for (int raceId : myRaceIds){
+			if (Race.getRaceById(raceId).getName().equals(name)){
 				throw new IllegalNameException("The name "+ name+ " has already been taken");
 			}
 		}
 
 		Race newRace = new Race(name,description); // Create instance
-		int newID = newRace.getId(); // The new ID for the created
-		myRaceIDs.add(newRace.getId());
+		int newId = newRace.getId(); // The new ID for the created
+		myRaceIds.add(newRace.getId());
 
-		return newID;
+		return newId;
 
 	}
 
@@ -68,10 +68,10 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public String viewRaceDetails(int raceId) throws IDNotRecognisedException {
 		// Check the race exists in this system
-		if (!myRaceIDs.contains(raceId)){
+		if (!myRaceIds.contains(raceId)){
 			throw new IDNotRecognisedException("The ID "+ raceId+ " does not exist in this system");
 		}
-		return Race.getRaceByID(raceId).getDetails();
+		return Race.getRaceById(raceId).getDetails();
 	}
 
 	/**
@@ -83,12 +83,12 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public void removeRaceById(int raceId) throws IDNotRecognisedException {
 		// Throw error if invalid race id
-		if (!myRaceIDs.contains(raceId)){
+		if (!myRaceIds.contains(raceId)){
 			throw new IDNotRecognisedException("The Race ID "+ raceId + " Was not found in this CyclingPortalImpl");
 		}
 
-		Race.getRaceByID(raceId).remove(); // Remove the race using its own object's remove function
-		myRaceIDs.remove(Integer.valueOf(raceId)); // remove it from the cycling portals list of associated teams
+		Race.getRaceById(raceId).remove(); // Remove the race using its own object's remove function
+		myRaceIds.remove(Integer.valueOf(raceId)); // remove it from the cycling portals list of associated teams
 	}
 
 	/**
@@ -120,14 +120,14 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int[] getRaceStages(int raceId) throws IDNotRecognisedException {
 		// Throw error if invalid race id
-		if (!myRaceIDs.contains(raceId)){
+		if (!myRaceIds.contains(raceId)){
 			throw new IDNotRecognisedException("The Race ID "+ raceId + " Was not found in this CyclingPortalImpl");
 		}
 
 		// Get the race instance
-		Race myRace = Race.getRaceByID(raceId);
+		Race myRace = Race.getRaceById(raceId);
 		// convert its list of stage IDs to an array of ints and return it
-        return myRace.getStageIDs().stream().mapToInt(Integer::intValue).toArray();
+        return myRace.getStageIds().stream().mapToInt(Integer::intValue).toArray();
 	}
 
 	@Override
@@ -187,17 +187,17 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public int createTeam(String name, String description) throws IllegalNameException, InvalidNameException {
 
 		// Check for illegal name, already in use
-		for(int teamID : getTeams()){
-			if(Team.getTeamById(teamID).getName().equals(name)){
+		for(int teamId : getTeams()){
+			if(Team.getTeamById(teamId).getName().equals(name)){
 				throw new IllegalNameException("The name "+ name+ " has already been taken");
 			}
 		}
 
 		Team newTeam = new Team(name,description); // Create instance of the team
-		int newID = newTeam.getId(); // The new ID for the created team
-		myTeamIDs.add(newTeam.getId());
+		int newId = newTeam.getId(); // The new ID for the created team
+		myTeamIds.add(newTeam.getId());
 
-		return newID;
+		return newId;
 	}
 
 	/**
@@ -210,12 +210,12 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public void removeTeam(int teamId) throws IDNotRecognisedException {
 
 		// Throw error if invalid team id
-		if (!myTeamIDs.contains(teamId)){
+		if (!myTeamIds.contains(teamId)){
 			throw new IDNotRecognisedException("The ID "+ teamId + " Was not found in this CyclingPortalImpl");
 		}
 
 		Team.getTeamById(teamId).remove(); // remove the team from its own class
-		myTeamIDs.remove(Integer.valueOf(teamId)); // remove it from the cycling portals list of associated teams
+		myTeamIds.remove(Integer.valueOf(teamId)); // remove it from the cycling portals list of associated teams
 
 	}
 
@@ -227,7 +227,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int[] getTeams() {
 		// convert the ArrayList of Integers to an array of ints and return it
-		return myTeamIDs.stream().mapToInt(Integer::intValue).toArray();
+		return myTeamIds.stream().mapToInt(Integer::intValue).toArray();
 	}
 
 	/**
@@ -240,7 +240,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int[] getTeamRiders(int teamId) throws IDNotRecognisedException {
 		// Check the teamID exists in this system
-		if (!myTeamIDs.contains(teamId)){
+		if (!myTeamIds.contains(teamId)){
 			throw new IDNotRecognisedException("The ID "+ teamId+ " does not exist in this system");
 		}
 
@@ -250,7 +250,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	/**
 	 * Create a rider and add them to a team
 	 *
-	 * @param teamID      The ID rider's team.
+	 * @param teamId      The ID rider's team.
 	 * @param name        The name of the rider.
 	 * @param yearOfBirth The year of birth of the rider.
 	 * @return The ID of the newly created rider
@@ -258,17 +258,17 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 * @throws IllegalArgumentException When the name is empty or null, or the year of birth is less than 1900
 	 */
 	@Override
-	public int createRider(int teamID, String name, int yearOfBirth)
+	public int createRider(int teamId, String name, int yearOfBirth)
 			throws IDNotRecognisedException, IllegalArgumentException {
 		// Check the teamID exists in this system
-		if (!myTeamIDs.contains(teamID)){
-			throw new IDNotRecognisedException("The ID "+ teamID+ " does not exist in this system");
+		if (!myTeamIds.contains(teamId)){
+			throw new IDNotRecognisedException("The ID "+ teamId+ " does not exist in this system");
 		}
 
 		// Create the rider
-		Rider newRider = new Rider(name,yearOfBirth,teamID);
-		myRiderIDs.add(newRider.getID()); // add the new rider to the cycling portal's list of riders
-		return newRider.getID();
+		Rider newRider = new Rider(name,yearOfBirth,teamId);
+		myRiderIds.add(newRider.getId()); // add the new rider to the cycling portal's list of riders
+		return newRider.getId();
 
 	}
 
@@ -282,12 +282,12 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public void removeRider(int riderId) throws IDNotRecognisedException {
 
-        if (!myRiderIDs.contains(riderId)){ // check the riderID exists in this system
-			throw new IDNotRecognisedException("The rider ID "+ riderId+ " does not exist in this system");
+        if (!myRiderIds.contains(riderId)){ // check the riderID exists in this system
+			throw new IDNotRecognisedException("The rider ID " + riderId + " does not exist in this system");
 		}
 
 		Rider.getRiderById(riderId).remove(); // remove the rider using its own object's remove function
-		myRiderIDs.remove(Integer.valueOf(riderId)); // Remove the rider ID from our list of rider IDs
+		myRiderIds.remove(Integer.valueOf(riderId)); // Remove the rider ID from our list of rider IDs
 	}
 
 	@Override
@@ -368,7 +368,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public void removeRaceByName(String name) throws NameNotRecognisedException {
 		// Pass in list of this portal's race IDs so it doesn't get mixed
 		// up with another portal's races which may share names
-		int raceIDWithName = Race.getIDByName(name, myRaceIDs);
+		int raceIDWithName = Race.getIdByName(name, myRaceIds);
 		try {
 			removeRaceById(raceIDWithName);
 		}
