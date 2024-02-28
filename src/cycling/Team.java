@@ -13,51 +13,51 @@ import java.util.HashMap;
 public class Team {
 
     // Holds reference to all the teams created
-    static private final HashMap<Integer,Team> teams = new HashMap<Integer,Team>();
+    static private final HashMap<Integer, Team> teams = new HashMap<Integer, Team>();
 
-    private final int myID; // Unique ID of the team
+    private final int myId; // Unique Id of the team
     private final String name; // Name of the team
     private final String description; // Description of the team
-    private final ArrayList<Integer> riderIds = new ArrayList<Integer>(); // Holds all the rider IDs belonging to this team
+    private final ArrayList<Integer> riderIds = new ArrayList<Integer>(); // Holds all the rider Ids belonging to this
+                                                                          // team
 
     /**
      * Constructor for the Team class.
      *
-     * @param name Name of the team
+     * @param name        Name of the team
      * @param description Description of the team
      */
     public Team(String name, String description) throws InvalidNameException {
 
         // Check for invalid (rule breaking) name
-        if (name == null || name.length()>30 || name.isEmpty() || name.contains(" ")) {
+        if (name == null || name.length() > 30 || name.isEmpty() || name.contains(" ")) {
             throw new InvalidNameException(" name broke naming rules. Length must be 0<length<=30, and no whitespace");
         }
 
         // Set up this new instance with the essential details
-        this.myID = UniqueIDGenerator.calculateUniqueID(teams);
+        this.myId = UniqueIdGenerator.calculateUniqueId(teams);
         this.name = name;
         this.description = description;
 
-        teams.put(this.myID,this); // Add this team to the list of teams
+        teams.put(this.myId, this); // Add this team to the list of teams
     }
 
     /**
-     * Getter for the riders' IDs that belong to this team
+     * Getter for the riders' Ids that belong to this team
      *
-     * @return an array of ints for the rider IDs in the team
+     * @return an array of ints for the rider Ids in the team
      */
-    public int[] getRiders(){
+    public int[] getRiders() {
         return riderIds.stream().mapToInt(Integer::intValue).toArray();
     }
 
-
     /**
-     * Getter for the ID attribute on the team class
+     * Getter for the Id attribute on the team class
      *
-     * @return this instance of a team's ID
+     * @return this instance of a team's Id
      */
-    public int getId(){
-        return myID;
+    public int getId() {
+        return myId;
     }
 
     /**
@@ -65,15 +65,15 @@ public class Team {
      *
      * @return this instance of a team's name
      */
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-
     /**
-     * Function to Get a team reference by its ID.
-     * @param id the ID of the team to try find
-     * @return the team with the given ID if it exists
+     * Function to Get a team reference by its Id.
+     *
+     * @param id the Id of the team to try find
+     * @return the team with the given Id if it exists
      */
     public static Team getTeamById(int id) {
         return teams.get(id);
@@ -82,12 +82,12 @@ public class Team {
     /**
      * Gets details about the team
      * Not required by spec but Adding it in case / extension
+     *
      * @return A short
      */
-    public String getDetails(){
-        return String.format("Name: %s  Description: %s",name,description);
+    public String getDetails() {
+        return String.format("Name: %s  Description: %s", name, description);
     }
-
 
     /**
      * Nice toString method for description of a team object
@@ -102,31 +102,31 @@ public class Team {
     /**
      * Remove the team from the system
      */
-    public void remove(){
+    public void remove() {
         // TODO actually do something when we remove a team
-        //  ie cascade down removing riders and shifting points
+        // ie cascade down removing riders and shifting points
         // Then remove it from static teams hashmap
-        teams.remove(myID);
+        teams.remove(myId);
     }
 
     /**
      * Add a rider to the team
      *
-     * @param riderId the ID of the rider to add
+     * @param riderId the Id of the rider to add
      */
-    public void addRider(int riderId){
+    public void addRider(int riderId) {
         riderIds.add(riderId);
     }
 
     /**
      * Remove a rider from the team
      *
-     * @param riderId the ID of the rider to remove
-     * @throws IDNotRecognisedException if the rider ID is not in the team
+     * @param riderId the Id of the rider to remove
+     * @throws IDNotRecognisedException if the rider Id is not in the team
      */
-    public void removeRider(int riderId) throws IDNotRecognisedException{
-        if (!riderIds.contains(riderId)){
-            throw new IDNotRecognisedException("Rider ID "+riderId+" not found in team ");
+    public void removeRider(int riderId) throws IDNotRecognisedException {
+        if (!riderIds.contains(riderId)) {
+            throw new IDNotRecognisedException("Rider Id " + riderId + " not found in team ");
         }
         riderIds.remove(Integer.valueOf(riderId));
     }

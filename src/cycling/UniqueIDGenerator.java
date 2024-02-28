@@ -9,9 +9,9 @@ import java.util.HashMap;
  * @author Ed Fillingham & Kit Matthewson
  * @version 1.0
  */
-public class  UniqueIDGenerator <T> {
+public class UniqueIdGenerator<T> {
 
-    public static <T> int calculateUniqueID(HashMap<Integer,T> genericHashMap){
+    public static <T> int calculateUniqueId(HashMap<Integer, T> genericHashMap) {
 
         // Go through all the teams and store their IDs in an array
         // also store the maximum ID
@@ -25,9 +25,10 @@ public class  UniqueIDGenerator <T> {
             }
         }
 
-        // If there are gaps in the IDs ie ids = [0, 1, 3, 4] then return the first gap (in this case 2)
-        for (int i = 0; i < maxId; i++){
-            if (!genericIds.contains(i)){
+        // If there are gaps in the IDs ie ids = [0, 1, 3, 4] then return the first gap
+        // (in this case 2)
+        for (int i = 0; i < maxId; i++) {
+            if (!genericIds.contains(i)) {
                 return i;
             }
         }
