@@ -116,15 +116,12 @@ public class Stage {
             throw new InvalidCheckpointTimesException("Number of times given is not number of checkpoints + 2");
         }
 
-        // TODO: Check if we need to sort this first as the exception is thrown
-        //  the number of times given ≠ the number of checkpoints + 2
-
         // Must be done before any changes are made
-        //for (int i = 0; i < times.length - 1; i++) {
-        //    if (times[i].isAfter(times[i + 1])) {
-        //        throw new InvalidCheckpointTimesException("Checkpoint times are not in order");
-        //    }
-        //}
+        for (int i = 0; i < times.length - 1; i++) {
+           if (times[i].isAfter(times[i + 1])) {
+               throw new InvalidCheckpointTimesException("Checkpoint times are not in order");
+           }
+        }
 
         startTimes.put(riderId, times[0]);
         finishTimes.put(riderId, times[times.length - 1]);
@@ -196,10 +193,9 @@ public class Stage {
 
         int[] pointsArray = POINTS.get(type);
 
-
         // Assume the rider gets 0 points if they finish outside the top 15
         // TODO check this with diogo
-        int points = (position > 15) ? 0 : pointsArray[position - 1];
+        int points = (position >= pointsArray.length) ? 0 : pointsArray[position - 1];
 
         // Add the points from the checkpoints for intermediate sprints
         for (int checkpointId : checkpoints) {
