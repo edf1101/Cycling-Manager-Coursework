@@ -6,9 +6,9 @@ import java.util.HashMap;
 public class Race {
 
     private static final HashMap<Integer, Race> races = new HashMap<Integer, Race>();
-    private int myId;
-    private String name;
-    private String description;
+    private final int myId;
+    private final String name;
+    private final String description;
     private final ArrayList<Integer> stageIds = new ArrayList<Integer>(); // list of the stages belonging to this race
 
     /**
@@ -24,11 +24,13 @@ public class Race {
         }
 
         // Set up attributes for the object
+
         this.myId = UniqueIdGenerator.calculateUniqueId(races);
         this.name = name;
         this.description = description;
 
         // add the new object to the hashmap of all races
+
         races.put(this.myId, this);
     }
 
@@ -43,9 +45,9 @@ public class Race {
     }
 
     /**
-     * Getter for the stage's name
+     * Getter for the Race's name
      *
-     * @return The name of the stage instance
+     * @return The name of the Race instance
      */
     public String getName() {
         return name;
@@ -97,16 +99,32 @@ public class Race {
     /**
      * Getter for the list of stage Ids that belong to this Race
      *
-     * @return The stage Ids beloning to this race
+     * @return The stage Ids belonging to this race
      */
     public ArrayList<Integer> getStageIds() {
         return stageIds;
     }
 
     /**
+     * Adds a stage to the list of stages that belong to this race
+     * @param stageId the stage id to add to the list
+     */
+    public void addStage(int stageId) {
+        stageIds.add(stageId);
+    }
+
+    /**
+     * Removes a stage to the list of stages that belong to this race
+     * @param stageId the stage id to remove from the list
+     */
+    public void removeStage(int stageId) {
+        stageIds.remove(Integer.valueOf(stageId));
+    }
+
+    /**
      * Gets the Id of a Race by its name
      *
-     * @param name       The name of the race to be removed.
+     * @param name       The name of the race to find an Id for.
      * @param portalsIds the list of the raceIds that are contained by this portal
      *                   instance, so we don't mix up this
      *                   with another portals race with a same name

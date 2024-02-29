@@ -24,6 +24,7 @@ public class Stage {
     private final String description;
     private final StageType type;
     private final double length;
+    private final int parentRace; // the race that this belongs to.
     private final ArrayList<Integer> checkpoints = new ArrayList<Integer>();
     private boolean prepared = false;
 
@@ -38,8 +39,12 @@ public class Stage {
      * @param description Description of the stage
      * @param type        The type of the stage
      * @param length      The length of the stage
+     * @param raceId    The ID of the race this stage is a part of
+     * @throws InvalidNameException   if the name is not 0<characters<=30 or contains whitespace
+     * @throws InvalidLengthException if the length is less than 5km
      */
-    public Stage(String name, String description, StageType type, double length) throws InvalidNameException, InvalidLengthException {
+    public Stage(String name, String description, StageType type, double length, int raceId)
+            throws InvalidNameException, InvalidLengthException {
 
         // Check name is not null, empty or >30 chars
         if (name == null || name.length() > 30 || name.isEmpty() || name.contains(" ")) {
@@ -58,9 +63,13 @@ public class Stage {
         this.type = type;
         this.length = length;
         this.prepared = false;
+        this.parentRace = raceId;
 
         // add the new object to the hashmap of all stages
         stages.put(this.myId, this);
+
+        // add this stage id to its parent race's list of stages
+        Race.getRaceById(raceId).addStage(this.myId);
     }
 
     /**
@@ -246,34 +255,92 @@ public class Stage {
         }
     }
 
+    public void remove() {
+
+        stages.remove(myId); // remove from the dictionary of stages
+        Race.getRaceById(parentRace).removeStage(myId);  // remove from race object
+
+        // TODO: remove all checkpoints in this stage
+
+    }
+
+    /**
+     * Getter for the Stage Id
+     *
+     * @return the Id of the parent Race
+     */
     public int getId() {
         return myId;
     }
 
+    /**
+     * Getter for the race that this stage belongs to
+     *
+     * @return the Id of the parent Race
+     */
+    public int getParentRace() {
+        return parentRace;
+    }
+
+    /**
+     * Getter for the name of this stage
+     *
+     * @return the Stage name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Getter for the description of this stage
+     *
+     * @return the stage description
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Getter for the name of this stage
+     *
+     * @return the Stage name
+     */
     public StageType getType() {
         return type;
     }
 
+    /**
+     * Getter for the length of this stage
+     *
+     * @return the stage length
+     */
     public double getLength() {
         return length;
     }
 
+    /**
+     * Getter for the checkpoints of this stage
+     *
+     * @return the stage checkpoints
+     */
     public ArrayList<Integer> getCheckpoints() {
         return checkpoints;
     }
 
+    /**
+     * Getter for whether the stage is prepared
+     *
+     * @return boolean indicating whether the stage is prepared
+     */
     public boolean isPrepared() {
         return prepared;
     }
 
+    /**
+     * Getter for registered riders in the stage
+     *
+     * @return the registered riders
+     */
     public ArrayList<Integer> getRegisteredRiders() {
         return new ArrayList<Integer>(finishTimes.keySet());
     }
