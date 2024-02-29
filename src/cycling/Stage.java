@@ -238,7 +238,11 @@ public class Stage {
     /**
      * Conclude the preparation of the stage.
      */
-    public void prepare() {
+    public void concludePreparation() throws InvalidStageStateException {
+        if (prepared) {
+            throw new InvalidStageStateException("Stage already prepared");
+        }
+
         prepared = true;
     }
 
