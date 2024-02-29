@@ -28,7 +28,7 @@ public class Stage {
     private final ArrayList<Integer> checkpoints = new ArrayList<Integer>();
     private boolean prepared = false;
 
-    // Hashmaps to store the start and finish times for each rider
+    // Hashmaps to store the start and finish times for each rider format of <riderId, time>
     private final HashMap<Integer, LocalTime> startTimes = new HashMap<Integer, LocalTime>();
     private final HashMap<Integer, LocalTime> finishTimes = new HashMap<Integer, LocalTime>();
 
@@ -133,9 +133,9 @@ public class Stage {
         //  will add a check for that when we add them
         // Consider that the array is [start, checkpoint1, checkpoint2, ..., finish]
         // The nth checkpoint starts at index n and ends at index n+1
-        for (int i = 0; i < times.length - 2; i++) {
+        for (int i = 1; i < times.length - 1; i++) {
             Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpoints.get(i));
-            checkpoint.recordTime(riderId, times[i], times[i + 1]);
+            checkpoint.recordTime(riderId, times[i]);
         }
 
     }
@@ -204,7 +204,7 @@ public class Stage {
         // Add the points from the checkpoints for intermediate sprints
         for (int checkpointId : checkpoints) {
             Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpointId);
-            points += checkpoint.getSprintPoints(riderId);
+            points += checkpoint.getIntermediateSprintPoints(riderId);
         }
 
         return points;
