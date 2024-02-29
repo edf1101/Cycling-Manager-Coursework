@@ -4,15 +4,25 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-// TODO
-
 public abstract class Checkpoint {
 
     private static final HashMap<Integer, Checkpoint> checkpoints = new HashMap<Integer, Checkpoint>();
-    private int myId;
+    private int myId; // its unique ID for checkpoints
+    protected CheckpointType myType; // the type of checkpoint it is
+    private Double location; // where in the stage it is located
 
-    private final HashMap<Integer, LocalTime> startTimes = new HashMap<Integer, LocalTime>();
-    private final HashMap<Integer, LocalTime> finishTimes = new HashMap<Integer, LocalTime>();
+    // The times that riders passed the checkpoint format of: <riderId, time>
+    protected final HashMap<Integer, LocalTime> passTimes = new HashMap<Integer, LocalTime>();
+
+    /**
+     * Constructor for the abstract superclass checkpoint.
+     * This will be called via super() in the subclasses
+     */
+    public Checkpoint() {
+        myId = UniqueIdGenerator.calculateUniqueId(checkpoints);
+        checkpoints.put(myId, this);
+    }
+
 
     /**
      * Getter for a checkpoint by its ID
@@ -34,12 +44,10 @@ public abstract class Checkpoint {
      * Record a rider's time at the checkpoint
      *
      * @param riderId the Id of the rider to record
-     * @param startTime What time they entered the checkpoint
-     * @param finishTime What time they left the checkpoint
+     * @param passTime What time they crossed the checkpoint
      */
-    public void recordTime(int riderId, LocalTime startTime, LocalTime finishTime) {
-        startTimes.put(riderId, startTime);
-        finishTimes.put(riderId, finishTime);
+    public void recordTime(int riderId, LocalTime passTime) {
+        passTimes.put(riderId, passTime);
     }
 
     public int getMyId() {
@@ -47,25 +55,25 @@ public abstract class Checkpoint {
     }
 
     /**
-     * Get time for a rider at a checkpoint
+     * Get time for a rider as they passed the checkpoint
      *
      * @param riderId the rider's ID
      * @return the time that the rider reached the checkpoint
      */
-    public LocalTime getFinishTime(int riderId) {
-        return finishTimes.get(riderId);
+    public LocalTime getPassTime(int riderId) {
+        return passTimes.get(riderId);
     }
 
-
-    /**
-     * Get time for a rider to reach the checkpoint from the previous checkpoint
-     *
-     * @param riderId the rider's ID
-     * @return the time that the rider took to reach the checkpoint
-     */
-    public LocalTime splitTime(int riderId) {
-        return LocalTime.ofSecondOfDay(finishTimes.get(riderId).toSecondOfDay() - startTimes.get(riderId).toSecondOfDay());
-    }
+    // Don't think we need this method
+    ///**
+    // * Get time for a rider to reach the checkpoint from the previous checkpoint
+    // *
+    // * @param riderId the rider's ID
+    // * @return the time that the rider took to reach the checkpoint
+    // */
+    //public LocalTime splitTime(int riderId) {
+    //    return LocalTime.ofSecondOfDay(finishTimes.get(riderId).toSecondOfDay() - startTimes.get(riderId).toSecondOfDay());
+    //}
 
     /**
      * Remove a rider's time from the checkpoint
@@ -73,8 +81,7 @@ public abstract class Checkpoint {
      * @param riderId the Id of the rider to remove from the checkpoint
      */
     public void removeRider(int riderId) {
-        startTimes.remove(riderId);
-        finishTimes.remove(riderId);
+        passTimes.remove(riderId);
     }
 
     /**
@@ -83,7 +90,7 @@ public abstract class Checkpoint {
      * @param riderId the rider's ID
      * @return the sprint points for the rider
      */
-    public abstract int getSprintPoints(int riderId);
+    public abstract int getIntermediateSprintPoints(int riderId);
 
     /**
      * Get mountain points for a rider
@@ -92,4 +99,5 @@ public abstract class Checkpoint {
      * @return the mountain points for the rider
      */
     public abstract int getMountainPoints(int riderId);
+
 }
