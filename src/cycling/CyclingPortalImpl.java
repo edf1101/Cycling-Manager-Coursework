@@ -163,9 +163,19 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new IDNotRecognisedException("The stage ID " + stageId + " Was not found in this CyclingPortalImpl");
 		}
 
-		Stage.getStageById(stageId).delete(); // remove the stage from its own class
-		myStageIds.remove(Integer.valueOf(stageId)); // remove it from the cycling portals list of associated stages
+		// Delete the stage from all races
+		for (int raceId : myRaceIds) {
+			Race race = Race.getRaceById(raceId);
 
+			try {
+				race.deleteStage(stageId);
+			} catch (IDNotRecognisedException e) {
+				// Fine, race doesn't have this stage
+			}
+		}
+
+		// Remove the stage from the list of stages
+		myStageIds.remove(Integer.valueOf(stageId)); // remove it from the cycling portals list of associated stages
 	}
 
 	@Override
