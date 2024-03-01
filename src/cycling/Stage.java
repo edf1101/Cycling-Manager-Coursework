@@ -10,13 +10,14 @@ public class Stage {
     private static final HashMap<Integer, Stage> stages = new HashMap<Integer, Stage>();
 
     // Hashmap to store the points for each stage type
-    // TODO not sure if all caps name is correct given its a dict not an int[] any more, will check
-    private static final HashMap<StageType,int[]> POINTS = new HashMap<StageType,int[]>();
+    // TODO not sure if all caps name is correct given its a dict not an int[] any
+    // more, will check
+    private static final HashMap<StageType, int[]> POINTS = new HashMap<StageType, int[]>();
     static {
-        POINTS.put(StageType.FLAT, new int[]{ 50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2 });
-        POINTS.put(StageType.MEDIUM_MOUNTAIN, new int[]{ 30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2 });
-        POINTS.put(StageType.HIGH_MOUNTAIN, new int[]{ 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 });
-        POINTS.put(StageType.TT, new int[]{ 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 });
+        POINTS.put(StageType.FLAT, new int[] { 50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2 });
+        POINTS.put(StageType.MEDIUM_MOUNTAIN, new int[] { 30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2 });
+        POINTS.put(StageType.HIGH_MOUNTAIN, new int[] { 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 });
+        POINTS.put(StageType.TT, new int[] { 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 });
     }
 
     private final int myId;
@@ -28,7 +29,8 @@ public class Stage {
     private final ArrayList<Integer> checkpoints = new ArrayList<Integer>();
     private boolean prepared = false;
 
-    // Hashmaps to store the start and finish times for each rider format of <riderId, time>
+    // Hashmaps to store the start and finish times for each rider format of
+    // <riderId, time>
     private final HashMap<Integer, LocalTime> startTimes = new HashMap<Integer, LocalTime>();
     private final HashMap<Integer, LocalTime> finishTimes = new HashMap<Integer, LocalTime>();
 
@@ -39,8 +41,9 @@ public class Stage {
      * @param description Description of the stage
      * @param type        The type of the stage
      * @param length      The length of the stage
-     * @param raceId    The ID of the race this stage is a part of
-     * @throws InvalidNameException   if the name is not 0<characters<=30 or contains whitespace
+     * @param raceId      The ID of the race this stage is a part of
+     * @throws InvalidNameException   if the name is not 0<characters<=30 or
+     *                                contains whitespace
      * @throws InvalidLengthException if the length is less than 5km
      */
     public Stage(String name, String description, StageType type, double length, int raceId)
@@ -94,9 +97,11 @@ public class Stage {
      *
      * @param riderId the ID of the rider
      * @param times   the start time, times at each checkpoint, and the finish time
-     * @throws DuplicatedResultException        if the rider has already registered a result
-     * @throws InvalidCheckpointTimesException if the number of times given ≠ the number of checkpoints + 2
-     * @throws InvalidStageStateException       if the stage is not fully set up
+     * @throws DuplicatedResultException       if the rider has already registered a
+     *                                         result
+     * @throws InvalidCheckpointTimesException if the number of times given ≠ the
+     *                                         number of checkpoints + 2
+     * @throws InvalidStageStateException      if the stage is not fully set up
      */
     public void registerResults(int riderId, LocalTime... times)
             throws DuplicatedResultException, InvalidCheckpointTimesException, InvalidStageStateException {
@@ -107,7 +112,7 @@ public class Stage {
         }
 
         // Check if the rider has already registered a results
-        if (startTimes.containsKey(riderId) || finishTimes.containsKey(riderId)){
+        if (startTimes.containsKey(riderId) || finishTimes.containsKey(riderId)) {
             throw new DuplicatedResultException("Rider ID already has a finish time");
         }
 
@@ -118,16 +123,16 @@ public class Stage {
 
         // Must be done before any changes are made
         for (int i = 0; i < times.length - 1; i++) {
-           if (times[i].isAfter(times[i + 1])) {
-               throw new InvalidCheckpointTimesException("Checkpoint times are not in order");
-           }
+            if (times[i].isAfter(times[i + 1])) {
+                throw new InvalidCheckpointTimesException("Checkpoint times are not in order");
+            }
         }
 
         startTimes.put(riderId, times[0]);
         finishTimes.put(riderId, times[times.length - 1]);
 
         // TODO this code for adding times will fail if its a time trial type (i think),
-        //  will add a check for that when we add them
+        // will add a check for that when we add them
         // Consider that the array is [start, checkpoint1, checkpoint2, ..., finish]
         // The nth checkpoint starts at index n and ends at index n+1
         for (int i = 1; i < times.length - 1; i++) {
@@ -176,7 +181,7 @@ public class Stage {
      */
     public int sprintPoints(int riderId) throws IDNotRecognisedException {
         // TODO this should throw an error if the rider isn't in the system,
-        //  If its only not in the stage then it should return empty array.
+        // If its only not in the stage then it should return empty array.
         // check if the rider has a start and finish time recorded
         if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
             throw new IDNotRecognisedException("Rider ID not recognised");
@@ -255,13 +260,14 @@ public class Stage {
         }
     }
 
-    public void remove() {
-
+    /**
+     * Deletes this stage and its associated checkpoints
+     */
+    public void delete() {
         stages.remove(myId); // remove from the dictionary of stages
-        Race.getRaceById(parentRace).removeStage(myId);  // remove from race object
-
-        // TODO: remove all checkpoints in this stage
-
+        for (int checkpointId : checkpoints) {
+            Checkpoint.getCheckpointById(checkpointId).delete();
+        }
     }
 
     /**

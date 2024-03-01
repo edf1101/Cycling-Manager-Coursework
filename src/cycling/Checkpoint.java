@@ -23,7 +23,6 @@ public abstract class Checkpoint {
         checkpoints.put(myId, this);
     }
 
-
     /**
      * Getter for a checkpoint by its ID
      *
@@ -43,7 +42,7 @@ public abstract class Checkpoint {
     /**
      * Record a rider's time at the checkpoint
      *
-     * @param riderId the Id of the rider to record
+     * @param riderId  the Id of the rider to record
      * @param passTime What time they crossed the checkpoint
      */
     public void recordTime(int riderId, LocalTime passTime) {
@@ -65,15 +64,16 @@ public abstract class Checkpoint {
     }
 
     // Don't think we need this method
-    ///**
+    /// **
     // * Get time for a rider to reach the checkpoint from the previous checkpoint
     // *
     // * @param riderId the rider's ID
     // * @return the time that the rider took to reach the checkpoint
     // */
-    //public LocalTime splitTime(int riderId) {
-    //    return LocalTime.ofSecondOfDay(finishTimes.get(riderId).toSecondOfDay() - startTimes.get(riderId).toSecondOfDay());
-    //}
+    // public LocalTime splitTime(int riderId) {
+    // return LocalTime.ofSecondOfDay(finishTimes.get(riderId).toSecondOfDay() -
+    // startTimes.get(riderId).toSecondOfDay());
+    // }
 
     /**
      * Remove a rider's time from the checkpoint
@@ -82,6 +82,13 @@ public abstract class Checkpoint {
      */
     public void removeRider(int riderId) {
         passTimes.remove(riderId);
+    }
+
+    /**
+     * Delete this checkpoint
+     */
+    public void delete() {
+        checkpoints.remove(myId);
     }
 
     /**

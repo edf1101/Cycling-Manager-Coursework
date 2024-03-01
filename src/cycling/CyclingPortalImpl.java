@@ -87,13 +87,14 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new IDNotRecognisedException("The Race ID " + raceId + " Was not found in this CyclingPortalImpl");
 		}
 
-		Race.getRaceById(raceId).remove(); // Remove the race using its own object's remove function
-		myRaceIds.remove(Integer.valueOf(raceId)); // remove it from the cycling portals list of associated teams
+		// Delete the race and remove it from the list of races
+		Race.getRaceById(raceId).delete();
+		myRaceIds.remove(Integer.valueOf(raceId));
 	}
 
 	/**
 	 * Get the number of stages in a queried race
-	 * 
+	 *
 	 * @param raceId The ID of the race being queried.
 	 * @return The number of stages in the race
 	 * @throws IDNotRecognisedException When the race ID is not in the system
@@ -162,7 +163,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new IDNotRecognisedException("The stage ID " + stageId + " Was not found in this CyclingPortalImpl");
 		}
 
-		Stage.getStageById(stageId).remove(); // remove the stage from its own class
+		Stage.getStageById(stageId).delete(); // remove the stage from its own class
 		myStageIds.remove(Integer.valueOf(stageId)); // remove it from the cycling portals list of associated stages
 
 	}

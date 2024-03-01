@@ -86,39 +86,51 @@ public class Race {
     }
 
     /**
-     * Removes this Race Instance
+     * Deletes this Race, cascading down to delete all stages and checkpoints
      */
-    public void remove() {
-        // TODO actually do something
-        // such as cascade down removing stages + checkpoints
-        // Then remove it from the hashmap of races
-
+    public void delete() {
         races.remove(myId);
-    }
-
-    /**
-     * Getter for the list of stage Ids that belong to this Race
-     *
-     * @return The stage Ids belonging to this race
-     */
-    public ArrayList<Integer> getStageIds() {
-        return stageIds;
+        for (int stageId : stageIds) {
+            Stage.getStageById(stageId).delete();
+        }
     }
 
     /**
      * Adds a stage to the list of stages that belong to this race
-     * @param stageId the stage id to add to the list
+     *
+     * @param stageId the stage ID to add to the list
      */
     public void addStage(int stageId) {
         stageIds.add(stageId);
     }
 
     /**
+     * Deletes a stage
+     *
+     * @param stageId the stage ID to delete
+     */
+    public void deleteStage(int stageId) {
+        Stage.getStageById(stageId).delete();
+        stageIds.remove(stageId);
+    }
+
+    /**
      * Removes a stage to the list of stages that belong to this race
-     * @param stageId the stage id to remove from the list
+     * TODO Check if this is ever needed, or if deleteStage is enough
+     *
+     * @param stageId the stage ID to remove from the list
      */
     public void removeStage(int stageId) {
         stageIds.remove(Integer.valueOf(stageId));
+    }
+
+    /**
+     * Getter for the list of stage IDs that belong to this Race
+     *
+     * @return The stage IDs belonging to this race
+     */
+    public ArrayList<Integer> getStageIds() {
+        return stageIds;
     }
 
     /**
