@@ -353,16 +353,39 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 	}
 
+	// TODO Test this thoroughly
 	@Override
 	public LocalTime getRiderAdjustedElapsedTimeInStage(int stageId, int riderId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		// Calculate the adjusted elapsed time for a rider in a stage
+		Stage stage = Stage.getStageById(stageId);
+		LocalTime elapsedTime = stage.getElapsedTime(riderId);
+
+		boolean adjusted = true;
+		while (adjusted) {
+			adjusted = false;
+
+			// Iterate through all registered riders in the stage
+			for (int otherRiderID : stage.getRegisteredRiders()) {
+				if (otherRiderID != riderId) {
+					// Calculate the time difference between the current rider and other riders
+					int difference = stage.getElapsedTime(otherRiderID).toSecondOfDay() - elapsedTime.toSecondOfDay();
+
+					// Adjust the elapsed time if the difference is within the range [-1, 0)
+					if (-1 <= difference && difference < 0) {
+						elapsedTime = stage.getElapsedTime(otherRiderID);
+						adjusted = true;
+					}
+				}
+			}
+		}
+
+		// Return the adjusted elapsed time for the rider in the stage
+		return elapsedTime;
 	}
 
 	@Override
 	public void deleteRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
