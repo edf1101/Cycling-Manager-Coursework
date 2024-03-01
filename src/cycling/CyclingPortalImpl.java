@@ -384,6 +384,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		ArrayList<Integer> riders = stage.getRegisteredRiders();
 
+		// TODO Check this isn't sorting it into reverse order
 		riders.sort((rider1, rider2) -> {
 			try {
 				LocalTime rider1Time = stage.getElapsedTime(rider1);
@@ -401,8 +402,14 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	@Override
 	public LocalTime[] getRankedAdjustedElapsedTimesInStage(int stageId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		int[] order = getRidersRankInStage(stageId);
+		LocalTime[] times = new LocalTime[order.length];
+
+		for (int i = 0; i < order.length; i++) {
+			times[i] = getRiderAdjustedElapsedTimeInStage(stageId, order[i]);
+		}
+
+		return times;
 	}
 
 	@Override

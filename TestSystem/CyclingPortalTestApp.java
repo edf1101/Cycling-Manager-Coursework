@@ -20,8 +20,16 @@ public class CyclingPortalTestApp {
 	 * Main method to run all tests
 	 *
 	 * @param args not used
+	 * @throws InvalidCheckpointTimesException
+	 * @throws DuplicatedResultException
+	 * @throws InvalidStageTypeException
+	 * @throws InvalidStageStateException
+	 * @throws InvalidLocationException
+	 * @throws InvalidLengthException
+	 * @throws InvalidNameException
+	 * @throws IllegalNameException
 	 */
-	public static void main(String[] args) throws IDNotRecognisedException, NameNotRecognisedException {
+	public static void main(String[] args) throws IDNotRecognisedException, NameNotRecognisedException, IllegalNameException, InvalidNameException, InvalidLengthException, InvalidLocationException, InvalidStageStateException, InvalidStageTypeException, DuplicatedResultException, InvalidCheckpointTimesException {
 		System.out.println("The system compiled and started the execution...");
 
 		// run each sets of tests twice to check they don't affect each other
@@ -45,6 +53,55 @@ public class CyclingPortalTestApp {
 		stageClassTests();
 		stageClassTests();
 		System.out.println("Passed.\n");
+
+		// Will fail until checkpoint functions are implemented
+		// System.out.println("Starting portal tests...");
+		// portalClassTests();
+		// portalClassTests();
+		// System.out.println("Passed.\n");
+
+		System.out.println("All tests passed.");
+	}
+
+	/**
+	 * Tests the portal class
+	 */
+	private static void portalClassTests() throws IDNotRecognisedException, NameNotRecognisedException,
+			IllegalNameException, InvalidNameException, InvalidLengthException, InvalidLocationException,
+			InvalidStageStateException, InvalidStageTypeException, DuplicatedResultException,
+			InvalidCheckpointTimesException {
+		CyclingPortalImpl portal = new CyclingPortalImpl();
+
+		portal.createTeam("Team1", "Test team");
+		portal.createTeam("Team2", "Test team");
+
+		portal.createRider(portal.getTeams()[0], "Rider11", 2000);
+		portal.createRider(portal.getTeams()[0], "Rider12", 2000);
+		portal.createRider(portal.getTeams()[0], "Rider13", 2000);
+
+		portal.createRider(portal.getTeams()[1], "Rider21", 2000);
+		portal.createRider(portal.getTeams()[1], "Rider22", 2000);
+		portal.createRider(portal.getTeams()[1], "Rider23", 2000);
+
+		portal.createRace("Race1", "Test race");
+		portal.addStageToRace(portal.getRaceIds()[0], "Stage1", "Test stage 1", 20.0,
+				LocalDateTime.of(2021, 1, 1, 12, 0), StageType.FLAT);
+
+		portal.addCategorizedClimbToStage(portal.getRaceStages(portal.getRaceIds()[0])[0], 0.0, CheckpointType.C1, 2.0,
+				100.0);
+		portal.addCategorizedClimbToStage(portal.getRaceStages(portal.getRaceIds()[0])[0], 100.0, CheckpointType.C2,
+				3.0, 200.0);
+
+		portal.concludeStagePreparation(portal.getRaceStages(portal.getRaceIds()[0])[0]);
+
+		for (int riderId : portal.getTeamRiders(portal.getTeams()[0])) {
+			portal.registerRiderResultsInStage(portal.getRaceStages(portal.getRaceIds()[0])[0], riderId,
+					new LocalTime[] { LocalTime.of(0, 0), LocalTime.of(0, riderId), LocalTime.of(1, riderId), LocalTime.of(2, riderId) });
+		}
+
+		for (LocalTime time : portal.getRankedAdjustedElapsedTimesInStage(portal.getRaceStages(portal.getRaceIds()[0])[0])) {
+			System.out.println(time);
+		}
 	}
 
 	/**
@@ -334,7 +391,7 @@ public class CyclingPortalTestApp {
 		int team2Id = -1;
 		int race2Id = -1;
 
-		try{
+		try {
 			race1Id = portal.createRace("Race1", "test_dsc");
 			team1Id = portal.createTeam("Team1", "Test team");
 			rider1Id = portal.createRider(team1Id, "Rider1", 2000);
@@ -355,12 +412,12 @@ public class CyclingPortalTestApp {
 		int stage1Id = -1;
 		// set up start time as midday on 1st Jan 2021
 		LocalDateTime startTime = LocalDateTime.of(2021, 1, 1, 12, 0);
-        try {
-             stage1Id = portal.addStageToRace(race1Id, "Stage1", "Test stage 1",
-                    20.0,startTime,StageType.FLAT);
-        } catch (IllegalNameException | InvalidNameException | InvalidLengthException e) {
-            throw new RuntimeException(e);
-        }
+		try {
+			stage1Id = portal.addStageToRace(race1Id, "Stage1", "Test stage 1",
+					20.0, startTime, StageType.FLAT);
+		} catch (IllegalNameException | InvalidNameException | InvalidLengthException e) {
+			throw new RuntimeException(e);
+		}
 
 		// Check race1 has 1 stage now and race 2 still has 0 stages
 		assert (portal.getRaceStages(race1Id).length == 1) : "Race1 should have 1 stage now";
@@ -370,7 +427,7 @@ public class CyclingPortalTestApp {
 		// set up start time as midday on 1st Jan 2021
 		try {
 			stage2Id = portal.addStageToRace(race2Id, "Stage2", "Test stage 2",
-					25.0,startTime,StageType.FLAT);
+					25.0, startTime, StageType.FLAT);
 		} catch (IllegalNameException | InvalidNameException | InvalidLengthException e) {
 			throw new RuntimeException(e);
 		}
@@ -388,7 +445,7 @@ public class CyclingPortalTestApp {
 		// set up start time as midday on 1st Jan 2021
 		try {
 			replacedId = portal.addStageToRace(race2Id, "Stage3", "New stage 3",
-					25.0,startTime,StageType.FLAT);
+					25.0, startTime, StageType.FLAT);
 		} catch (IllegalNameException | InvalidNameException | InvalidLengthException e) {
 			throw new RuntimeException(e);
 		}
@@ -400,11 +457,11 @@ public class CyclingPortalTestApp {
 
 		// test getting the race's stages return these
 		// for stage 1
-		assert (portal.getRaceStages(race1Id).length == 1 && portal.getRaceStages(race1Id)[0] == stage1Id ) :
-				"Race1 is matched to stage1Id only";
+		assert (portal.getRaceStages(race1Id).length == 1 && portal.getRaceStages(race1Id)[0] == stage1Id)
+				: "Race1 is matched to stage1Id only";
 		// for stage 2
-		assert (portal.getRaceStages(race2Id).length == 1 && portal.getRaceStages(race2Id)[0] == replacedId ) :
-				"Race2 is matched to replacedId only";
+		assert (portal.getRaceStages(race2Id).length == 1 && portal.getRaceStages(race2Id)[0] == replacedId)
+				: "Race2 is matched to replacedId only";
 
 		// check stage has no checkpoints initially
 		assert (portal.getStageCheckpoints(stage1Id).length == 0) : "Stage1 should have no checkpoints initially";
@@ -412,110 +469,110 @@ public class CyclingPortalTestApp {
 		// check it throws error when trying to create a stage with invalid name
 		try {
 			portal.addStageToRace(race1Id, "", "Test stage 1",
-					20.0,startTime,StageType.FLAT);
+					20.0, startTime, StageType.FLAT);
 			assert (false) : "Should have thrown an exception for no name";
-		} catch (InvalidNameException  e) {
+		} catch (InvalidNameException e) {
 			// This is expected
+		} catch (InvalidLengthException | IllegalNameException e) {
+			assert (false) : "not expecting this exception";
 		}
-		catch(InvalidLengthException| IllegalNameException e)
-		{assert (false) : "not expecting this exception";}
 		// try with null name
 		try {
 			portal.addStageToRace(race1Id, null, "Test stage 1",
-					20.0,startTime,StageType.FLAT);
+					20.0, startTime, StageType.FLAT);
 			assert (false) : "Should have thrown an exception for null name";
-		} catch (InvalidNameException  e) {
+		} catch (InvalidNameException e) {
 			// This is expected
+		} catch (InvalidLengthException | IllegalNameException e) {
+			assert (false) : "not expecting this exception";
 		}
-		catch(InvalidLengthException| IllegalNameException e)
-		{assert (false) : "not expecting this exception";}
 		// try with whitespace name
 		try {
 			portal.addStageToRace(race1Id, "t 1", "Test stage 1",
-					20.0,startTime,StageType.FLAT);
+					20.0, startTime, StageType.FLAT);
 			assert (false) : "Should have thrown an exception for whitespace name";
-		} catch (InvalidNameException  e) {
+		} catch (InvalidNameException e) {
 			// This is expected
+		} catch (InvalidLengthException | IllegalNameException e) {
+			assert (false) : "not expecting this exception";
 		}
-		catch(InvalidLengthException| IllegalNameException e)
-		{assert (false) : "not expecting this exception";}
 		// try with too long name
 		try {
 			portal.addStageToRace(race1Id, "t1fdishfjdabfjksdbfkjsdbfjksdbfkj", "Test stage 1",
-					20.0,startTime,StageType.FLAT);
+					20.0, startTime, StageType.FLAT);
 			assert (false) : "Should have thrown an exception for too long name";
-		} catch (InvalidNameException  e) {
+		} catch (InvalidNameException e) {
 			// This is expected
+		} catch (InvalidLengthException | IllegalNameException e) {
+			assert (false) : "not expecting this exception";
 		}
-		catch(InvalidLengthException| IllegalNameException e)
-		{assert (false) : "not expecting this exception";}
 
 		// Test it throws error when reusing name
 		try {
 			portal.addStageToRace(race1Id, "Stage1", "Test stage 1",
-					20.0,startTime,StageType.FLAT);
+					20.0, startTime, StageType.FLAT);
 			assert (false) : "Should have thrown an exception for reused name";
-		} catch (IllegalNameException  e) {
+		} catch (IllegalNameException e) {
 			// This is expected
+		} catch (InvalidLengthException | InvalidNameException e) {
+			assert (false) : "not expecting this exception";
 		}
-		catch(InvalidLengthException| InvalidNameException e)
-		{assert (false) : "not expecting this exception";}
 
 		// test it throws error when <5km length
 		try {
 			portal.addStageToRace(race1Id, "Stage8", "Test stage 1",
-					2.0,startTime,StageType.FLAT);
+					2.0, startTime, StageType.FLAT);
 			assert (false) : "Should have thrown an exception for too short length";
-		} catch (InvalidLengthException  e) {
+		} catch (InvalidLengthException e) {
 			// This is expected
+		} catch (IllegalNameException | InvalidNameException e) {
+			assert (false) : "not expecting this exception";
 		}
-		catch(IllegalNameException| InvalidNameException e)
-		{assert (false) : "not expecting this exception";}
 
 		// test error thrown when giving invalid Ids to getNumberOfStages
 		try {
 			portal.getNumberOfStages(-10);
 			assert (false) : "Should have thrown an exception for too short length";
-		} catch (IDNotRecognisedException  e) {
+		} catch (IDNotRecognisedException e) {
 			// This is expected
 		}
 		// test error thrown when giving invalid Ids to getStages
 		try {
 			portal.getRaceStages(-10);
 			assert (false) : "Should have thrown an exception for too short length";
-		} catch (IDNotRecognisedException  e) {
+		} catch (IDNotRecognisedException e) {
 			// This is expected
 		}
 		// test error thrown when giving invalid Ids to getStageLength
 		try {
 			portal.getStageLength(-10);
 			assert (false) : "Should have thrown an exception for too short length";
-		} catch (IDNotRecognisedException  e) {
+		} catch (IDNotRecognisedException e) {
 			// This is expected
 		}
 		// test error thrown when giving invalid Ids to removeStageById
 		try {
 			portal.removeStageById(-10);
 			assert (false) : "Should have thrown an exception for too short length";
-		} catch (IDNotRecognisedException  e) {
+		} catch (IDNotRecognisedException e) {
 			// This is expected
 		}
 		// test error thrown when giving invalid Ids to registerRiderResultsInStage
 		try {
-			portal.registerRiderResultsInStage(-10,rider1Id, new LocalTime[]{LocalTime.of(12, 0)});
+			portal.registerRiderResultsInStage(-10, rider1Id, new LocalTime[] { LocalTime.of(12, 0) });
 			assert (false) : "Should have thrown an exception for too short length";
 		} catch (IDNotRecognisedException e) {
 			// This is expected
-		}catch (DuplicatedResultException | InvalidCheckpointTimesException | InvalidStageStateException ignored) {
+		} catch (DuplicatedResultException | InvalidCheckpointTimesException | InvalidStageStateException ignored) {
 			// Not expecting this exception
 		}
 		try {
-			portal.registerRiderResultsInStage(stage1Id,-10, new LocalTime[]{LocalTime.of(12, 0)});
+			portal.registerRiderResultsInStage(stage1Id, -10, new LocalTime[] { LocalTime.of(12, 0) });
 			assert (false) : "Should have thrown an exception for too short length";
 		} catch (IDNotRecognisedException e) {
 			// This is expected
-		}catch (DuplicatedResultException | InvalidCheckpointTimesException | InvalidStageStateException ignored) {
+		} catch (DuplicatedResultException | InvalidCheckpointTimesException | InvalidStageStateException ignored) {
 			// Not expecting this exception
 		}
-    }
+	}
 }
