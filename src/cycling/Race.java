@@ -117,6 +117,10 @@ public class Race {
      * @param stageId the stage ID to delete
      */
     public void deleteStage(int stageId) throws IDNotRecognisedException {
+        if (!stageIds.contains(stageId)) {
+            throw new IDNotRecognisedException("The stage ID: " + stageId + ", does not exist in this system");
+        }
+
         Stage.getStageById(stageId).delete();
         stageIds.remove(Integer.valueOf(stageId));
     }
