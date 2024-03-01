@@ -410,8 +410,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		riders.sort((rider1, rider2) -> {
 			try {
-				LocalTime rider1Time = stage.totalTime(rider1);
-				LocalTime rider2Time = stage.totalTime(rider2);
+				LocalTime rider1Time = stage.getElapsedTime(rider1);
+				LocalTime rider2Time = stage.getElapsedTime(rider2);
 
 				return rider1Time.compareTo(rider2Time);
 			} catch (IDNotRecognisedException e) {

@@ -7,7 +7,8 @@ import java.util.HashMap;
 public class Stage {
     private static final HashMap<Integer, Stage> stages = new HashMap<Integer, Stage>(); // Hashmap of all stages
 
-    private static final HashMap<StageType, int[]> POINTS = new HashMap<StageType, int[]>(); // Points for each stage type
+    private static final HashMap<StageType, int[]> POINTS = new HashMap<StageType, int[]>(); // Points for each stage
+                                                                                             // type
     static {
         POINTS.put(StageType.FLAT, new int[] { 50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2 });
         POINTS.put(StageType.MEDIUM_MOUNTAIN, new int[] { 30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2 });
@@ -93,7 +94,8 @@ public class Stage {
      * Register a rider's results at each checkpoint.
      *
      * @param riderId the ID of the rider
-     * @param times   an array of times in the form [start, checkpoint1, checkpoint2, ..., finish]
+     * @param times   an array of times in the form [start, checkpoint1,
+     *                checkpoint2, ..., finish]
      * @throws DuplicatedResultException       if the rider has already registered a
      *                                         result
      * @throws InvalidCheckpointTimesException if the number of times given ≠ the
@@ -154,21 +156,22 @@ public class Stage {
         checkpoints.add(checkpointId);
     }
 
-    /**
-     * Gets the total time a rider took to complete the stage.
-     *
-     * @param riderId the ID of the rider to calculate the time for
-     * @return the total time the rider took to complete the stage
-     */
-    public LocalTime totalTime(int riderId) throws IDNotRecognisedException {
-        // Check if the rider has a start and finish time recorded
-        if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
-            throw new IDNotRecognisedException("Rider ID not recognised");
-        }
+    // /**
+    // * Gets the total time a rider took to complete the stage.
+    // *
+    // * @param riderId the ID of the rider to calculate the time for
+    // * @return the total time the rider took to complete the stage
+    // */
+    // public LocalTime totalTime(int riderId) throws IDNotRecognisedException {
+    // // Check if the rider has a start and finish time recorded
+    // if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
+    // throw new IDNotRecognisedException("Rider ID not recognised");
+    // }
 
-        return LocalTime
-                .ofSecondOfDay(finishTimes.get(riderId).toSecondOfDay() - startTimes.get(riderId).toSecondOfDay());
-    }
+    // return LocalTime
+    // .ofSecondOfDay(finishTimes.get(riderId).toSecondOfDay() -
+    // startTimes.get(riderId).toSecondOfDay());
+    // }
 
     /**
      * Get the sprint points for a rider.
@@ -192,7 +195,7 @@ public class Stage {
         // of riders who finished before them
         int position = 1;
         for (int id : finishTimes.keySet()) {
-            if (id != riderId && totalTime(id).isBefore(totalTime(riderId))) {
+            if (id != riderId && getElapsedTime(id).isBefore(getElapsedTime(riderId))) {
                 position++;
             }
         }
@@ -300,11 +303,13 @@ public class Stage {
             throw new IDNotRecognisedException("Rider ID not recognised");
         }
 
-        return LocalTime.ofSecondOfDay(finishTimes.get(riderId).toSecondOfDay() - startTimes.get(riderId).toSecondOfDay());
+        return LocalTime
+                .ofSecondOfDay(finishTimes.get(riderId).toSecondOfDay() - startTimes.get(riderId).toSecondOfDay());
     }
 
     /**
-     * Gets a rider's results for the stage, that is, an array of finish times for each checkpoint and elapsed time.
+     * Gets a rider's results for the stage, that is, an array of finish times for
+     * each checkpoint and elapsed time.
      *
      * @param riderId the ID of the rider to get the results for
      * @return an array in the form [checkpoint1, checkpoint2, ..., finish]
