@@ -24,23 +24,27 @@ public class CyclingPortalTestApp {
 	public static void main(String[] args) throws IDNotRecognisedException, NameNotRecognisedException {
 		System.out.println("The system compiled and started the execution...");
 
-		System.out.println("Starting team impl tests");
 		// run each sets of tests twice to check they don't affect each other
+
+		System.out.println("Starting team impl tests...");
 		teamClassTests();
 		teamClassTests();
+		System.out.println("Passed.\n");
 
-		System.out.println("Starting rider impl tests");
+		System.out.println("Starting rider impl tests...");
 		riderClassTests();
 		riderClassTests();
+		System.out.println("Passed.\n");
 
-		System.out.println("Starting race impl tests");
+		System.out.println("Starting race impl tests...");
 		raceClassTests();
 		raceClassTests();
+		System.out.println("Passed.\n");
 
-		System.out.println("Starting stage impl tests");
+		System.out.println("Starting stage impl tests...");
 		stageClassTests();
 		stageClassTests();
-
+		System.out.println("Passed.\n");
 	}
 
 	/**
