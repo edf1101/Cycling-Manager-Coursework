@@ -250,8 +250,15 @@ public class Stage {
 
     /**
      * Removes all of a rider's results from the stage
+     *
+     * @param riderId the ID of the rider to remove
+     * @throws IDNotRecognisedException if the rider ID is not recognised
      */
-    public void removeRider(int riderId) {
+    public void removeRider(int riderId) throws IDNotRecognisedException {
+        if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
+            throw new IDNotRecognisedException("Rider ID not recognised");
+        }
+
         startTimes.remove(riderId);
         finishTimes.remove(riderId);
 
