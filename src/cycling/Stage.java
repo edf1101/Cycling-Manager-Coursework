@@ -5,14 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Stage {
+    private static final HashMap<Integer, Stage> stages = new HashMap<Integer, Stage>(); // Hashmap of all stages
 
-    // Hashmap to store all stages
-    private static final HashMap<Integer, Stage> stages = new HashMap<Integer, Stage>();
-
-    // Hashmap to store the points for each stage type
-    // TODO not sure if all caps name is correct given its a dict not an int[] any
-    // more, will check
-    private static final HashMap<StageType, int[]> POINTS = new HashMap<StageType, int[]>();
+    private static final HashMap<StageType, int[]> POINTS = new HashMap<StageType, int[]>(); // Points for each stage type
     static {
         POINTS.put(StageType.FLAT, new int[] { 50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2 });
         POINTS.put(StageType.MEDIUM_MOUNTAIN, new int[] { 30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2 });
@@ -25,7 +20,6 @@ public class Stage {
     private final String description;
     private final StageType type;
     private final double length;
-    private final int parentRace; // the race that this belongs to.
     private final ArrayList<Integer> checkpoints = new ArrayList<Integer>();
     private boolean prepared = false;
 
@@ -35,7 +29,7 @@ public class Stage {
     private final HashMap<Integer, LocalTime> finishTimes = new HashMap<Integer, LocalTime>();
 
     /**
-     * Constructor for the Stage class
+     * Constructor for the Stage class.
      *
      * @param name        Name of the stage
      * @param description Description of the stage
@@ -46,7 +40,7 @@ public class Stage {
      *                                contains whitespace
      * @throws InvalidLengthException if the length is less than 5km
      */
-    public Stage(String name, String description, StageType type, double length, int raceId)
+    public Stage(String name, String description, StageType type, double length)
             throws InvalidNameException, InvalidLengthException {
 
         // Check name is not null, empty or >30 chars
@@ -66,37 +60,40 @@ public class Stage {
         this.type = type;
         this.length = length;
         this.prepared = false;
-        this.parentRace = raceId;
 
         // add the new object to the hashmap of all stages
         stages.put(this.myId, this);
-
-        // add this stage id to its parent race's list of stages
-        Race.getRaceById(raceId).addStage(this.myId);
     }
 
     /**
-     * Getter for a stage by its ID
+     * Getter for a stage by its ID.
      *
-     * @param id the Id to query
+     * @param id the ID to query
      * @return The stage object reference
+     * @throws IDNotRecognisedException if the ID is not recognised
      */
-    public static Stage getStageById(int id) {
+    public static Stage getStageById(int id) throws IDNotRecognisedException {
+        if (!stages.containsKey(id)) {
+            throw new IDNotRecognisedException("Stage ID not recognised");
+        }
+
         return stages.get(id);
     }
 
     /**
-     * Getter for all stage IDs
+     * Getter for all stage IDs.
+     *
+     * @return an array of all stage IDs
      */
     public static ArrayList<Integer> getIds() {
         return new ArrayList<Integer>(stages.keySet());
     }
 
     /**
-     * Register a rider's results at each checkpoint
+     * Register a rider's results at each checkpoint.
      *
      * @param riderId the ID of the rider
-     * @param times   the start time, times at each checkpoint, and the finish time
+     * @param times   an array of times in the form [start, checkpoint1, checkpoint2, ..., finish]
      * @throws DuplicatedResultException       if the rider has already registered a
      *                                         result
      * @throws InvalidCheckpointTimesException if the number of times given ≠ the
@@ -106,7 +103,7 @@ public class Stage {
     public void registerResults(int riderId, LocalTime... times)
             throws DuplicatedResultException, InvalidCheckpointTimesException, InvalidStageStateException {
 
-        // check stage is fully set up
+        // Check stage is fully set up
         if (!prepared) {
             throw new InvalidStageStateException("Stage not prepared");
         }
@@ -133,6 +130,7 @@ public class Stage {
 
         // TODO this code for adding times will fail if its a time trial type (i think),
         // will add a check for that when we add them
+
         // Consider that the array is [start, checkpoint1, checkpoint2, ..., finish]
         // The nth checkpoint starts at index n and ends at index n+1
         for (int i = 1; i < times.length - 1; i++) {
@@ -143,7 +141,7 @@ public class Stage {
     }
 
     /**
-     * Adds a checkpoint to the stage
+     * Adds a checkpoint to the stage.
      *
      * @param checkpointId the ID of the checkpoint to add
      * @throws InvalidStageTypeException if the stage is a time trial stage
@@ -152,16 +150,18 @@ public class Stage {
         if (type == StageType.TT) {
             throw new InvalidStageTypeException("Time trial stages cannot have checkpoints");
         }
+
         checkpoints.add(checkpointId);
     }
 
     /**
-     * Gets the total time a rider took to complete the stage
+     * Gets the total time a rider took to complete the stage.
      *
      * @param riderId the ID of the rider to calculate the time for
+     * @return the total time the rider took to complete the stage
      */
     public LocalTime totalTime(int riderId) throws IDNotRecognisedException {
-        // check if the rider has a start and finish time recorded
+        // Check if the rider has a start and finish time recorded
         if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
             throw new IDNotRecognisedException("Rider ID not recognised");
         }
@@ -178,6 +178,7 @@ public class Stage {
      *
      * @param riderId the ID of the rider to calculate the sprint points for
      * @return the number of sprint points the rider gets for this stage
+     * @throws IDNotRecognisedException if the rider ID is not recognised
      */
     public int sprintPoints(int riderId) throws IDNotRecognisedException {
         // TODO this should throw an error if the rider isn't in the system,
@@ -239,6 +240,8 @@ public class Stage {
 
     /**
      * Conclude the preparation of the stage.
+     *
+     * @throws InvalidStageStateException if the stage is already prepared
      */
     public void concludePreparation() throws InvalidStageStateException {
         if (prepared) {
@@ -249,7 +252,7 @@ public class Stage {
     }
 
     /**
-     * Removes all of a rider's results from the stage
+     * Removes all of a rider's results from the stage and its checkpoints.
      *
      * @param riderId the ID of the rider to remove
      * @throws IDNotRecognisedException if the rider ID is not recognised
@@ -269,27 +272,39 @@ public class Stage {
     }
 
     /**
-     * Deletes this stage and its associated checkpoints
+     * Deletes this stage and its associated checkpoints.
+     *
+     * @throws IDNotRecognisedException if the stage ID is not recognised
      */
-    public void delete() {
-        stages.remove(myId); // remove from the dictionary of stages
-        Race.getRaceById(parentRace).removeStage(myId);  // remove from race object
+    public void delete() throws IDNotRecognisedException {
+        if (!stages.containsKey(myId)) {
+            throw new IDNotRecognisedException("Stage ID not recognised");
+        }
+
+        stages.remove(myId); // Remove from the dictionary of stages
+
         for (int checkpointId : checkpoints) {
             Checkpoint.getCheckpointById(checkpointId).delete();
         }
     }
 
     /**
-     * Gets a rider's elapsed time for the stage
+     * Gets a rider's elapsed time for the stage.
+     *
      * @param riderId
      * @return the elapsed time
+     * @throws IDNotRecognisedException if the rider ID is not recognised
      */
-    public LocalTime getElapsedTime(int riderId) {
+    public LocalTime getElapsedTime(int riderId) throws IDNotRecognisedException {
+        if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
+            throw new IDNotRecognisedException("Rider ID not recognised");
+        }
+
         return LocalTime.ofSecondOfDay(finishTimes.get(riderId).toSecondOfDay() - startTimes.get(riderId).toSecondOfDay());
     }
 
     /**
-     * Gets a rider's results for the stage, that is, an array of finish times for each checkpoint and elapsed time
+     * Gets a rider's results for the stage, that is, an array of finish times for each checkpoint and elapsed time.
      *
      * @param riderId the ID of the rider to get the results for
      * @return an array in the form [checkpoint1, checkpoint2, ..., finish]
@@ -313,7 +328,7 @@ public class Stage {
     }
 
     /**
-     * Getter for the Stage Id
+     * Getter for the Stage ID.
      *
      * @return the Id of the parent Race
      */
@@ -322,16 +337,7 @@ public class Stage {
     }
 
     /**
-     * Getter for the race that this stage belongs to
-     *
-     * @return the Id of the parent Race
-     */
-    public int getParentRace() {
-        return parentRace;
-    }
-
-    /**
-     * Getter for the name of this stage
+     * Getter for the name of this stage.
      *
      * @return the Stage name
      */
@@ -340,7 +346,7 @@ public class Stage {
     }
 
     /**
-     * Getter for the description of this stage
+     * Getter for the description of this stage.
      *
      * @return the stage description
      */
@@ -349,7 +355,7 @@ public class Stage {
     }
 
     /**
-     * Getter for the name of this stage
+     * Getter for the name of this stage.
      *
      * @return the Stage name
      */
@@ -358,7 +364,7 @@ public class Stage {
     }
 
     /**
-     * Getter for the length of this stage
+     * Getter for the length of this stage.
      *
      * @return the stage length
      */
@@ -367,7 +373,7 @@ public class Stage {
     }
 
     /**
-     * Getter for the checkpoints of this stage
+     * Getter for the checkpoints of this stage.
      *
      * @return the stage checkpoints
      */
@@ -376,16 +382,16 @@ public class Stage {
     }
 
     /**
-     * Getter for whether the stage is prepared
+     * Getter for whether the stage is prepared.
      *
-     * @return boolean indicating whether the stage is prepared
+     * @return boolean indicating whether or not the stage is prepared
      */
     public boolean isPrepared() {
         return prepared;
     }
 
     /**
-     * Getter for registered riders in the stage
+     * Getter for registered riders in the stage.
      *
      * @return the registered riders
      */

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class CyclingPortalImpl implements CyclingPortal {
 
 	// Lists of the various IDs that belong to this instance of CyclingPortalImpl
+	// TODO could just store raceIDs, and then get the stages and checkpoints from that. Same for teams and riders.
 	private final ArrayList<Integer> myRaceIds = new ArrayList<>();
 	private final ArrayList<Integer> myStageIds = new ArrayList<>();
 	private final ArrayList<Integer> myCheckpointIds = new ArrayList<>();
@@ -123,8 +124,10 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 
 		// Create the stage and add it to the list of stage Ids and return Id.
-		Stage newStage = new Stage(stageName, description, type, length, raceId);
+		Stage newStage = new Stage(stageName, description, type, length);
+		Race.getRaceById(raceId).addStage(newStage.getId());
 		myStageIds.add(newStage.getId());
+
 		return newStage.getId();
 	}
 

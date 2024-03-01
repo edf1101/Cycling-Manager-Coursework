@@ -90,9 +90,16 @@ public class Race {
      */
     public void delete() {
         races.remove(myId);
+
         for (int stageId : stageIds) {
-            Stage.getStageById(stageId).delete();
+            try {
+                Stage.getStageById(stageId).delete();
+            } catch (IDNotRecognisedException e) {
+                e.printStackTrace();
+            }
         }
+
+        // No need to remove stages from list as they are already deleted
     }
 
     /**
@@ -109,17 +116,18 @@ public class Race {
      *
      * @param stageId the stage ID to delete
      */
-    public void deleteStage(int stageId) {
+    public void deleteStage(int stageId) throws IDNotRecognisedException {
         Stage.getStageById(stageId).delete();
-        stageIds.remove(stageId);
+        stageIds.remove(Integer.valueOf(stageId));
     }
 
     /**
      * Removes a stage to the list of stages that belong to this race
-     * TODO Check if this is ever needed, or if deleteStage is enough
+     * Does not delete the stage, just removes it from the list
      *
      * @param stageId the stage ID to remove from the list
      */
+    // TODO Check if this is ever needed, or if deleteStage is enough
     public void removeStage(int stageId) {
         stageIds.remove(Integer.valueOf(stageId));
     }
