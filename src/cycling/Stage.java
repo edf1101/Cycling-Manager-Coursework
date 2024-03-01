@@ -294,7 +294,7 @@ public class Stage {
     /**
      * Gets a rider's elapsed time for the stage.
      *
-     * @param riderId
+     * @param riderId the ID of the rider to get the elapsed time for
      * @return the elapsed time
      * @throws IDNotRecognisedException if the rider ID is not recognised
      */
@@ -305,6 +305,45 @@ public class Stage {
 
         return LocalTime
                 .ofSecondOfDay(finishTimes.get(riderId).toSecondOfDay() - startTimes.get(riderId).toSecondOfDay());
+    }
+
+    /**
+     * Gets a rider's adjusted elapsed time for the stage.
+     * Adjusted time recursively gives riders that finish within 1 second of each other the same time.
+     *
+     * @param riderId the ID of the rider to get the adjusted time for
+     * @return the adjusted time
+     * @throws IDNotRecognisedException if the rider ID is not recognised
+     */
+    public LocalTime getAdjustedElapsedTime(int riderId) throws IDNotRecognisedException {
+        if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
+            throw new IDNotRecognisedException("Rider ID not recognised");
+        }
+
+        LocalTime adjustedElapsedTime = getElapsedTime(riderId);
+
+        // Repeat until no more adjustments are made
+        // There might be a better way to do this by decreasing the elapsed time by 1 second at a time until it's outside the range
+        boolean adjusted = true;
+		while (adjusted) {
+			adjusted = false;
+
+			// Iterate through all registered riders in the stage
+			for (int otherRiderID : getRegisteredRiders()) {
+				if (otherRiderID != riderId) {
+					// Calculate the time difference between the current rider and other riders
+					int difference = getElapsedTime(otherRiderID).toSecondOfDay() - adjustedElapsedTime.toSecondOfDay();
+
+					// Adjust the elapsed time if the difference is within the range [-1, 0)
+					if (-1 <= difference && difference < 0) {
+						adjustedElapsedTime = getElapsedTime(otherRiderID);
+						adjusted = true;
+					}
+				}
+			}
+		}
+
+        return adjustedElapsedTime;
     }
 
     /**
