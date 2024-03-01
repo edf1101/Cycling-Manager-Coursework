@@ -8,7 +8,8 @@ import java.util.ArrayList;
 public class CyclingPortalImpl implements CyclingPortal {
 
 	// Lists of the various IDs that belong to this instance of CyclingPortalImpl
-	// TODO could just store raceIDs, and then get the stages and checkpoints from that. Same for teams and riders.
+	// TODO could just store raceIDs, and then get the stages and checkpoints from
+	// that. Same for teams and riders.
 	private final ArrayList<Integer> myRaceIds = new ArrayList<>();
 	private final ArrayList<Integer> myStageIds = new ArrayList<>();
 	private final ArrayList<Integer> myCheckpointIds = new ArrayList<>();
@@ -403,8 +404,23 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	@Override
 	public int[] getRidersRankInStage(int stageId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		Stage stage = Stage.getStageById(stageId);
+
+		ArrayList<Integer> riders = stage.getRegisteredRiders();
+
+		riders.sort((rider1, rider2) -> {
+			try {
+				LocalTime rider1Time = stage.totalTime(rider1);
+				LocalTime rider2Time = stage.totalTime(rider2);
+
+				return rider1Time.compareTo(rider2Time);
+			} catch (IDNotRecognisedException e) {
+				System.err.println("Rider not found in stage"); // Should never happen
+				return 0;
+			}
+		});
+
+		return riders.stream().mapToInt(Integer::intValue).toArray();
 	}
 
 	@Override
