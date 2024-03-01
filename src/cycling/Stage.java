@@ -266,6 +266,7 @@ public class Stage {
      */
     public void delete() {
         stages.remove(myId); // remove from the dictionary of stages
+        Race.getRaceById(parentRace).removeStage(myId);  // remove from race object
         for (int checkpointId : checkpoints) {
             Checkpoint.getCheckpointById(checkpointId).delete();
         }
