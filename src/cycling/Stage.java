@@ -218,6 +218,7 @@ public class Stage {
      *
      * @param riderId the ID of the rider to calculate the mountain points for
      * @return the number of mountain points the rider gets for this stage
+     * @throws IDNotRecognisedException if the rider ID is not recognised
      */
     public int mountainPoints(int riderId) throws IDNotRecognisedException {
 
@@ -268,6 +269,39 @@ public class Stage {
         for (int checkpointId : checkpoints) {
             Checkpoint.getCheckpointById(checkpointId).delete();
         }
+    }
+
+    /**
+     * Gets a rider's elapsed time for the stage
+     * @param riderId
+     * @return the elapsed time
+     */
+    public LocalTime getElapsedTime(int riderId) {
+        return LocalTime.ofSecondOfDay(finishTimes.get(riderId).toSecondOfDay() - startTimes.get(riderId).toSecondOfDay());
+    }
+
+    /**
+     * Gets a rider's results for the stage, that is, an array of finish times for each checkpoint and elapsed time
+     *
+     * @param riderId the ID of the rider to get the results for
+     * @return an array in the form [checkpoint1, checkpoint2, ..., finish]
+     * @throws IDNotRecognisedException if the rider ID is not recognised
+     */
+    public LocalTime[] getResults(int riderId) throws IDNotRecognisedException {
+        if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
+            throw new IDNotRecognisedException("Rider ID not recognised");
+        }
+
+        LocalTime[] results = new LocalTime[checkpoints.size() + 1];
+
+        // Set the last element to the elapsed time
+        results[results.length - 1] = getElapsedTime(riderId);
+
+        for (int i = 0; i < results.length - 2; i++) {
+            results[i] = Checkpoint.getCheckpointById(checkpoints.get(i)).getPassTime(riderId);
+        }
+
+        return results;
     }
 
     /**
