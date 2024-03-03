@@ -186,7 +186,7 @@ public class Stage {
      * @return the number of sprint points the rider gets for this stage
      * @throws IDNotRecognisedException if the rider ID is not recognised
      */
-    public int sprintPoints(int riderId) throws IDNotRecognisedException {
+    public int getSprintPoints(int riderId) throws IDNotRecognisedException {
         // TODO this should throw an error if the rider isn't in the system,
         // If its only not in the stage then it should return empty array.
         // check if the rider has a start and finish time recorded
@@ -227,7 +227,7 @@ public class Stage {
      * @return the number of mountain points the rider gets for this stage
      * @throws IDNotRecognisedException if the rider ID is not recognised
      */
-    public int mountainPoints(int riderId) throws IDNotRecognisedException {
+    public int getMountainPoints(int riderId) throws IDNotRecognisedException {
 
         // check if the rider has a start and finish time recorded
         if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {

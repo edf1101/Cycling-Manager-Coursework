@@ -576,21 +576,68 @@ public class CyclingPortalImpl implements CyclingPortal {
 		return times;
 	}
 
+	/**
+	 * Get the number of points obtained by each rider in a stage.
+	 *
+	 * @param stageId The ID of the stage being queried.
+	 * @return The ranked list of points each rider received in the stage, sorted
+	 *         by their elapsed time. An empty list if there is no result for the
+	 *         stage. These points should match the riders returned by
+	 *         {@link #getRidersRankInStage(int)}.
+	 * @throws IDNotRecognisedException If the ID does not match any stage in the
+	 *                                  system.
+	 */
 	@Override
 	public int[] getRidersPointsInStage(int stageId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		// Check stage is in our system
+		if (!myStageIds.contains(stageId)) {
+			throw new IDNotRecognisedException("The stage ID " + stageId + " Was not found in this portal");
+		}
+		// Get the ordered list of riders
+		int[] orderedRiders = getRidersRankInStage(stageId);
+		int[] sprintPoints = new int[orderedRiders.length];
+		for(int riderId : orderedRiders){
+			sprintPoints[riderId] = Stage.getStageById(stageId).getSprintPoints(riderId);
+		}
+
+		return sprintPoints;
 	}
 
+	/**
+	 * Get the number of mountain points obtained by each rider in a stage.
+	 *
+	 * @param stageId The ID of the stage being queried.
+	 * @return The ranked list of mountain points each rider received in the stage,
+	 *         sorted by their finish time. An empty list if there is no result for
+	 *         the stage. These points should match the riders returned by
+	 *         {@link #getRidersRankInStage(int)}.
+	 * @throws IDNotRecognisedException If the ID does not match any stage in the
+	 *                                  system.
+	 */
 	@Override
 	public int[] getRidersMountainPointsInStage(int stageId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		// Check stage is in our system
+		if (!myStageIds.contains(stageId)) {
+			throw new IDNotRecognisedException("The stage ID " + stageId + " Was not found in this portal");
+		}
+		// Get the ordered list of riders
+		int[] orderedRiders = getRidersRankInStage(stageId);
+		int[] mountainPoints = new int[orderedRiders.length];
+		for(int riderId : orderedRiders){
+			mountainPoints[riderId] = Stage.getStageById(stageId).getMountainPoints(riderId);
+		}
+
+		return mountainPoints;
 	}
 
+	/**
+	 * Erase all the data from the system, so no races,stages, teams, riders,
+	 * or checkpoint references exist.
+
+	 */
 	@Override
 	public void eraseCyclingPortal() {
-		// TODO Auto-generated method stub
+		// Since removing a
 
 	}
 
