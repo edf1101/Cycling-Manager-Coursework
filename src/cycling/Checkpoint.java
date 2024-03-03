@@ -9,12 +9,12 @@ public abstract class Checkpoint {
     private static final HashMap<Integer, Checkpoint> checkpoints = new HashMap<Integer, Checkpoint>();
     private final int myId; // its unique ID for checkpoints
     protected CheckpointType myType; // the type of checkpoint it is
-    // TODO do something with the location
     private final Double location; // where in the stage it is located
 
     // The times that riders passed the checkpoint format of: <riderId, time>
     protected final HashMap<Integer, LocalTime> passTimes = new HashMap<Integer, LocalTime>();
     private final int parentStageId; // the stage that the checkpoint is in
+    
     /**
      * Constructor for the abstract superclass checkpoint.
      * This will be called via super() in the subclasses
@@ -103,7 +103,15 @@ public abstract class Checkpoint {
      */
     public void delete() {
         checkpoints.remove(myId); // first delete it from the hashmap of all checkpoints
+    }
 
+    /**
+     * Get the type of the checkpoint
+     *
+     * @return the type of the checkpoint
+     */
+    public Double getLocation() {
+        return location;
     }
 
     /**
