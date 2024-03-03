@@ -57,7 +57,10 @@ public class Rider {
      * @param riderId The rider to find
      * @return The rider's object
      */
-    public static Rider getRiderById(int riderId) {
+    public static Rider getRiderById(int riderId) throws IDNotRecognisedException{
+        if (!riders.containsKey(riderId)) {
+            throw new IDNotRecognisedException("Rider " + riderId + " is not part of the system");
+        }
         return riders.get(riderId);
     }
 
@@ -105,5 +108,14 @@ public class Rider {
      */
     public static ArrayList<Integer> getRiderIds() {
         return new ArrayList<Integer>(riders.keySet());
+    }
+
+    /**
+     * Getter for the team the rider is in
+     *
+     * @return The team the rider is in
+     */
+    public int getMyTeam() {
+        return myTeam;
     }
 }

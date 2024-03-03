@@ -46,7 +46,10 @@ public abstract class Checkpoint {
      *
      * @param id the ID to query
      */
-    public static Checkpoint getCheckpointById(int id) {
+    public static Checkpoint getCheckpointById(int id) throws IDNotRecognisedException{
+        if (!checkpoints.containsKey(id)) {
+            throw new IDNotRecognisedException("Checkpoint " + id + " is not part of the system");
+        }
         return checkpoints.get(id);
     }
 

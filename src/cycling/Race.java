@@ -95,7 +95,8 @@ public class Race {
             try {
                 Stage.getStageById(stageId).delete();
             } catch (IDNotRecognisedException e) {
-                e.printStackTrace();
+                // Should never happen as we are iterating through the list of stageIds
+                // which are valid and checked
             }
         }
 

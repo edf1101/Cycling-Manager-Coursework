@@ -70,6 +70,14 @@ public class Stage {
     }
 
     /**
+     * Getter for the parent race this stage belongs to
+     * @return the race Id
+     */
+    public int getRaceId() {
+        return parentRaceId;
+    }
+
+    /**
      * Getter for a stage by its ID.
      *
      * @param id the ID to query
@@ -139,8 +147,14 @@ public class Stage {
         // Consider that the array is [start, checkpoint1, checkpoint2, ..., finish]
         // The nth checkpoint starts at index n and ends at index n+1
         for (int i = 1; i < times.length - 2; i++) {
-            Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpoints.get(i));
-            checkpoint.recordTime(riderId, times[i]);
+            try {
+                Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpoints.get(i));
+                checkpoint.recordTime(riderId, times[i]);
+
+            }
+            catch (IDNotRecognisedException e) {
+                // will never happen as we are iterating through a list of already validated checkpoints
+            }
         }
 
     }
@@ -158,23 +172,6 @@ public class Stage {
 
         checkpoints.add(checkpointId);
     }
-
-    // /**
-    // * Gets the total time a rider took to complete the stage.
-    // *
-    // * @param riderId the ID of the rider to calculate the time for
-    // * @return the total time the rider took to complete the stage
-    // */
-    // public LocalTime totalTime(int riderId) throws IDNotRecognisedException {
-    // // Check if the rider has a start and finish time recorded
-    // if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
-    // throw new IDNotRecognisedException("Rider ID not recognised");
-    // }
-
-    // return LocalTime
-    // .ofSecondOfDay(finishTimes.get(riderId).toSecondOfDay() -
-    // startTimes.get(riderId).toSecondOfDay());
-    // }
 
     /**
      * Get the sprint points for a rider.
