@@ -2,6 +2,7 @@ import cycling.*;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 
 /**
  * A short program to illustrate an app testing some minimal functionality of a
@@ -54,11 +55,11 @@ public class CyclingPortalTestApp {
 		stageClassTests();
 		System.out.println("Passed.\n");
 
-		// Will fail until checkpoint functions are implemented
-		// System.out.println("Starting portal tests...");
-		// portalClassTests();
-		// portalClassTests();
-		// System.out.println("Passed.\n");
+		 //Will fail until checkpoint functions are implemented
+		 System.out.println("Starting portal tests...");
+		 portalClassTests();
+		 portalClassTests();
+		 System.out.println("Passed.\n");
 
 		System.out.println("All tests passed.");
 	}
@@ -72,34 +73,35 @@ public class CyclingPortalTestApp {
 			InvalidCheckpointTimesException {
 		CyclingPortalImpl portal = new CyclingPortalImpl();
 
-		portal.createTeam("Team1", "Test team");
-		portal.createTeam("Team2", "Test team");
+		int team1Id = portal.createTeam("Team1", "Test team");
+		int team2Id = portal.createTeam("Team2", "Test team");
 
-		portal.createRider(portal.getTeams()[0], "Rider11", 2000);
-		portal.createRider(portal.getTeams()[0], "Rider12", 2000);
-		portal.createRider(portal.getTeams()[0], "Rider13", 2000);
+		int rider1Id = portal.createRider(team1Id, "Rider11", 2000);
+		int rider2Id = portal.createRider(team1Id, "Rider12", 2000);
+		int rider3Id = portal.createRider(team1Id, "Rider13", 2000);
 
-		portal.createRider(portal.getTeams()[1], "Rider21", 2000);
-		portal.createRider(portal.getTeams()[1], "Rider22", 2000);
-		portal.createRider(portal.getTeams()[1], "Rider23", 2000);
+		int rider4Id=portal.createRider(team2Id, "Rider21", 2000);
+		int rider5Id=portal.createRider(team2Id, "Rider22", 2000);
+		int rider6Id=portal.createRider(team2Id, "Rider23", 2000);
 
-		portal.createRace("Race1", "Test race");
-		portal.addStageToRace(portal.getRaceIds()[0], "Stage1", "Test stage 1", 20.0,
+		int race1Id = portal.createRace("Race1", "Test race");
+		int stage1Id = portal.addStageToRace(race1Id, "Stage1", "Test stage 1", 20.0,
 				LocalDateTime.of(2021, 1, 1, 12, 0), StageType.FLAT);
 
-		portal.addCategorizedClimbToStage(portal.getRaceStages(portal.getRaceIds()[0])[0], 0.0, CheckpointType.C1, 2.0,
+		int check1Id = portal.addCategorizedClimbToStage(stage1Id, 0.0, CheckpointType.C1, 2.0,
 				100.0);
-		portal.addCategorizedClimbToStage(portal.getRaceStages(portal.getRaceIds()[0])[0], 100.0, CheckpointType.C2,
+		int check2Id = portal.addCategorizedClimbToStage(stage1Id, 100.0, CheckpointType.C2,
 				3.0, 200.0);
 
-		portal.concludeStagePreparation(portal.getRaceStages(portal.getRaceIds()[0])[0]);
+		portal.concludeStagePreparation(stage1Id);
 
-		for (int riderId : portal.getTeamRiders(portal.getTeams()[0])) {
-			portal.registerRiderResultsInStage(portal.getRaceStages(portal.getRaceIds()[0])[0], riderId,
-					new LocalTime[] { LocalTime.of(0, 0), LocalTime.of(0, riderId), LocalTime.of(1, riderId), LocalTime.of(2, riderId) });
+		System.out.println(Arrays.toString(portal.getTeamRiders(team1Id)));
+		for (int riderId : portal.getTeamRiders(team1Id)) {
+			portal.registerRiderResultsInStage(stage1Id, riderId, // note to self the riderId in time is so they are offset? nice
+					new LocalTime[] { LocalTime.of(0, 0), LocalTime.of(0, riderId), LocalTime.of(1, riderId/2), LocalTime.of(2, riderId) });
 		}
 
-		for (LocalTime time : portal.getRankedAdjustedElapsedTimesInStage(portal.getRaceStages(portal.getRaceIds()[0])[0])) {
+		for (LocalTime time : portal.getRankedAdjustedElapsedTimesInStage(stage1Id)) {
 			System.out.println(time);
 		}
 	}

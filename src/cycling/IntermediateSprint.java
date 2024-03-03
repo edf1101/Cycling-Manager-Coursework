@@ -7,6 +7,17 @@ public class IntermediateSprint extends Checkpoint {
 
 
     /**
+     * Constructor for the intermediate sprint
+     *
+     * @param location the location of the intermediate sprint
+     * @param parentStageId the ID of the stage that the intermediate sprint is on
+     */
+    public IntermediateSprint(Double location, int parentStageId) {
+        super(CheckpointType.SPRINT, location,parentStageId);
+    }
+
+
+    /**
      * Get sprint points for a rider
      *
      * @param riderId the rider's ID

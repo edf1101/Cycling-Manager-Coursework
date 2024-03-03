@@ -36,7 +36,6 @@ public class Stage {
      * @param description Description of the stage
      * @param type        The type of the stage
      * @param length      The length of the stage
-     * @param raceId      The ID of the race this stage is a part of
      * @throws InvalidNameException   if the name is not 0<characters<=30 or
      *                                contains whitespace
      * @throws InvalidLengthException if the length is less than 5km
@@ -114,7 +113,7 @@ public class Stage {
         if (startTimes.containsKey(riderId) || finishTimes.containsKey(riderId)) {
             throw new DuplicatedResultException("Rider ID already has a finish time");
         }
-
+        //System.out.println("Checkpoint size: " + checkpoints.size()+ " times size: " + times.length);
         // Check the number of times is correct
         if (times.length != checkpoints.size() + 2) {
             throw new InvalidCheckpointTimesException("Number of times given is not number of checkpoints + 2");
@@ -135,7 +134,7 @@ public class Stage {
 
         // Consider that the array is [start, checkpoint1, checkpoint2, ..., finish]
         // The nth checkpoint starts at index n and ends at index n+1
-        for (int i = 1; i < times.length - 1; i++) {
+        for (int i = 1; i < times.length - 2; i++) {
             Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpoints.get(i));
             checkpoint.recordTime(riderId, times[i]);
         }
@@ -253,6 +252,18 @@ public class Stage {
 
         prepared = true;
     }
+
+    /**
+     * Remove a checkpoint from the stage's list of checkpoints.
+     *
+     * @param checkpointId the ID of the checkpoint to remove
+     */
+    public void removeCheckpoint(int checkpointId) throws InvalidStageStateException {
+        if (prepared)
+            throw new InvalidStageStateException("Stage already prepared");
+        checkpoints.remove(checkpointId);
+    }
+
 
     /**
      * Removes all of a rider's results from the stage and its checkpoints.

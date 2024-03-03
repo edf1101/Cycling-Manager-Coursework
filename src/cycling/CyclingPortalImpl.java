@@ -8,8 +8,6 @@ import java.util.ArrayList;
 public class CyclingPortalImpl implements CyclingPortal {
 
 	// Lists of the various IDs that belong to this instance of CyclingPortalImpl
-	// TODO could just store raceIDs, and then get the stages and checkpoints from
-	// that. Same for teams and riders.
 	private final ArrayList<Integer> myRaceIds = new ArrayList<>();
 	private final ArrayList<Integer> myStageIds = new ArrayList<>();
 	private final ArrayList<Integer> myCheckpointIds = new ArrayList<>();
@@ -186,21 +184,53 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public int addCategorizedClimbToStage(int stageId, Double location, CheckpointType type, Double averageGradient,
 			Double length) throws IDNotRecognisedException, InvalidLocationException, InvalidStageStateException,
 			InvalidStageTypeException {
-		// TODO Auto-generated method stub
-		return 0;
+
+		// Check if the system contains this stage
+		if (!myStageIds.contains(stageId)) {
+			throw new IDNotRecognisedException("The Stage ID " + stageId + " Was not found in this CyclingPortalImpl");
+		}
+		Checkpoint newClimb = new Climb(type,location, length, averageGradient, stageId); // create the new climb
+		Stage.getStageById(stageId).addCheckpoint(newClimb.getMyId()); // add it to the parent stage's list of checkpoints
+		myCheckpointIds.add(newClimb.getMyId()); // add it to the cycling portal's list of checkpoints
+		return newClimb.getMyId();
 	}
 
 	@Override
 	public int addIntermediateSprintToStage(int stageId, double location) throws IDNotRecognisedException,
 			InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
-		// TODO Auto-generated method stub
-		return 0;
+		// Check if the system contains this stage
+		if (!myStageIds.contains(stageId)) {
+			throw new IDNotRecognisedException("The Stage ID " + stageId + " Was not found in this CyclingPortalImpl");
+		}
+		Checkpoint newInterSprint = new IntermediateSprint(location,stageId); // create the new climb
+		Stage.getStageById(stageId).addCheckpoint(newInterSprint.getMyId()); // add it to the parent stage's list of checkpoints
+		myCheckpointIds.add(newInterSprint.getMyId()); // add it to the cycling portal's list of checkpoints
+		return newInterSprint.getMyId();
 	}
 
 	@Override
 	public void removeCheckpoint(int checkpointId) throws IDNotRecognisedException, InvalidStageStateException {
-		// TODO Auto-generated method stub
+		// Check checkpoint id exists in this system
+		if (!myCheckpointIds.contains(checkpointId)) {
+			throw new IDNotRecognisedException("The Checkpoint ID " + checkpointId + " Was not found in this CyclingPortalImpl");
+		}
+		// check the stage hasnt been prepared,
+		// why we need stage parents in the checkpoint class etc as otherwise its polynomoial time :(
+		// eg for each stage, check if the checkpoint is in the stage, if so, check if the stage is prepared
+		// also means we cant do the nice thing to get rid of most of the lists at the top
+		// i am implementing it now
+		Checkpoint deletingCheckpoint = Checkpoint.getCheckpointById(checkpointId);
+		Stage parentStage = deletingCheckpoint.getParentStage();
 
+		if(parentStage.isPrepared()){
+			throw new InvalidStageStateException("The stage has already been prepared");
+		}
+
+		// Delete the checkpoint its stage
+		parentStage.removeCheckpoint(checkpointId);
+		// Remove the checkpoint from the list of checkpoints
+		myCheckpointIds.remove(Integer.valueOf(checkpointId)); // remove it from the cycling portal's list of checkpoints
+		deletingCheckpoint.delete();
 	}
 
 	@Override

@@ -5,7 +5,9 @@ import java.util.HashMap;
 public class Climb extends Checkpoint {
 
     private static final HashMap<CheckpointType, int[]> POINTS = new HashMap<CheckpointType, int[]>();
-
+    // TODO actually do things with the length and average gradient
+    private final Double length;
+    private final Double averageGradient;
     static {
         POINTS.put(CheckpointType.C4, new int[]{1});
         POINTS.put(CheckpointType.C3, new int[]{2, 1});
@@ -13,6 +15,22 @@ public class Climb extends Checkpoint {
         POINTS.put(CheckpointType.C1, new int[]{10, 8, 6, 4, 2, 1});
         POINTS.put(CheckpointType.HC, new int[]{10, 15, 12, 10, 8, 6, 4, 2});
 
+    }
+
+    /**
+     * Constructor for the Climb class
+     *
+     * @param type the type of checkpoint it is
+     * @param location the location of the checkpoint
+     * @param length the length of the climb
+     * @param avgGradient the average gradient of the climb
+     * @param parentStageId the stage that the checkpoint is in
+     */
+    public Climb(CheckpointType type,Double location, Double length,Double avgGradient, int parentStageId) {
+
+        super(type, location, parentStageId);
+        this.averageGradient = avgGradient;
+        this.length = length;
     }
 
     /**
