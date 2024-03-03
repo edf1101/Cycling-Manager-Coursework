@@ -6,7 +6,7 @@ import java.util.HashMap;
 /**
  * Class to generate unique IDs for the system.
  *
- * @author Ed Fillingham & Kit Matthewson
+ * @author 730003140 & 730002704
  * @version 1.0
  */
 public class UniqueIdGenerator<T> {

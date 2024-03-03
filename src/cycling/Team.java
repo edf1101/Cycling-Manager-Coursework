@@ -6,7 +6,7 @@ import java.util.HashMap;
 /**
  * Class holding teams, their name, description and riders within.
  *
- * @author Ed Fillingham, Kit Matthewson
+ * @author 730003140, 730002704
  * @version 1.0
  *
  */

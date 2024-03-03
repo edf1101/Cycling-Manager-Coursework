@@ -6,7 +6,7 @@ import java.util.HashMap;
 /**
  * Class holding riders' details
  *
- * @author Kit Matthewson & Ed Fillingham
+ * @author 730002704 & 730003140
  * @version 1.0
  */
 public class Rider {
@@ -57,7 +57,7 @@ public class Rider {
      * @param riderId The rider to find
      * @return The rider's object
      */
-    public static Rider getRiderById(int riderId) throws IDNotRecognisedException{
+    public static Rider getRiderById(int riderId) throws IDNotRecognisedException {
         if (!riders.containsKey(riderId)) {
             throw new IDNotRecognisedException("Rider " + riderId + " is not part of the system");
         }
