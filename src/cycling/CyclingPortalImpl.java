@@ -123,7 +123,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 
 		// Create the stage and add it to the list of stage Ids and return Id.
-		Stage newStage = new Stage(stageName, description, type, length);
+		Stage newStage = new Stage(stageName, description, type, length, raceId);
 		Race.getRaceById(raceId).addStage(newStage.getId());
 		myStageIds.add(newStage.getId());
 
@@ -150,6 +150,13 @@ public class CyclingPortalImpl implements CyclingPortal {
 		return myRace.getStageIds().stream().mapToInt(Integer::intValue).toArray();
 	}
 
+	/**
+	 * Get the length of a stage
+	 *
+	 * @param stageId The ID of the stage being queried.
+	 * @return the length of a stage
+	 * @throws IDNotRecognisedException If the stage ID is not in the system
+	 */
 	@Override
 	public double getStageLength(int stageId) throws IDNotRecognisedException {
 		if (!myStageIds.contains(stageId)) {
@@ -158,6 +165,12 @@ public class CyclingPortalImpl implements CyclingPortal {
 		return Stage.getStageById(stageId).getLength();
 	}
 
+	/**
+	 * Removes a stage by its ID
+	 *
+	 * @param stageId The ID of the stage to be removed.
+	 * @throws IDNotRecognisedException Thrown if the ID is not recognised
+	 */
 	@Override
 	public void removeStageById(int stageId) throws IDNotRecognisedException {
 		// Throw error if invalid stage id
@@ -165,21 +178,32 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new IDNotRecognisedException("The stage ID " + stageId + " Was not found in this CyclingPortalImpl");
 		}
 
-		// Delete the stage from all races
-		for (int raceId : myRaceIds) {
-			Race race = Race.getRaceById(raceId);
-
-			try {
-				race.deleteStage(stageId);
-			} catch (IDNotRecognisedException e) {
-				// Fine, race doesn't have this stage
-			}
-		}
-
+		Stage.getStageById(stageId).delete();
 		// Remove the stage from the list of stages
 		myStageIds.remove(Integer.valueOf(stageId)); // remove it from the cycling portals list of associated stages
 	}
 
+	/**
+	 * Add a categorized climb to a stage
+	 * <p>
+	 * @param stageId         The ID of the stage to which the climb checkpoint is
+	 *                        being added.
+	 * @param location        The kilometre location where the climb finishes within
+	 *                        the stage.
+	 * @param type            The category of the climb - {@link CheckpointType#C4},
+	 *                        {@link CheckpointType#C3}, {@link CheckpointType#C2},
+	 *                        {@link CheckpointType#C1}, or {@link CheckpointType#HC}.
+	 * @param averageGradient The average gradient for the climb.
+	 * @param length          The length of the climb in kilometre.
+	 * @return The ID of the newly created checkpoint
+	 * @throws IDNotRecognisedException   If the ID does not match to any stage in
+	 *                                    the system.
+	 * @throws InvalidLocationException   If the location is out of bounds of the
+	 *                                    stage length.
+	 * @throws InvalidStageStateException If the stage is "waiting for results".
+	 * @throws InvalidStageTypeException  Time-trial stages cannot contain any
+	 *                                    checkpoint.
+	 */
 	@Override
 	public int addCategorizedClimbToStage(int stageId, Double location, CheckpointType type, Double averageGradient,
 			Double length) throws IDNotRecognisedException, InvalidLocationException, InvalidStageStateException,
@@ -189,12 +213,29 @@ public class CyclingPortalImpl implements CyclingPortal {
 		if (!myStageIds.contains(stageId)) {
 			throw new IDNotRecognisedException("The Stage ID " + stageId + " Was not found in this CyclingPortalImpl");
 		}
+
 		Checkpoint newClimb = new Climb(type,location, length, averageGradient, stageId); // create the new climb
 		Stage.getStageById(stageId).addCheckpoint(newClimb.getMyId()); // add it to the parent stage's list of checkpoints
 		myCheckpointIds.add(newClimb.getMyId()); // add it to the cycling portal's list of checkpoints
 		return newClimb.getMyId();
 	}
 
+	/**
+	 * Add an intermediate sprint to a stage
+	 *
+	 * @param stageId  The ID of the stage to which the intermediate sprint checkpoint
+	 *                 is being added.
+	 * @param location The kilometre location where the intermediate sprint finishes
+	 *                 within the stage.
+	 * @return the Id of the newly created checkpoint
+	 * @throws IDNotRecognisedException   If the ID does not match to any stage in
+	 *                                    the system.
+	 * @throws InvalidLocationException   If the location is out of bounds of the
+	 *                                    stage length.
+	 * @throws InvalidStageStateException If the stage is "waiting for results".
+	 * @throws InvalidStageTypeException  Time-trial stages cannot contain any
+	 *                                    checkpoint.
+	 */
 	@Override
 	public int addIntermediateSprintToStage(int stageId, double location) throws IDNotRecognisedException,
 			InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
@@ -208,17 +249,22 @@ public class CyclingPortalImpl implements CyclingPortal {
 		return newInterSprint.getMyId();
 	}
 
+	/**
+	 * Remove a checkpoint from a stage
+	 *
+	 * @param checkpointId The ID of the checkpoint to be removed.
+	 * @throws IDNotRecognisedException   If the ID does not match to any stage in
+	 *                                    the system.
+	 * @throws InvalidStageStateException If the stage is "waiting for results".
+	 */
 	@Override
 	public void removeCheckpoint(int checkpointId) throws IDNotRecognisedException, InvalidStageStateException {
 		// Check checkpoint id exists in this system
 		if (!myCheckpointIds.contains(checkpointId)) {
 			throw new IDNotRecognisedException("The Checkpoint ID " + checkpointId + " Was not found in this CyclingPortalImpl");
 		}
-		// check the stage hasnt been prepared,
-		// why we need stage parents in the checkpoint class etc as otherwise its polynomoial time :(
-		// eg for each stage, check if the checkpoint is in the stage, if so, check if the stage is prepared
-		// also means we cant do the nice thing to get rid of most of the lists at the top
-		// i am implementing it now
+
+		// TODO abstract this away
 		Checkpoint deletingCheckpoint = Checkpoint.getCheckpointById(checkpointId);
 		Stage parentStage = deletingCheckpoint.getParentStage();
 
@@ -233,6 +279,15 @@ public class CyclingPortalImpl implements CyclingPortal {
 		deletingCheckpoint.delete();
 	}
 
+	/**
+	 * Concludes the preparation of a stage. After conclusion, the stage's state
+	 * should be "waiting for results".
+	 *
+	 * @param stageId The ID of the stage to be concluded.
+	 * @throws IDNotRecognisedException   If the ID does not match to any stage in
+	 *                                    the system.
+	 * @throws InvalidStageStateException If the stage is "waiting for results".
+	 */
 	@Override
 	public void concludeStagePreparation(int stageId) throws IDNotRecognisedException, InvalidStageStateException {
 		if (!myStageIds.contains(stageId)) {
@@ -242,6 +297,13 @@ public class CyclingPortalImpl implements CyclingPortal {
 		Stage.getStageById(stageId).concludePreparation();
 	}
 
+	/**
+	 * Get the checkpoints present in a stage
+	 *
+	 * @param stageId The ID of the stage being queried.
+	 * @return The array of integer IDs in the stage
+	 * @throws IDNotRecognisedException If the stage Id is not part of this system
+	 */
 	@Override
 	public int[] getStageCheckpoints(int stageId) throws IDNotRecognisedException {
 		// Check if the system contains this stage
@@ -374,6 +436,33 @@ public class CyclingPortalImpl implements CyclingPortal {
 		myRiderIds.remove(Integer.valueOf(riderId)); // Remove the rider ID from our list of rider IDs
 	}
 
+	/**
+	 * Record the times of a rider in a stage.
+	 * <p>
+	 * The state of this MiniCyclingPortal must be unchanged if any
+	 * exceptions are thrown.
+	 *
+	 * @param stageId     The ID of the stage the result refers to.
+	 * @param riderId     The ID of the rider.
+	 * @param checkpoints An array of times at which the rider reached each of the
+	 *                    checkpoints of the stage, including the start time and the
+	 *                    finish line.
+	 * @throws IDNotRecognisedException    If the ID does not match to any rider or
+	 *                                     stage in the system.
+	 * @throws DuplicatedResultException   Thrown if the rider has already a result
+	 *                                     for the stage. Each rider can have only
+	 *                                     one result per stage.
+	 * @throws InvalidCheckpointTimesException Thrown if the length of checkpointTimes is
+	 *                                     not equal to n+2, where n is the number
+	 *                                     of checkpoints in the stage; +2 represents
+	 *                                     the start time and the finish time of the
+	 *                                     stage.
+	 * @throws InvalidStageStateException  Thrown if the stage is not "waiting for
+	 *                                     results". Results can only be added to a
+	 *                                     stage while it is "waiting for results".
+	 */
+
+	// TODO ask diogo if its ok that the parameter name is checkpoints here and checkpointTimes in the interface
 	@Override
 	public void registerRiderResultsInStage(int stageId, int riderId, LocalTime... checkpoints)
 			throws IDNotRecognisedException, DuplicatedResultException, InvalidCheckpointTimesException,
@@ -387,8 +476,25 @@ public class CyclingPortalImpl implements CyclingPortal {
 		Stage.getStageById(stageId).registerResults(riderId, checkpoints);
 	}
 
+	/**
+	 * Get the times of a rider in a stage.
+	 *
+	 * @param stageId The ID of the stage the result refers to.
+	 * @param riderId The ID of the rider.
+	 * @return The array of times at which the rider reached each of the checkpoints
+	 *         of the stage and the total elapsed time. Or empty array if the rider
+	 *         has no result for the stage.
+	 * @throws IDNotRecognisedException If the ID does not match to any rider or
+	 *                                  stage in the system.
+	 */
 	@Override
 	public LocalTime[] getRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
+		// check rider and stage are in the system
+		if (!myStageIds.contains(stageId) || !myRiderIds.contains(riderId)) {
+			throw new IDNotRecognisedException("The stage ID " + stageId + " or riderId "+riderId+" do not exist in" +
+					" this system");
+		}
+
 		Stage stage = Stage.getStageById(stageId);
 		try {
 			return stage.getResults(riderId);
@@ -408,8 +514,21 @@ public class CyclingPortalImpl implements CyclingPortal {
 		Stage.getStageById(stageId).removeRider(riderId);
 	}
 
+	/**
+	 * Get the riders (as IDs) that are a part of the queried stage ordered by their GC time
+	 *
+	 * @param stageId The ID of the stage being queried.
+	 * @return The IDs of the riders sorted by elapsed time
+	 * @throws IDNotRecognisedException If the stage ID is not part of the system.
+	 */
 	@Override
 	public int[] getRidersRankInStage(int stageId) throws IDNotRecognisedException {
+		// check stage ID is part of this system
+		if (!myStageIds.contains(stageId)) {
+			throw new IDNotRecognisedException("The stage ID " + stageId + " Was not found in this portal");
+		}
+		// TODO abstract this away
+
 		Stage stage = Stage.getStageById(stageId);
 
 		ArrayList<Integer> riders = stage.getRegisteredRiders();
@@ -429,8 +548,24 @@ public class CyclingPortalImpl implements CyclingPortal {
 		return riders.stream().mapToInt(Integer::intValue).toArray();
 	}
 
+	/**
+	 * Get the adjusted elapsed times of riders in a stage.
+	 *
+	 * @param stageId The ID of the stage being queried.
+	 * @return The ranked list of adjusted elapsed times sorted by their finish
+	 *         time. An empty list if there is no result for the stage. These times
+	 *         should match the riders returned by {@link #getRidersRankInStage(int)}
+	 * @throws IDNotRecognisedException If the ID does not match any stage in the
+	 *                                  system.
+	 */
 	@Override
 	public LocalTime[] getRankedAdjustedElapsedTimesInStage(int stageId) throws IDNotRecognisedException {
+		// Check stage in system
+		if (!myStageIds.contains(stageId)) {
+			throw new IDNotRecognisedException("The stage ID " + stageId + " Was not found in this portal");
+		}
+		// TODO abstract away
+
 		int[] order = getRidersRankInStage(stageId);
 		LocalTime[] times = new LocalTime[order.length];
 

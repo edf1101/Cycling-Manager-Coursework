@@ -24,6 +24,8 @@ public class Stage {
     private final ArrayList<Integer> checkpoints = new ArrayList<Integer>();
     private boolean prepared = false;
 
+    private final int parentRaceId;
+
     // Hashmaps to store the start and finish times for each rider format of
     // <riderId, time>
     private final HashMap<Integer, LocalTime> startTimes = new HashMap<Integer, LocalTime>();
@@ -36,11 +38,12 @@ public class Stage {
      * @param description Description of the stage
      * @param type        The type of the stage
      * @param length      The length of the stage
+     * @param parentRaceId The ID of the parent race that this stage belongs to
      * @throws InvalidNameException   if the name is not 0<characters<=30 or
      *                                contains whitespace
      * @throws InvalidLengthException if the length is less than 5km
      */
-    public Stage(String name, String description, StageType type, double length)
+    public Stage(String name, String description, StageType type, double length, int parentRaceId)
             throws InvalidNameException, InvalidLengthException {
 
         // Check name is not null, empty or >30 chars
@@ -60,6 +63,7 @@ public class Stage {
         this.type = type;
         this.length = length;
         this.prepared = false;
+        this.parentRaceId = parentRaceId;
 
         // add the new object to the hashmap of all stages
         stages.put(this.myId, this);
@@ -300,6 +304,9 @@ public class Stage {
         for (int checkpointId : checkpoints) {
             Checkpoint.getCheckpointById(checkpointId).delete();
         }
+
+        // remove this stage from the parent
+        Race.getRaceById(parentRaceId).removeStage(myId);
     }
 
     /**
