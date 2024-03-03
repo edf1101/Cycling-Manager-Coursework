@@ -414,7 +414,6 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		ArrayList<Integer> riders = stage.getRegisteredRiders();
 
-		// TODO Check this isn't sorting it into reverse order
 		riders.sort((rider1, rider2) -> {
 			try {
 				LocalTime rider1Time = stage.getElapsedTime(rider1);

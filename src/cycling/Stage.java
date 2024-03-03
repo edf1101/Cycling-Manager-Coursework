@@ -315,7 +315,7 @@ public class Stage {
         }
 
         return LocalTime
-                .ofSecondOfDay(finishTimes.get(riderId).toSecondOfDay() - startTimes.get(riderId).toSecondOfDay());
+                .ofNanoOfDay(finishTimes.get(riderId).toNanoOfDay() - startTimes.get(riderId).toNanoOfDay());
     }
 
     /**
@@ -343,10 +343,13 @@ public class Stage {
 			for (int otherRiderID : getRegisteredRiders()) {
 				if (otherRiderID != riderId) {
 					// Calculate the time difference between the current rider and other riders
-					int difference = getElapsedTime(otherRiderID).toSecondOfDay() - adjustedElapsedTime.toSecondOfDay();
+
+                    // TODO check if spec says to combine times <= or < 1 second
+					float difference = (float) (getElapsedTime(otherRiderID).toNanoOfDay() -
+                            adjustedElapsedTime.toNanoOfDay()) /1000000000; // nanoseconds to seconds
 
 					// Adjust the elapsed time if the difference is within the range [-1, 0)
-					if (-1 <= difference && difference < 0) {
+					if (-1 < difference && difference < 0) {
 						adjustedElapsedTime = getElapsedTime(otherRiderID);
 						adjusted = true;
 					}

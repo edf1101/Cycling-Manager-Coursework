@@ -97,13 +97,25 @@ public class CyclingPortalTestApp {
 
 		System.out.println(Arrays.toString(portal.getTeamRiders(team1Id)));
 		for (int riderId : portal.getTeamRiders(team1Id)) {
+			LocalTime start = LocalTime.of(0, 0);
+			LocalTime mid1 = LocalTime.of(0, 1, riderId);
+			LocalTime mid2 = LocalTime.of(0, 2, riderId);
+			LocalTime fin = LocalTime.of(0, 3, riderId);
+
 			portal.registerRiderResultsInStage(stage1Id, riderId, // note to self the riderId in time is so they are offset? nice
-					new LocalTime[] { LocalTime.of(0, 0), LocalTime.of(0, riderId), LocalTime.of(1, riderId/2), LocalTime.of(2, riderId) });
+					new LocalTime[] { start, mid1, mid2, fin });
 		}
 
 		for (LocalTime time : portal.getRankedAdjustedElapsedTimesInStage(stage1Id)) {
 			System.out.println(time);
 		}
+
+		// Test getting ranked times
+		LocalTime[] rankedTimes = portal.getRankedAdjustedElapsedTimesInStage(stage1Id);
+		System.out.println(Arrays.toString(rankedTimes));
+		// test getting ranked riders
+		int[] rankedRiders = portal.getRidersRankInStage(stage1Id);
+		System.out.println(Arrays.toString(rankedRiders));
 	}
 
 	/**
