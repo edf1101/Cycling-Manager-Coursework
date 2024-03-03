@@ -307,6 +307,26 @@ public class Stage {
     }
 
     /**
+     * Deletes a checkpoint from the stage.
+     *
+     * @param checkpointId the ID of the checkpoint to delete
+     * @throws InvalidStageStateException if the stage is already prepared
+     * @throws IDNotRecognisedException  if the checkpoint ID is not recognised
+     */
+    public void deleteCheckpoint(int checkpointId) throws InvalidStageStateException, IDNotRecognisedException {
+        if (prepared) {
+            throw new InvalidStageStateException("Stage already prepared");
+        }
+
+        if (!checkpoints.contains(checkpointId)) {
+            throw new IDNotRecognisedException("Checkpoint ID not recognised");
+        }
+
+        checkpoints.remove(checkpointId);
+        Checkpoint.getCheckpointById(checkpointId).delete();
+    }
+
+    /**
      * Gets a rider's elapsed time for the stage.
      *
      * @param riderId the ID of the rider to get the elapsed time for
