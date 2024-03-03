@@ -4,8 +4,12 @@ import cycling.*;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
 public class PortalStagesTests {
+
+    /**
+     * Tests the stage implementation functions
+     */
+    @SuppressWarnings("unused")
     public static void stageImplTests() throws IDNotRecognisedException, NameNotRecognisedException {
         CyclingPortalImpl portal = new CyclingPortalImpl();
 
@@ -202,4 +206,3 @@ public class PortalStagesTests {
         }
     }
 }
-

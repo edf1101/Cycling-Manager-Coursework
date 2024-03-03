@@ -2,14 +2,11 @@ package OwnTests;
 
 import cycling.*;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Arrays;
-
 public class PortalTeamsTests {
     /**
      * Tests the team related methods of the CyclingPortal interface.
      */
+    @SuppressWarnings("unused")
     public static void teamImplTests() throws IDNotRecognisedException {
         MiniCyclingPortal portal1 = new CyclingPortalImpl();
         MiniCyclingPortal portal2 = new CyclingPortalImpl();

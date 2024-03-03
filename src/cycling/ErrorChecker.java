@@ -1,7 +1,6 @@
 package cycling;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * The portal does certain things many times, ie check a stage is part of its system.
