@@ -44,7 +44,7 @@ public class PortalCheckpointsTests {
             LocalTime mid2 = LocalTime.of(0, 2, riderId);
             LocalTime fin = LocalTime.of(0, 3, riderId);
 
-            portal.registerRiderResultsInStage(stage1Id, riderId, // note to self the riderId in time is so they are offset? nice
+            portal.registerRiderResultsInStage(stage1Id, riderId, // note to self the riderId in time is so they are offset? nice - yes
                     new LocalTime[] { start, mid1, mid2, fin });
         }
 
