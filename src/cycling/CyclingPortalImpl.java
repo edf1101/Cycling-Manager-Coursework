@@ -615,7 +615,24 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public void eraseCyclingPortal() {
-		// Since removing a
+		// TODO tests for this
+		// Can be done by removing all races and teams, since that's all the portal keeps track of
+		for (int raceId : myRaceIds) {
+			try {
+				removeRaceById(raceId);
+			} catch (IDNotRecognisedException e) {
+				// This should never happen as we are giving it an ID that we have found in the
+				// system
+			}
+		}
+		for(int teamId : myTeamIds){
+			try {
+				removeTeam(teamId);
+			} catch (IDNotRecognisedException e) {
+				// This should never happen as we are giving it an ID that we have found in the
+				// system
+			}
+		}
 
 	}
 
