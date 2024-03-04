@@ -1,6 +1,8 @@
 package cycling;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class Race {
@@ -173,6 +175,97 @@ public class Race {
             throw new NameNotRecognisedException("The Race name: " + name + ", does not exist in this system");
         }
         return foundId;
+    }
+
+    /**
+     * Gets the general classification times for all riders in the race ordered by time
+     *
+     * @return an array of Localtimes of the riders' general classification times
+     */
+    public LocalTime[] getRidersGeneralClassificationTimes() {
+        HashMap<LocalTime, Integer> riderTimes= new HashMap<LocalTime,Integer>();
+        // may well be a better way to do this idk
+
+        // Add all riders and their GC times to the hashmap
+        for(int stageId : stageIds){
+            Stage stage = null;
+            try {
+                stage = Stage.getStageById(stageId);
+            } catch (IDNotRecognisedException e) {
+                assert false : "Stage ID not recognised - shouldn't happen";
+            }
+            for(int riderId : stage.getRegisteredRiders()){
+                if(!riderTimes.containsKey(riderId)){
+                    riderTimes.put(getRiderGeneralClassificationTime(riderId),riderId);
+                }
+            }
+        }
+        // Convert the keys to a list
+        ArrayList<LocalTime> times = new ArrayList<LocalTime>(riderTimes.keySet());
+        // Sort the list
+        times.sort(Comparator.naturalOrder());
+
+        // return times as an array
+        return times.toArray(new LocalTime[0]);
+    }
+
+    /**
+     * Gets the general classification ranks for all riders in the race
+     *
+     * @return the ordered riderIds of who came 1st 2nd etc
+     */
+    public int[] getRidersGeneralClassifcationRanks() {
+        HashMap<LocalTime, Integer> riderTimes= new HashMap<LocalTime,Integer>();
+        // may well be a better way to do this idk
+
+        // Add all riders and their GC times to the hashmap
+        for(int stageId : stageIds){
+            Stage stage = null;
+            try {
+                stage = Stage.getStageById(stageId);
+            } catch (IDNotRecognisedException e) {
+                assert false : "Stage ID not recognised - shouldn't happen";
+            }
+            for(int riderId : stage.getRegisteredRiders()){
+                if(!riderTimes.containsKey(riderId)){
+                    riderTimes.put(getRiderGeneralClassificationTime(riderId),riderId);
+                }
+            }
+        }
+        // Convert the keys to a list
+        ArrayList<LocalTime> times = new ArrayList<LocalTime>(riderTimes.keySet());
+        // Sort the list
+        times.sort(Comparator.naturalOrder());
+        // create a list to store int values of the riderIds in order
+        int[] riderIds = new int[times.size()];
+        for(int i = 0; i < times.size(); i++){
+            riderIds[i] = riderTimes.get(times.get(i));
+        }
+        return riderIds;
+    }
+
+    /**
+     * Gets the general classification time for a rider across all race stages
+     *
+     * @param riderId the riderID to check
+     * @return the total time for the rider across all stages
+     */
+    private LocalTime getRiderGeneralClassificationTime(int riderId) {
+        LocalTime summedTime = LocalTime.of(0, 0, 0);
+        for(int stageId : stageIds){
+            try {
+                LocalTime stageTime = Stage.getStageById(stageId).getAdjustedElapsedTime(riderId);
+                summedTime = summedTime.plusHours(stageTime.getHour())
+                        .plusMinutes(stageTime.getMinute())
+                        .plusSeconds(stageTime.getSecond())
+                        .plusNanos(stageTime.getNano());
+
+            } catch (IDNotRecognisedException e) {
+                // Should never happen since we are iterating through the list of stageIds already validated
+                assert(false) : "Stage ID not recognised"; // assertion so we can see if it happened
+            }
+        }
+        return summedTime;
     }
 
 }

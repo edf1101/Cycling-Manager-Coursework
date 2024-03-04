@@ -498,8 +498,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public LocalTime[] getRankedAdjustedElapsedTimesInStage(int stageId) throws IDNotRecognisedException {
-		// Check stage in system
-		errorChecker.checkStageBelongsToSystem(stageId);
+		errorChecker.checkStageBelongsToSystem(stageId); // Check stage in system
 		// TODO abstract away
 
 		int[] order = getRidersRankInStage(stageId);
@@ -621,38 +620,62 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 	}
 
+	// TODO check if this means that empty list is returned if there are no results for all stages
+	//  or if for no results for any of the stages
+	/**
+	 * Get the general classification times of riders in a race.
+	 *
+	 * @param raceId The ID of the race being queried.
+	 * @return A list of riders' times sorted by the sum of their adjusted elapsed
+	 *         times in all stages of the race. An empty list if there is no result
+	 *         for any stage in the race. These times should match the riders
+	 *         returned by {@link #getRidersGeneralClassificationRank(int)}.
+	 * @throws IDNotRecognisedException If the ID does not match any race in the
+	 *                                  system.
+	 */
 	@Override
 	public LocalTime[] getGeneralClassificationTimesInRace(int raceId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
+
+		return Race.getRaceById(raceId).getRidersGeneralClassificationTimes();
 	}
 
 	@Override
 	public int[] getRidersPointsInRace(int raceId) throws IDNotRecognisedException {
+		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
+
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public int[] getRidersMountainPointsInRace(int raceId) throws IDNotRecognisedException {
+		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
+
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public int[] getRidersGeneralClassificationRank(int raceId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
+
+		return Race.getRaceById(raceId).getRidersGeneralClassifcationRanks();
+
 	}
 
 	@Override
 	public int[] getRidersPointClassificationRank(int raceId) throws IDNotRecognisedException {
+		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
+
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public int[] getRidersMountainPointClassificationRank(int raceId) throws IDNotRecognisedException {
+		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
+
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -4,6 +4,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+// TODO we haven't handled time trials yet, oops
+
 public class Stage {
     private static final HashMap<Integer, Stage> stages = new HashMap<Integer, Stage>(); // Hashmap of all stages
 
