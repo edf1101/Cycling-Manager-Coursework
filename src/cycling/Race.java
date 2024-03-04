@@ -2,8 +2,10 @@ package cycling;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.function.Function;
 
 public class Race {
 
@@ -183,30 +185,9 @@ public class Race {
      * @return an array of Localtimes of the riders' general classification times
      */
     public LocalTime[] getRidersGeneralClassificationTimes() {
-        HashMap<LocalTime, Integer> riderTimes= new HashMap<LocalTime,Integer>();
-        // may well be a better way to do this idk
-
-        // Add all riders and their GC times to the hashmap
-        for(int stageId : stageIds){
-            Stage stage = null;
-            try {
-                stage = Stage.getStageById(stageId);
-            } catch (IDNotRecognisedException e) {
-                assert false : "Stage ID not recognised - shouldn't happen";
-            }
-            for(int riderId : stage.getRegisteredRiders()){
-                if(!riderTimes.containsKey(riderId)){
-                    riderTimes.put(getRiderGeneralClassificationTime(riderId),riderId);
-                }
-            }
-        }
-        // Convert the keys to a list
-        ArrayList<LocalTime> times = new ArrayList<LocalTime>(riderTimes.keySet());
-        // Sort the list
-        times.sort(Comparator.naturalOrder());
-
-        // return times as an array
-        return times.toArray(new LocalTime[0]);
+        Function<Integer,LocalTime> func = this::getRiderGeneralClassificationTime;
+        PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false, stageIds);
+        return pointsHandler.getRiderTimes();
     }
 
     /**
@@ -215,33 +196,10 @@ public class Race {
      * @return the ordered riderIds of who came 1st 2nd etc
      */
     public int[] getRidersGeneralClassifcationRanks() {
-        HashMap<LocalTime, Integer> riderTimes= new HashMap<LocalTime,Integer>();
-        // may well be a better way to do this idk
+        Function<Integer,LocalTime> func = this::getRiderGeneralClassificationTime;
+        PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false, stageIds);
+        return pointsHandler.getRiderRanks();
 
-        // Add all riders and their GC times to the hashmap
-        for(int stageId : stageIds){
-            Stage stage = null;
-            try {
-                stage = Stage.getStageById(stageId);
-            } catch (IDNotRecognisedException e) {
-                assert false : "Stage ID not recognised - shouldn't happen";
-            }
-            for(int riderId : stage.getRegisteredRiders()){
-                if(!riderTimes.containsKey(riderId)){
-                    riderTimes.put(getRiderGeneralClassificationTime(riderId),riderId);
-                }
-            }
-        }
-        // Convert the keys to a list
-        ArrayList<LocalTime> times = new ArrayList<LocalTime>(riderTimes.keySet());
-        // Sort the list
-        times.sort(Comparator.naturalOrder());
-        // create a list to store int values of the riderIds in order
-        int[] riderIds = new int[times.size()];
-        for(int i = 0; i < times.size(); i++){
-            riderIds[i] = riderTimes.get(times.get(i));
-        }
-        return riderIds;
     }
 
     /**

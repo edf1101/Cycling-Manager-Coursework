@@ -2,7 +2,10 @@ package cycling;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.function.Function;
 
 // TODO we haven't handled time trials yet, oops
 
@@ -336,10 +339,7 @@ public class Stage {
      * @return the elapsed time
      * @throws IDNotRecognisedException if the rider ID is not recognised
      */
-    public LocalTime getElapsedTime(int riderId) throws IDNotRecognisedException {
-        if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
-            throw new IDNotRecognisedException("Rider ID not recognised");
-        }
+    private LocalTime getElapsedTime(int riderId)  {
 
         return LocalTime
                 .ofNanoOfDay(finishTimes.get(riderId).toNanoOfDay() - startTimes.get(riderId).toNanoOfDay());
@@ -482,5 +482,32 @@ public class Stage {
      */
     public ArrayList<Integer> getRegisteredRiders() {
         return new ArrayList<Integer>(finishTimes.keySet());
+    }
+
+    /**
+     * Get the riders (as IDs) that are a part of the queried stage ordered by their
+     * GC time
+     *
+     * @return The IDs of the riders sorted by elapsed time
+     */
+    public int[] getRidersRankInStage(){
+        Function<Integer,LocalTime> func = this::getElapsedTime;
+        PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false,
+                new ArrayList<>(List.of(myId)));
+        return pointsHandler.getRiderRanks();
+
+    }
+
+    /**
+     * Get the adjusted elapsed times of riders in a stage.
+     *
+     * @return The ranked list of adjusted elapsed times sorted by their finish
+     *         time.
+     */
+    public LocalTime[] getRankedAdjustedElapsedTimesInStage(){
+        Function<Integer,LocalTime> func = this::getElapsedTime;
+        PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false,
+                new ArrayList<>(List.of(myId)));
+        return pointsHandler.getRiderTimes();
     }
 }

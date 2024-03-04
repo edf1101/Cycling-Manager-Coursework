@@ -48,10 +48,14 @@ public class CustomTestApp {
         PortalStagesTests.stageImplTests();
         System.out.println("Passed.\n");
 
-        //Will fail until checkpoint functions are implemented
         System.out.println("Starting checkpoint tests...");
         PortalCheckpointsTests.checkpointImplTests();
         PortalCheckpointsTests.checkpointImplTests();
+        System.out.println("Passed.\n");
+
+        System.out.println("Starting scoring tests...");
+        PortalScoringTests.scoringImplTests();
+        PortalScoringTests.scoringImplTests();
         System.out.println("Passed.\n");
 
         System.out.println("All tests passed.");

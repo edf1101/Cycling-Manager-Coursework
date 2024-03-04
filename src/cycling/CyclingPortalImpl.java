@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.function.Function;
 
 public class CyclingPortalImpl implements CyclingPortal {
 
@@ -463,26 +464,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public int[] getRidersRankInStage(int stageId) throws IDNotRecognisedException {
 		// check stage ID is part of this system
 		errorChecker.checkStageBelongsToSystem(stageId);
-
-		// TODO abstract this away
-
-		Stage stage = Stage.getStageById(stageId);
-
-		ArrayList<Integer> riders = stage.getRegisteredRiders();
-
-		riders.sort((rider1, rider2) -> {
-			try {
-				LocalTime rider1Time = stage.getElapsedTime(rider1);
-				LocalTime rider2Time = stage.getElapsedTime(rider2);
-
-				return rider1Time.compareTo(rider2Time);
-			} catch (IDNotRecognisedException e) {
-				System.err.println("Rider not found in stage"); // Should never happen
-				return 0;
-			}
-		});
-
-		return riders.stream().mapToInt(Integer::intValue).toArray();
+		return Stage.getStageById(stageId).getRidersRankInStage();
 	}
 
 	/**
@@ -499,16 +481,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public LocalTime[] getRankedAdjustedElapsedTimesInStage(int stageId) throws IDNotRecognisedException {
 		errorChecker.checkStageBelongsToSystem(stageId); // Check stage in system
-		// TODO abstract away
-
-		int[] order = getRidersRankInStage(stageId);
-		LocalTime[] times = new LocalTime[order.length];
-
-		for (int i = 0; i < order.length; i++) {
-			times[i] = getRiderAdjustedElapsedTimeInStage(stageId, order[i]);
-		}
-
-		return times;
+		return Stage.getStageById(stageId).getRankedAdjustedElapsedTimesInStage();
 	}
 
 	/**
@@ -620,8 +593,6 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 	}
 
-	// TODO check if this means that empty list is returned if there are no results for all stages
-	//  or if for no results for any of the stages
 	/**
 	 * Get the general classification times of riders in a race.
 	 *
@@ -636,10 +607,20 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public LocalTime[] getGeneralClassificationTimesInRace(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
-
+		// TODO test
 		return Race.getRaceById(raceId).getRidersGeneralClassificationTimes();
 	}
-
+	/**
+	 * Get the overall points of riders in a race.
+	 *
+	 * @param raceId The ID of the race being queried.
+	 * @return An array of riders' points (i.e., the sum of their points in all stages
+	 *         of the race), sorted by the total adjusted elapsed time. An empty array if
+	 *         there is no result for any stage in the race. These points should
+	 *         match the riders returned by {@link #getRidersGeneralClassificationRank(int)}.
+	 * @throws IDNotRecognisedException If the ID does not match any race in the
+	 *                                  system.
+	 */
 	@Override
 	public int[] getRidersPointsInRace(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
@@ -648,6 +629,18 @@ public class CyclingPortalImpl implements CyclingPortal {
 		return null;
 	}
 
+	/**
+	 * Get the overall mountain points of riders in a race.
+	 *
+	 * @param raceId The ID of the race being queried.
+	 * @return An array of riders' mountain points (i.e., the sum of their mountain
+	 *         points in all stages of the race), sorted by the total adjusted elapsed time.
+	 *         An empty array if there is no result for any stage in the race. These
+	 *         points should match the riders returned by
+	 *         {@link #getRidersGeneralClassificationRank(int)}.
+	 * @throws IDNotRecognisedException If the ID does not match any race in the
+	 *                                  system.
+	 */
 	@Override
 	public int[] getRidersMountainPointsInRace(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
@@ -655,11 +648,21 @@ public class CyclingPortalImpl implements CyclingPortal {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	/**
+	 * Get the general classification rank of riders in a race.
+	 *
+	 * @param raceId The ID of the race being queried.
+	 * @return A ranked list of riders' IDs sorted ascending by the sum of their
+	 *         adjusted elapsed times in all stages of the race. That is, the first
+	 *         in this list is the winner (least time). An empty list if there is no
+	 *         result for any stage in the race.
+	 * @throws IDNotRecognisedException If the ID does not match any race in the
+	 *                                  system.
+	 */
 	@Override
 	public int[] getRidersGeneralClassificationRank(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
-
+		// TODO test
 		return Race.getRaceById(raceId).getRidersGeneralClassifcationRanks();
 
 	}
