@@ -10,7 +10,7 @@ public class Climb extends Checkpoint {
         POINTS.put(CheckpointType.C3, new int[] { 2, 1 });
         POINTS.put(CheckpointType.C2, new int[] { 5, 3, 2, 1 });
         POINTS.put(CheckpointType.C1, new int[] { 10, 8, 6, 4, 2, 1 });
-        POINTS.put(CheckpointType.HC, new int[] { 10, 15, 12, 10, 8, 6, 4, 2 });
+        POINTS.put(CheckpointType.HC, new int[] { 20, 15, 12, 10, 8, 6, 4, 2 });
     }
 
     private final Double length;

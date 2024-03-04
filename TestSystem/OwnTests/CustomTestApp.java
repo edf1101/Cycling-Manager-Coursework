@@ -55,7 +55,7 @@ public class CustomTestApp {
 
         System.out.println("Starting scoring tests...");
         PortalScoringTests.scoringImplTests();
-        PortalScoringTests.scoringImplTests();
+        //PortalScoringTests.scoringImplTests();
         System.out.println("Passed.\n");
 
         System.out.println("All tests passed.");

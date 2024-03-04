@@ -170,7 +170,6 @@ public class PortalScoringTests {
         // Get the GC scores + Ranking
         int[] rankings;
         try {
-            System.out.println("GC scores:");
             rankings = portal.getRidersGeneralClassificationRank(raceId);
             LocalTime[] GC = portal.getGeneralClassificationTimesInRace(raceId);
 
@@ -188,11 +187,50 @@ public class PortalScoringTests {
 
         // Get the times for each stage
         try {
-            System.out.println(Arrays.toString(portal.getRankedAdjustedElapsedTimesInStage(stageId1)));
-            System.out.println(Arrays.toString(portal.getRidersRankInStage(stageId1)));
+            // stage 1
+            LocalTime[] should = new LocalTime[]{
+                    LocalTime.of(1, 55, 0), LocalTime.of(1, 56, 0),
+                    LocalTime.of(1, 57, 0), LocalTime.of(2, 0, 0)};
+            assert Arrays.equals(portal.getRankedAdjustedElapsedTimesInStage(stageId1),should) :
+                    "Stage elapsed times are not working";
+            assert Arrays.equals(portal.getRidersRankInStage(stageId1),
+                    new int[]{riderId4, riderId1, riderId2, riderId3}) : "Stage rankings are not working";
+
+            // stage 2
+            should = new LocalTime[]{
+                    LocalTime.of(0, 59, 0), LocalTime.of(1, 20, 0),
+                    LocalTime.of(1, 25, 0), LocalTime.of(1, 40, 0)};
+            assert Arrays.equals(portal.getRankedAdjustedElapsedTimesInStage(stageId2),should) :
+                    "Stage elapsed times are not working";
+            assert Arrays.equals(portal.getRidersRankInStage(stageId2),
+                    new int[]{riderId1, riderId2, riderId3, riderId4}) : "Stage rankings are not working";
+
         } catch (IDNotRecognisedException e) {
             throw new RuntimeException(e);
         }
+
+        // Test getting mountain points per stage
+        try {
+            assert Arrays.equals(portal.getRidersMountainPointsInStage(stageId3),
+                    new int[]{20, 12, 10, 15}) : "Mountain points for stage are not working";
+            assert Arrays.equals(portal.getRidersMountainPointsInStage(stageId1),
+                    new int[]{10, 7, 10, 4}) : "Mountain points for stage are not working";
+
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Test getting sprint points per stage
+        try {
+            assert Arrays.equals(portal.getRidersPointsInStage(stageId2),
+                    new int[]{67, 60, 54, 45}) : "Sprint points for stage are not working";
+            assert Arrays.equals(portal.getRidersPointsInStage(stageId3),
+                    new int[]{70, 43, 37, 33}) : "Sprint points for stage are not working";
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Test getting the race mountain points
 
 
     }

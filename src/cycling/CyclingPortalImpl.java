@@ -498,15 +498,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int[] getRidersPointsInStage(int stageId) throws IDNotRecognisedException {
 		errorChecker.checkStageBelongsToSystem(stageId); // Check stage is in our system
-
-		// Get the ordered list of riders
-		int[] orderedRiders = getRidersRankInStage(stageId);
-		int[] sprintPoints = new int[orderedRiders.length];
-		for (int riderId : orderedRiders) {
-			sprintPoints[riderId] = Stage.getStageById(stageId).getSprintPoints(riderId);
-		}
-
-		return sprintPoints;
+		return Stage.getStageById(stageId).getSprintPointsInStage(getRidersRankInStage(stageId));
 	}
 
 	/**
@@ -523,14 +515,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int[] getRidersMountainPointsInStage(int stageId) throws IDNotRecognisedException {
 		errorChecker.checkStageBelongsToSystem(stageId); // Check stage is in our system
-
-		// Get the ordered list of riders
-		int[] orderedRiders = getRidersRankInStage(stageId);
-		int[] mountainPoints = new int[orderedRiders.length];
-		for (int riderId : orderedRiders) {
-			mountainPoints[riderId] = Stage.getStageById(stageId).getMountainPoints(riderId);
-		}
-		return mountainPoints;
+		return Stage.getStageById(stageId).getRidersMountainPointsInStage(getRidersRankInStage(stageId));
 	}
 
 	/**

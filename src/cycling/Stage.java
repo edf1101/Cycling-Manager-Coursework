@@ -151,10 +151,10 @@ public class Stage {
 
         // Consider that the array is [start, checkpoint1, checkpoint2, ..., finish]
         // The nth checkpoint starts at index n and ends at index n+1
-        for (int i = 1; i < times.length - 2; i++) {
+        for (int i = 0; i < times.length - 2; i++) {
             try {
                 Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpoints.get(i));
-                checkpoint.recordTime(riderId, times[i]);
+                checkpoint.recordTime(riderId, times[i+1]);
 
             }
             catch (IDNotRecognisedException e) {
@@ -218,6 +218,15 @@ public class Stage {
         }
 
         return points;
+    }
+
+    public int[] getSprintPointsInStage(int[] orderedRiders) throws IDNotRecognisedException {
+        int[] sprintPoints = new int[orderedRiders.length];
+        for (int index = 0; index < orderedRiders.length; index++) {
+            sprintPoints[index] = Stage.getStageById(myId).getSprintPoints(orderedRiders[index]);
+        }
+
+        return sprintPoints;
     }
 
     /**
@@ -509,5 +518,14 @@ public class Stage {
         PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false,
                 new ArrayList<>(List.of(myId)));
         return pointsHandler.getRiderTimes();
+    }
+
+    public int[] getRidersMountainPointsInStage(int[] orderedRiders ) throws IDNotRecognisedException {
+        // Get the ordered list of riders
+        int[] mountainPoints = new int[orderedRiders.length];
+        for (int index = 0; index < orderedRiders.length; index++) {
+            mountainPoints[index] = Stage.getStageById(myId).getMountainPoints(orderedRiders[index]);
+        }
+        return mountainPoints;
     }
 }
