@@ -39,13 +39,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public int createRace(String name, String description) throws IllegalNameException, InvalidNameException {
-		// Check for illegal name, already in use has to be done in this
-		// class as we store our list of races here
-		for (int raceId : myRaceIds) {
-			if (Race.getRaceById(raceId).getName().equals(name)) {
-				throw new IllegalNameException("The name " + name + " has already been taken");
-			}
-		}
+		errorChecker.checkNameUnused(name, ErrorChecker.nameUnusedType.RACE); // Check the name is unused
 
 		Race newRace = new Race(name, description); // Create instance
 		int newId = newRace.getId(); // The new ID for the created
@@ -69,10 +63,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public String viewRaceDetails(int raceId) throws IDNotRecognisedException {
-		// Check the race exists in this system
-		if (!myRaceIds.contains(raceId)) {
-			throw new IDNotRecognisedException("The ID " + raceId + " does not exist in this system");
-		}
+		errorChecker.checkRaceBelongsToSystem(raceId); // check race belongs to this system
 		return Race.getRaceById(raceId).getDetails();
 	}
 
@@ -84,10 +75,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public void removeRaceById(int raceId) throws IDNotRecognisedException {
-		// Throw error if invalid race id
-		if (!myRaceIds.contains(raceId)) {
-			throw new IDNotRecognisedException("The Race ID " + raceId + " Was not found in this CyclingPortalImpl");
-		}
+		errorChecker.checkRaceBelongsToSystem(raceId); // check race belongs to this system
 
 		// Delete the race and remove it from the list of races
 		Race.getRaceById(raceId).delete();
@@ -103,6 +91,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public int getNumberOfStages(int raceId) throws IDNotRecognisedException {
+		errorChecker.checkRaceBelongsToSystem(raceId); // check race belongs to this system
 		return getRaceStages(raceId).length;
 	}
 
@@ -111,13 +100,9 @@ public class CyclingPortalImpl implements CyclingPortal {
 			StageType type)
 			throws IDNotRecognisedException, IllegalNameException, InvalidNameException, InvalidLengthException {
 
-		// Check Race matches system list of races
-		if (!myRaceIds.contains(raceId)) {
-			throw new IDNotRecognisedException("The id " + raceId + " does not exist in this system");
-		}
-
 		// TODO check with diogo if stages are allowed to share names between races.
-		errorChecker.checkStageNameUnused(stageName);
+		errorChecker.checkNameUnused(stageName, ErrorChecker.nameUnusedType.STAGE); // Check Stage name is Unique
+		errorChecker.checkRaceBelongsToSystem(raceId); // Check Race matches system list of races
 
 		// Create the stage and add it to the list of stage Ids and return Id.
 		Stage newStage = new Stage(stageName, description, type, length, raceId);
@@ -135,10 +120,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public int[] getRaceStages(int raceId) throws IDNotRecognisedException {
-		// Throw error if invalid race id
-		if (!myRaceIds.contains(raceId)) {
-			throw new IDNotRecognisedException("The Race ID " + raceId + " Was not found in this CyclingPortalImpl");
-		}
+		errorChecker.checkRaceBelongsToSystem(raceId); // Check the race exists in this system
 
 		// Get the race instance
 		Race myRace = Race.getRaceById(raceId);
@@ -202,9 +184,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public int addCategorizedClimbToStage(int stageId, Double location, CheckpointType type, Double averageGradient,
 			Double length) throws IDNotRecognisedException, InvalidLocationException, InvalidStageStateException,
 			InvalidStageTypeException {
-
-		// Check if the system contains this stage
-		errorChecker.checkStageBelongsToSystem(stageId);
+		errorChecker.checkStageBelongsToSystem(stageId); // Check if the system contains this stage
 
 		Checkpoint newClimb = new Climb(type, location, length, averageGradient, stageId); // create the new climb
 		Stage.getStageById(stageId).addCheckpoint(newClimb.getMyId()); // add it to the parent stage's list of
@@ -232,8 +212,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int addIntermediateSprintToStage(int stageId, double location) throws IDNotRecognisedException,
 			InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
-		// Check if the system contains this stage
-		errorChecker.checkStageBelongsToSystem(stageId);
+		errorChecker.checkStageBelongsToSystem(stageId); // Check if the system contains this stage
 
 		Checkpoint newInterSprint = new IntermediateSprint(location, stageId); // create the new climb
 		Stage.getStageById(stageId).addCheckpoint(newInterSprint.getMyId()); // add it to the parent stage's list of
@@ -251,15 +230,12 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public void removeCheckpoint(int checkpointId) throws IDNotRecognisedException, InvalidStageStateException {
-		// Check checkpoint id exists in this system
-		errorChecker.checkCheckpointBelongsToSystem(checkpointId);
-
-		// Get the parent stage and remove the checkpoint from it
-		// TODO The checkpoint could do this itself if it has its parent?
-		Stage parentStage = Checkpoint.getCheckpointById(checkpointId).getParentStage();
-		parentStage.deleteCheckpoint(checkpointId);
+		errorChecker.checkCheckpointBelongsToSystem(checkpointId); // Check checkpoint id exists in this system
+		Checkpoint.getCheckpointById(checkpointId).delete(); // delete it using its own object's delete function
 	}
 
+	// TODO ik its not actually used anywhere but the specicifity of stage states implies we should have "waiting for results"
+	//  etc instead of bool
 	/**
 	 * Concludes the preparation of a stage. After conclusion, the stage's state
 	 * should be "waiting for results".
@@ -285,9 +261,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public int[] getStageCheckpoints(int stageId) throws IDNotRecognisedException {
-		// Check if the system contains this stage
-		errorChecker.checkStageBelongsToSystem(stageId);
-
+		errorChecker.checkStageBelongsToSystem(stageId); // Check if the system contains this stage
 		// convert the ArrayList of Integers to an array of ints and return it
 		return Stage.getStageById(stageId).getCheckpoints().stream().mapToInt(Integer::intValue).toArray();
 	}
@@ -304,18 +278,11 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public int createTeam(String name, String description) throws IllegalNameException, InvalidNameException {
-
-		// Check for illegal name, already in use
-		for (int teamId : getTeams()) {
-			if (Team.getTeamById(teamId).getName().equals(name)) {
-				throw new IllegalNameException("The name " + name + " has already been taken");
-			}
-		}
+		errorChecker.checkNameUnused(name, ErrorChecker.nameUnusedType.TEAM); // Check for illegal name, already in use
 
 		Team newTeam = new Team(name, description); // Create instance of the team
 		int newId = newTeam.getId(); // The new ID for the created team
 		myTeamIds.add(newTeam.getId());
-
 		return newId;
 	}
 
@@ -328,11 +295,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public void removeTeam(int teamId) throws IDNotRecognisedException {
-
-		// Throw error if invalid team id
-		if (!myTeamIds.contains(teamId)) {
-			throw new IDNotRecognisedException("The ID " + teamId + " Was not found in this CyclingPortalImpl");
-		}
+		errorChecker.checkTeamBelongsToSystem(teamId); // Check the teamID exists in this system
 
 		Team.getTeamById(teamId).remove(); // remove the team from its own class
 		myTeamIds.remove(Integer.valueOf(teamId)); // remove it from the cycling portals list of associated teams
@@ -359,11 +322,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public int[] getTeamRiders(int teamId) throws IDNotRecognisedException {
-		// Check the teamID exists in this system
-		if (!myTeamIds.contains(teamId)) {
-			throw new IDNotRecognisedException("The ID " + teamId + " does not exist in this system");
-		}
 
+		errorChecker.checkTeamBelongsToSystem(teamId); // Check the teamID exists in this system
 		return Team.getTeamById(teamId).getRiders();
 	}
 
@@ -382,15 +342,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int createRider(int teamId, String name, int yearOfBirth)
 			throws IDNotRecognisedException, IllegalArgumentException {
-		// Check the teamID exists in this system
-		if (!myTeamIds.contains(teamId)) {
-			throw new IDNotRecognisedException("The ID " + teamId + " does not exist in this system");
-		}
-
-		// Create the rider
-		Rider newRider = new Rider(name, yearOfBirth, teamId);
-		return newRider.getId();
-
+		errorChecker.checkTeamBelongsToSystem(teamId); // Check the teamID exists in this system
+		return new Rider(name, yearOfBirth, teamId).getId(); // Create the rider and return its ID
 	}
 
 	/**
@@ -403,9 +356,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	@Override
 	public void removeRider(int riderId) throws IDNotRecognisedException {
-
-		errorChecker.checkRiderBelongsToSystem(riderId);
-
+		errorChecker.checkRiderBelongsToSystem(riderId); // check rider is in system
 		Rider.getRiderById(riderId).remove(); // remove the rider using its own object's remove function
 	}
 
@@ -445,15 +396,11 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 *                                         results".
 	 */
 
-	// TODO ask diogo if its ok that the parameter name is checkpoints here and
-	// checkpointTimes in the interface - yes, the method signature is still
-	// technically the same
 	@Override
 	public void registerRiderResultsInStage(int stageId, int riderId, LocalTime... checkpoints)
 			throws IDNotRecognisedException, DuplicatedResultException, InvalidCheckpointTimesException,
 			InvalidStageStateException {
-		// Check stageId and riderId exists in this system
-		errorChecker.checkRiderBelongsToSystem(riderId);
+		errorChecker.checkRiderBelongsToSystem(riderId); // Check stageId and riderId exists in this system
 		errorChecker.checkStageBelongsToSystem(stageId);
 
 		Stage.getStageById(stageId).registerResults(riderId, checkpoints);
@@ -472,8 +419,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public LocalTime[] getRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
-		// check rider and stage are in the system
-		errorChecker.checkRiderBelongsToSystem(riderId);
+		errorChecker.checkRiderBelongsToSystem(riderId); // check rider and stage are in the system
 		errorChecker.checkStageBelongsToSystem(stageId);
 
 		Stage stage = Stage.getStageById(stageId);
@@ -484,10 +430,20 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 	}
 
+	/**
+	 * Get the adjusted elapsed time of a rider in a stage.
+	 *
+	 * @param stageId The ID of the stage the result refers to.
+	 * @param riderId The ID of the rider.
+	 * @return The adjusted time taken in a stage
+	 * @throws IDNotRecognisedException If the stage ID is not part of the
+	 * system or the RiderID is not part of the system
+	 */
 	@Override
 	public LocalTime getRiderAdjustedElapsedTimeInStage(int stageId, int riderId) throws IDNotRecognisedException {
-		Stage stage = Stage.getStageById(stageId);
-		return stage.getAdjustedElapsedTime(riderId);
+		errorChecker.checkRiderBelongsToSystem(riderId); // Do checks for stage and rider Ids
+		errorChecker.checkStageBelongsToSystem(stageId);
+		return Stage.getStageById(stageId).getAdjustedElapsedTime(riderId);
 	}
 
 	@Override
@@ -569,8 +525,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public int[] getRidersPointsInStage(int stageId) throws IDNotRecognisedException {
-		// Check stage is in our system
-		errorChecker.checkStageBelongsToSystem(stageId);
+		errorChecker.checkStageBelongsToSystem(stageId); // Check stage is in our system
 
 		// Get the ordered list of riders
 		int[] orderedRiders = getRidersRankInStage(stageId);
@@ -595,8 +550,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public int[] getRidersMountainPointsInStage(int stageId) throws IDNotRecognisedException {
-		// Check stage is in our system
-		errorChecker.checkStageBelongsToSystem(stageId);
+		errorChecker.checkStageBelongsToSystem(stageId); // Check stage is in our system
 
 		// Get the ordered list of riders
 		int[] orderedRiders = getRidersRankInStage(stageId);
@@ -604,7 +558,6 @@ public class CyclingPortalImpl implements CyclingPortal {
 		for (int riderId : orderedRiders) {
 			mountainPoints[riderId] = Stage.getStageById(stageId).getMountainPoints(riderId);
 		}
-
 		return mountainPoints;
 	}
 
@@ -720,5 +673,18 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	public ArrayList<Integer> getMyTeamIds() {
 		return myTeamIds;
+	}
+
+	/**
+	 * Get all stage IDs in the system as an ArrayList.
+	 *
+	 * @return ArrayList of stage IDs
+	 */
+	public ArrayList<Integer> getMyStageIds() {
+		ArrayList<Integer> myStageIds = new ArrayList<Integer>();
+		for (int raceId :getMyRaceIds()) {
+            myStageIds.addAll(Race.getRaceById(raceId).getStageIds());
+		}
+		return myStageIds;
 	}
 }

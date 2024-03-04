@@ -1,12 +1,14 @@
 package cycling;
 
+import java.util.ArrayList;
+
 /**
  * The portal does certain things many times, ie check a stage is part of its
  * system.
  * This class holds those functions to avoid repetition.
  */
 public class ErrorChecker {
-    private CyclingPortalImpl portal;
+    private final CyclingPortalImpl portal;
 
     /**
      * Constructor for the ErrorChecker class
@@ -31,6 +33,32 @@ public class ErrorChecker {
         }
 
         // Return otherwise
+    }
+
+    /**
+     * Checks if a team is part of the system
+     *
+     * @param teamId the teamID to check
+     * @throws IDNotRecognisedException thrown if the team is not part of the system
+     */
+    public void checkTeamBelongsToSystem(int teamId) throws IDNotRecognisedException {
+        if (!portal.getMyTeamIds().contains(teamId)) {
+            // Throw if it's not in our specific system
+            throw new IDNotRecognisedException("Team " + teamId + " is not part of the system");
+        }
+    }
+
+    /**
+     * Checks if a race is part of the system
+     *
+     * @param raceId the raceId to check
+     * @throws IDNotRecognisedException thrown if the team is not part of the system
+     */
+    public void checkRaceBelongsToSystem(int raceId) throws IDNotRecognisedException {
+        if (!portal.getMyRaceIds().contains(raceId)) {
+            // Throw if it's not in our specific system
+            throw new IDNotRecognisedException("Race " + raceId + " is not part of the system");
+        }
     }
 
     /**
@@ -69,26 +97,77 @@ public class ErrorChecker {
         // else return
     }
 
-    public void checkStageNameUnused(String trialName) throws IllegalNameException {
-        // Go through all races in this system
-        for (int raceId : portal.getMyRaceIds()) {
+    /**
+     * enum type to determine what type of name to check
+     */
+    public enum nameUnusedType{
+        /**
+         * Whether to check a stage name
+         */
+        STAGE,
+        /**
+         * Whether to check a team name
+         */
+        TEAM,
+        /**
+         * Whether to check a race name
+         */
+        RACE;
+    }
 
-            // go through each stage in the current race
-            for (int stageId : Race.getRaceById(raceId).getStageIds()) {
-                String stageName = null; // get the name of the stage
-                try {
-                    stageName = Stage.getStageById(stageId).getName();
-                } catch (IDNotRecognisedException e) {
-                    // Should never occur
-                }
+    /**
+     * Checks if a name is unused - combined function for stages, teams and races
+     *
+     * @param trialName the name to try
+     * @param type What type of name to check
+     * @throws IllegalNameException if the name is already taken
+     */
+    public void checkNameUnused(String trialName, nameUnusedType type) throws IllegalNameException {
 
-                if (stageName.equals(trialName)) { // if the name is already taken
-                    throw new IllegalNameException("The name " + stageName + " has already been taken");
-                }
+        // Get the list of ids for the type
+        ArrayList<Integer> ids = null;
+        switch (type) {
+            case STAGE:
+                ids = portal.getMyStageIds();
+                break;
+            case TEAM:
+                ids = portal.getMyTeamIds();
+                break;
+            case RACE:
+                ids = portal.getMyRaceIds();
+                break;
+            default:
+                assert (false) : "Invalid nameUnusedType";
+        }
+
+        for (int id : ids) {
+            String name = null;
+            switch (type) { // use the specific method to get the name
+                case STAGE:
+                    try {
+                        name = Stage.getStageById(id).getName();
+                    } catch (IDNotRecognisedException e) {
+                        // Will never happen
+                    }
+                    break;
+                case TEAM:
+                    name = Team.getTeamById(id).getName();
+                    break;
+                case RACE:
+                    name = Race.getRaceById(id).getName();
+                    break;
+                default:
+                    assert (false) : "Invalid nameUnusedType";
             }
 
+            if (name.equals(trialName)) { // if the name is already taken
+                throw new IllegalNameException("The name " + name + " has already been taken");
+            }
         }
 
     }
+
+
+
 
 }

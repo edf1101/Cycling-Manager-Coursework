@@ -99,10 +99,24 @@ public abstract class Checkpoint {
     }
 
     /**
+     * Remove a checkpoint from the hashmap
+     *
+     * @param id the ID of the checkpoint to remove
+     * @throws IDNotRecognisedException if the id is not in the hashmap
+     */
+    public static void removeFromHashmap(int id) throws IDNotRecognisedException {
+        // check if the checkpoint is in the hashmap
+        if (!checkpoints.containsKey(id)) {
+            throw new IDNotRecognisedException("Checkpoint " + id + " is not part of the system");
+        }
+        checkpoints.remove(id); // first delete it from the hashmap of all checkpoints
+    }
+
+    /**
      * Delete this checkpoint
      */
-    public void delete() {
-        checkpoints.remove(myId); // first delete it from the hashmap of all checkpoints
+    public void delete() throws IDNotRecognisedException, InvalidStageStateException {
+        Stage.getStageById(parentStageId).removeCheckpoint(myId);
     }
 
     /**

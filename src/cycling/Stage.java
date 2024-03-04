@@ -299,7 +299,8 @@ public class Stage {
         stages.remove(myId); // Remove from the dictionary of stages
 
         for (int checkpointId : checkpoints) {
-            Checkpoint.getCheckpointById(checkpointId).delete();
+            checkpoints.remove(checkpointId);
+            Checkpoint.removeFromHashmap(checkpointId);
         }
 
         // remove this stage from the parent
@@ -323,7 +324,7 @@ public class Stage {
         }
 
         checkpoints.remove(checkpointId);
-        Checkpoint.getCheckpointById(checkpointId).delete();
+        Checkpoint.removeFromHashmap(checkpointId);
     }
 
     /**
