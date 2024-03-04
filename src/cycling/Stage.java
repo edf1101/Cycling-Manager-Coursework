@@ -223,7 +223,7 @@ public class Stage {
     public int[] getSprintPointsInStage(int[] orderedRiders) throws IDNotRecognisedException {
         int[] sprintPoints = new int[orderedRiders.length];
         for (int index = 0; index < orderedRiders.length; index++) {
-            sprintPoints[index] = Stage.getStageById(myId).getSprintPoints(orderedRiders[index]);
+            sprintPoints[index] = getSprintPoints(orderedRiders[index]);
         }
 
         return sprintPoints;
@@ -524,7 +524,7 @@ public class Stage {
         // Get the ordered list of riders
         int[] mountainPoints = new int[orderedRiders.length];
         for (int index = 0; index < orderedRiders.length; index++) {
-            mountainPoints[index] = Stage.getStageById(myId).getMountainPoints(orderedRiders[index]);
+            mountainPoints[index] = getMountainPoints(orderedRiders[index]);
         }
         return mountainPoints;
     }

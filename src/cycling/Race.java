@@ -195,7 +195,7 @@ public class Race {
      *
      * @return the ordered riderIds of who came 1st 2nd etc
      */
-    public int[] getRidersGeneralClassifcationRanks() {
+    public int[] getRidersGeneralClassificationRanks() {
         Function<Integer,LocalTime> func = this::getRiderGeneralClassificationTime;
         PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false, stageIds);
         return pointsHandler.getRiderRanks();
@@ -224,6 +224,96 @@ public class Race {
             }
         }
         return summedTime;
+    }
+
+    /**
+     * Gets the mountain points for all riders ordered by their GC time
+     *
+     * @return an array of the mountain points for each rider ordered by their GC time
+     */
+    public int[] getRidersMountainPoints() {
+        int[] ridersGeneralClassificationRanks = getRidersGeneralClassificationRanks();
+        int[] ridersMountainPoints = new int[ridersGeneralClassificationRanks.length];
+        for(int i = 0; i < ridersGeneralClassificationRanks.length; i++){
+            ridersMountainPoints[i] = getRiderMountainPoints(ridersGeneralClassificationRanks[i]);
+        }
+        return ridersMountainPoints;
+    }
+
+    /**
+     * Gets the rankings of the riders considering their mountain points
+     *
+     * @return an array of the riderIds ordered by their mountain points
+     */
+    public int[] getRidersMountainPointsRankings() {
+        Function<Integer,Integer> func = this::getRiderMountainPoints;
+        PointsHandler<Integer> pointsHandler = new PointsHandler<Integer>(func, true, stageIds);
+        return pointsHandler.getRiderRanks();
+    }
+
+    /**
+     * Gets the rankings of the riders considering their sprint points
+     *
+     * @return an array of the riderIds ordered by their sprint points
+     */
+    public int[] getRidersSprintPointsRankings() {
+        Function<Integer,Integer> func = this::getRiderSprintPoints;
+        PointsHandler<Integer> pointsHandler = new PointsHandler<Integer>(func, true, stageIds);
+        return pointsHandler.getRiderRanks();
+    }
+
+    /**
+     * Gets the sprint points for all riders ordered by their GC time
+     *
+     * @return an array of the sprint points for each rider ordered by their GC time
+     */
+    public int[] getRidersSprintPoints() {
+        int[] ridersGeneralClassificationRanks = getRidersGeneralClassificationRanks();
+        int[] ridersSprintPoints = new int[ridersGeneralClassificationRanks.length];
+        for(int i = 0; i < ridersGeneralClassificationRanks.length; i++){
+            ridersSprintPoints[i] = getRiderSprintPoints(ridersGeneralClassificationRanks[i]);
+        }
+        return ridersSprintPoints;
+    }
+
+    /**
+     * Get the mountain points for a rider across all stages
+     *
+     * @param riderId the rider to get mountain points for
+     * @return the sum of the mountain points for the rider
+     */
+    private int getRiderMountainPoints(int riderId) {
+        int pointSum = 0;
+        for(int stageId:stageIds){
+            try {
+                pointSum += Stage.getStageById(stageId).getMountainPoints(riderId);
+            }
+            catch (IDNotRecognisedException e){
+                // Should never happen since we are iterating through the list of stageIds already validated
+                assert(false) : "Stage ID not recognised"; // assertion so we can see if it happened
+            }
+        }
+        return pointSum;
+    }
+
+    /**
+     * Get the sprint points for a rider across all stages
+     *
+     * @param riderId the rider to get sprint points for
+     * @return the sum of the sprint points for the rider
+     */
+    private int getRiderSprintPoints(int riderId) {
+        int pointSum = 0;
+        for(int stageId:stageIds){
+            try {
+                pointSum += Stage.getStageById(stageId).getSprintPoints(riderId);
+            }
+            catch (IDNotRecognisedException e){
+                // Should never happen since we are iterating through the list of stageIds already validated
+                assert(false) : "Stage ID not recognised"; // assertion so we can see if it happened
+            }
+        }
+        return pointSum;
     }
 
 }

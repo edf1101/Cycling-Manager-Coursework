@@ -231,7 +231,24 @@ public class PortalScoringTests {
         }
 
         // Test getting the race mountain points
+        try {
+            assert Arrays.equals(portal.getRidersMountainPointsInRace(raceId),
+                    new int[]{27, 22, 14, 25}) : "Mountain points for race isn't working";
+            assert Arrays.equals(portal.getRidersMountainPointClassificationRank(raceId),
+                    new int[]{riderId1, riderId4, riderId2, riderId3}) : "Mountain points for race isn't working";
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
 
+        // Test getting the sprint points
+        try {
+            assert Arrays.equals(portal.getRidersPointsInRace(raceId),
+                    new int[]{167, 123, 109, 128}) : "Sprint points for race failed";
+            assert Arrays.equals(portal.getRidersPointClassificationRank(raceId),
+                    new int[]{20, 23, 21, 22}) : "Sprint points for race failed";
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 }

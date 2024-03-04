@@ -39,7 +39,6 @@ public class PointsHandler<T extends Comparable<T>> {
     private void sortRiders() {
         HashMap<T, Integer> riderTimes= new HashMap<T,Integer>();
         // may well be a better way to do this idk
-
         // Add all riders and their GC times to the hashmap
         for(int stageId : stageIds){
             Stage stage = null;
@@ -49,17 +48,21 @@ public class PointsHandler<T extends Comparable<T>> {
                 assert false : "Stage ID not recognised - shouldn't happen";
             }
             for(int riderId : stage.getRegisteredRiders()){
-                if(!riderTimes.containsKey(riderId)){
-                    T score = null;
-                    try {
-                        score = getScore.apply(riderId);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
+                T score = null;
+                try {
+                    score = getScore.apply(riderId);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                if(!riderTimes.containsKey(score)){
+
+
                     riderTimes.put(score,riderId);
                 }
             }
+
         }
+
         // Convert the keys to a list
 
         // Sort the list according to whether it's reversed or not
@@ -98,10 +101,10 @@ public class PointsHandler<T extends Comparable<T>> {
         return riderTimes;
     }
 
-    public Integer[] getRiderPoints() {
-        Integer[] riderPoints = new Integer[riderScores.length];
+    public int[] getRiderPoints() {
+        int[] riderPoints = new int[riderScores.length];
         for(int i = 0; i < riderScores.length; i++){
-            riderPoints[i] = (Integer) riderScores[i];
+            riderPoints[i] = (int)(Integer) riderScores[i];
         }
         return riderPoints;
     }

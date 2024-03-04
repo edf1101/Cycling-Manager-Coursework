@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.function.Function;
 
 public class CyclingPortalImpl implements CyclingPortal {
 
@@ -592,7 +591,6 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public LocalTime[] getGeneralClassificationTimesInRace(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
-		// TODO test
 		return Race.getRaceById(raceId).getRidersGeneralClassificationTimes();
 	}
 	/**
@@ -610,8 +608,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public int[] getRidersPointsInRace(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
 
-		// TODO Auto-generated method stub
-		return null;
+		return Race.getRaceById(raceId).getRidersSprintPoints();
 	}
 
 	/**
@@ -630,8 +627,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public int[] getRidersMountainPointsInRace(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
 
-		// TODO Auto-generated method stub
-		return null;
+		return Race.getRaceById(raceId).getRidersMountainPoints();
 	}
 	/**
 	 * Get the general classification rank of riders in a race.
@@ -647,25 +643,30 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int[] getRidersGeneralClassificationRank(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
-		// TODO test
-		return Race.getRaceById(raceId).getRidersGeneralClassifcationRanks();
+		return Race.getRaceById(raceId).getRidersGeneralClassificationRanks();
 
 	}
 
 	@Override
 	public int[] getRidersPointClassificationRank(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
-
-		// TODO Auto-generated method stub
-		return null;
+		return Race.getRaceById(raceId).getRidersSprintPointsRankings();
 	}
 
+	/**
+	 * Get the ranked list of riders based on the mountain classification in a race.
+	 *
+	 * @param raceId The ID of the race being queried.
+	 * @return A ranked list of riders' IDs sorted descending by the sum of their
+	 *         mountain points in all stages of the race.
+	 * @throws IDNotRecognisedException If the ID does not match any race in the
+	 *                                  system.
+	 */
 	@Override
 	public int[] getRidersMountainPointClassificationRank(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
 
-		// TODO Auto-generated method stub
-		return null;
+		return Race.getRaceById(raceId).getRidersMountainPointsRankings();
 	}
 
 	/**
