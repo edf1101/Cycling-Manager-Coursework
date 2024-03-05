@@ -168,12 +168,8 @@ public class Stage {
      * Adds a checkpoint to the stage.
      *
      * @param checkpointId the ID of the checkpoint to add
-     * @throws InvalidStageTypeException if the stage is a time trial stage
      */
-    public void addCheckpoint(int checkpointId) throws InvalidStageTypeException {
-        if (type == StageType.TT) {
-            throw new InvalidStageTypeException("Time trial stages cannot have checkpoints");
-        }
+    public void addCheckpoint(int checkpointId){
 
         checkpoints.add(checkpointId);
     }

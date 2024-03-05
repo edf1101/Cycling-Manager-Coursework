@@ -163,47 +163,62 @@ public class PortalStagesTests {
         // test error thrown when giving invalid Ids to getNumberOfStages
         try {
             portal.getNumberOfStages(-10);
-            assert (false) : "Should have thrown an exception for too short length";
+            assert (false) : "Should have thrown an exception for invalid id";
         } catch (IDNotRecognisedException e) {
             // This is expected
         }
         // test error thrown when giving invalid Ids to getStages
         try {
             portal.getRaceStages(-10);
-            assert (false) : "Should have thrown an exception for too short length";
+            assert (false) : "Should have thrown an exception for invalid id";
         } catch (IDNotRecognisedException e) {
             // This is expected
         }
         // test error thrown when giving invalid Ids to getStageLength
         try {
             portal.getStageLength(-10);
-            assert (false) : "Should have thrown an exception for too short length";
+            assert (false) : "Should have thrown an exception for invalid id";
         } catch (IDNotRecognisedException e) {
             // This is expected
         }
         // test error thrown when giving invalid Ids to removeStageById
         try {
             portal.removeStageById(-10);
-            assert (false) : "Should have thrown an exception for too short length";
+            assert (false) : "Should have thrown an exception for invalid id";
         } catch (IDNotRecognisedException e) {
             // This is expected
         }
         // test error thrown when giving invalid Ids to registerRiderResultsInStage
         try {
             portal.registerRiderResultsInStage(-10, rider1Id, new LocalTime[] { LocalTime.of(12, 0) });
-            assert (false) : "Should have thrown an exception for too short length";
+            assert (false) : "Should have thrown an exception for invalid id";
         } catch (IDNotRecognisedException e) {
             // This is expected
         } catch (DuplicatedResultException | InvalidCheckpointTimesException | InvalidStageStateException ignored) {
-            // Not expecting this exception
+            assert (false) : "not expecting this exception";
         }
         try {
             portal.registerRiderResultsInStage(stage1Id, -10, new LocalTime[] { LocalTime.of(12, 0) });
-            assert (false) : "Should have thrown an exception for too short length";
+            assert (false) : "Should have thrown an exception for invalid id";
         } catch (IDNotRecognisedException e) {
             // This is expected
         } catch (DuplicatedResultException | InvalidCheckpointTimesException | InvalidStageStateException ignored) {
-            // Not expecting this exception
+            assert (false) : "not expecting this exception";
         }
+        // now conclude the stage
+        try {
+            portal.concludeStagePreparation(stage1Id);
+        } catch (InvalidStageStateException e) {
+            throw new RuntimeException(e);
+        }
+
+         //Check it throws error when trying to conclude a stage thats already concluded
+        try {
+            portal.concludeStagePreparation(stage1Id);
+            assert (false) : "Should have thrown an exception for invalid id";
+        } catch (InvalidStageStateException e) {
+            // Expected
+        }
+
     }
 }

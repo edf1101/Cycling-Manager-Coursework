@@ -25,7 +25,8 @@ public class Climb extends Checkpoint {
      * @param avgGradient   the average gradient of the climb
      * @param parentStageId the stage that the checkpoint is in
      */
-    public Climb(CheckpointType type, Double location, Double length, Double avgGradient, int parentStageId) {
+    public Climb(CheckpointType type, Double location, Double length, Double avgGradient, int parentStageId)
+            throws InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
 
         super(type, location, parentStageId);
         this.averageGradient = avgGradient;

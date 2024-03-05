@@ -31,10 +31,45 @@ public class PortalCheckpointsTests {
                 int stage1Id = portal.addStageToRace(race1Id, "Stage1", "Test stage 1", 20.0,
                                 LocalDateTime.of(2021, 1, 1, 12, 0), StageType.FLAT);
 
+                int stage2Id = portal.addStageToRace(race1Id, "Stage2", "Test stage 2", 20.0,
+                        LocalDateTime.of(2021, 1, 1, 12, 0), StageType.TT);
+
                 int check1Id = portal.addCategorizedClimbToStage(stage1Id, 0.0, CheckpointType.C1, 2.0,
                                 100.0);
-                int check2Id = portal.addCategorizedClimbToStage(stage1Id, 100.0, CheckpointType.C2,
+                int check2Id = portal.addCategorizedClimbToStage(stage1Id, 20.0, CheckpointType.C2,
                                 3.0, 200.0);
+
+                // Test error thrown adding a new checkpoint stage with invalid id
+                try {
+                        portal.addCategorizedClimbToStage(-10, 5.0, CheckpointType.C3, 4.0, 20.0);
+                        assert false: "Adding a new checkpoint to a invalid id stage did not throw an error";
+                } catch (IDNotRecognisedException e) {
+                        //expected
+                }
+
+                // Test error thrown adding a new checkpoint stage with invalid location
+                try {
+                        portal.addCategorizedClimbToStage(stage1Id, 500.0, CheckpointType.C3, 4.0, 20.0);
+                        assert false: "Adding a new checkpoint to a stage  did not throw an error";
+                } catch (InvalidLocationException e) {
+                        //expected
+                }
+                // Test error thrown adding a new checkpoint stage with invalid location
+                try {
+                        portal.addCategorizedClimbToStage(stage1Id, -1.0, CheckpointType.C3, 4.0, 20.0);
+                        assert false: "Adding a new checkpoint to a stage  did not throw an error";
+                } catch (InvalidLocationException e) {
+                        //expected
+                }
+
+                // Test error thrown adding a new checkpoint to a time trial;
+                try {
+                        portal.addCategorizedClimbToStage(stage2Id, 1.0, CheckpointType.C3, 4.0, 20.0);
+                        assert false: "Adding a new checkpoint to a TT stage  did not throw an error";
+                } catch (InvalidStageTypeException e) {
+                        //expected
+                }
+
 
                 portal.concludeStagePreparation(stage1Id);
 
@@ -50,19 +85,30 @@ public class PortalCheckpointsTests {
                                         new LocalTime[] { start, mid1, mid2, fin });
                 }
 
-                // TODO write these with assertions
-                // for (LocalTime time : portal.getRankedAdjustedElapsedTimesInStage(stage1Id))
-                // {
-                // System.out.println(time);
-                // }
-                //
-                //// Test getting ranked times
-                // LocalTime[] rankedTimes =
-                // portal.getRankedAdjustedElapsedTimesInStage(stage1Id);
-                // System.out.println(Arrays.toString(rankedTimes));
-                //// test getting ranked riders
-                // int[] rankedRiders = portal.getRidersRankInStage(stage1Id);
-                // System.out.println(Arrays.toString(rankedRiders));
+                // Test error thrown adding a new checkpoint to a concluded stage
+                try {
+                        portal.addCategorizedClimbToStage(stage1Id, 5.0, CheckpointType.C3, 4.0, 20.0);
+                        assert false: "Adding a new checkpoint to a concluded stage did not throw an error";
+                } catch (InvalidStageStateException e) {
+                        //expected
+                }
+
+                // Test error thrown removing checkpoint to a concluded stage
+                try {
+                        portal.removeCheckpoint(check1Id);
+                        assert false: "removing checkpoint for a concluded stage did not throw an error";
+                } catch (InvalidStageStateException e) {
+                        //expected
+                }
+
+                // Test error thrown removing checkpoint with invalid id
+                try {
+                        portal.removeCheckpoint(-10);
+                        assert false: "removing checkpoint for a concluded stage did not throw an error";
+                } catch (IDNotRecognisedException e) {
+                        //expected
+                }
+
         }
 
 }

@@ -5,15 +5,17 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
+// TODO list:
+//  - Make sure javadoc is completed everywhere with appropriate tags
+//  - put assertions into the src code
+
 public class CyclingPortalImpl implements CyclingPortal {
 
 	// Lists of the various IDs that belong to this instance of CyclingPortalImpl
-	// We only need to have lists for race and Team ids since we can backtrack
-	// through others
-	// to get to one of these
 	private final ArrayList<Integer> myRaceIds = new ArrayList<>();
 	private final ArrayList<Integer> myTeamIds = new ArrayList<>();
 
+	// class to encapsulate error checking functions
 	private final ErrorChecker errorChecker = new ErrorChecker(this);
 
 	/**
@@ -100,7 +102,6 @@ public class CyclingPortalImpl implements CyclingPortal {
 			StageType type)
 			throws IDNotRecognisedException, IllegalNameException, InvalidNameException, InvalidLengthException {
 
-		// TODO check with diogo if stages are allowed to share names between races.
 		errorChecker.checkNameUnused(stageName, ErrorChecker.nameUnusedType.STAGE); // Check Stage name is Unique
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check Race matches system list of races
 
@@ -443,6 +444,14 @@ public class CyclingPortalImpl implements CyclingPortal {
 		return Stage.getStageById(stageId).getAdjustedElapsedTime(riderId);
 	}
 
+	/**
+	 * Remove the results of a rider in a stage.
+	 *
+	 * @param stageId The ID of the stage the result refers to.
+	 * @param riderId The ID of the rider.
+	 * @throws IDNotRecognisedException If the ID does not match to any rider or
+	 *                                  stage in the system.
+	 */
 	@Override
 	public void deleteRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
 		Stage.getStageById(stageId).removeRider(riderId);
@@ -517,7 +526,6 @@ public class CyclingPortalImpl implements CyclingPortal {
 	/**
 	 * Erase all the data from the system, so no races,stages, teams, riders,
 	 * or checkpoint references exist.
-	 *
 	 */
 	@Override
 	public void eraseCyclingPortal() {
@@ -644,6 +652,17 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	}
 
+	/**
+	 * Get the ranked list of riders based on the points classification in a race.
+	 *
+	 * @param raceId The ID of the race being queried.
+	 * @return A ranked list of riders' IDs sorted descending by the sum of their
+	 *         points in all stages of the race. That is, the first in this list is
+	 *         the winner (more points). An empty list if there is no result for any
+	 *         stage in the race.
+	 * @throws IDNotRecognisedException If the ID does not match any race in the
+	 *                                  system.
+	 */
 	@Override
 	public int[] getRidersPointClassificationRank(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system

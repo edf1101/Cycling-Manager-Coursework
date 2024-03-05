@@ -19,7 +19,28 @@ public abstract class Checkpoint {
      * Constructor for the abstract superclass checkpoint.
      * This will be called via super() in the subclasses
      */
-    public Checkpoint(CheckpointType type, Double location, int parentStageId) {
+    public Checkpoint(CheckpointType type, Double location, int parentStageId)
+            throws InvalidLocationException, InvalidStageTypeException, InvalidStageStateException {
+        // Check conditions are Ok for the checkpoint
+        Stage parentStage = null;
+        try {
+            parentStage = Stage.getStageById(parentStageId);
+        } catch (IDNotRecognisedException e) {
+            assert false: "Parent stage ID not recognised, shouldn't happen";
+        }
+
+        if (location < 0 || location > parentStage.getLength()) {
+            throw new InvalidLocationException("Location of checkpoint must be within the stage");
+        }
+
+        if (parentStage.getType() == StageType.TT) {
+            throw new InvalidStageTypeException("Time trial stages cannot have checkpoints");
+        }
+
+        if (parentStage.isPrepared()) {
+            throw new InvalidStageStateException("Stage already prepared");
+        }
+
         this.myType = type;
         this.location = location;
         this.parentStageId = parentStageId;
