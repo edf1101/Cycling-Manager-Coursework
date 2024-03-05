@@ -362,9 +362,6 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	/**
 	 * Record the times of a rider in a stage.
-	 * <p>
-	 * The state of this MiniCyclingPortal must be unchanged if any
-	 * exceptions are thrown.
 	 *
 	 * @param stageId     The ID of the stage the result refers to.
 	 * @param riderId     The ID of the rider.
@@ -524,24 +521,24 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public void eraseCyclingPortal() {
-		// TODO tests for this
-		// Can be done by removing all races and teams, since that's all the portal keeps track of
-		for (int raceId : myRaceIds) {
+		// Use while loops as for loops will not work with concurrent modification
+		while (!myTeamIds.isEmpty()){
+            try {
+                removeTeam(myTeamIds.getFirst());
+            } catch (IDNotRecognisedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+		while (!myRaceIds.isEmpty()){
 			try {
-				removeRaceById(raceId);
+				removeRaceById(myRaceIds.getFirst());
 			} catch (IDNotRecognisedException e) {
-				// This should never happen as we are giving it an ID that we have found in the
-				// system
+				throw new RuntimeException(e);
 			}
 		}
-		for(int teamId : myTeamIds){
-			try {
-				removeTeam(teamId);
-			} catch (IDNotRecognisedException e) {
-				// This should never happen as we are giving it an ID that we have found in the
-				// system
-			}
-		}
+		assert getTeams().length == 0 : "Teams not erased";
+		assert getRaceIds().length == 0: "Races not erased";
+
 
 	}
 

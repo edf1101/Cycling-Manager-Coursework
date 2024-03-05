@@ -245,7 +245,7 @@ public class PortalScoringTests {
             assert Arrays.equals(portal.getRidersPointsInRace(raceId),
                     new int[]{167, 123, 109, 128}) : "Sprint points for race failed";
             assert Arrays.equals(portal.getRidersPointClassificationRank(raceId),
-                    new int[]{20, 23, 21, 22}) : "Sprint points for race failed";
+                    new int[]{riderId1, riderId4, riderId2, riderId3}) : "Sprint points for race failed";
         } catch (IDNotRecognisedException e) {
             throw new RuntimeException(e);
         }

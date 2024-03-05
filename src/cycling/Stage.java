@@ -313,7 +313,7 @@ public class Stage {
         stages.remove(myId); // Remove from the dictionary of stages
 
         for (int checkpointId : checkpoints) {
-            checkpoints.remove(checkpointId);
+            //checkpoints.remove(Integer.valueOf(checkpointId));
             Checkpoint.removeFromHashmap(checkpointId);
         }
 

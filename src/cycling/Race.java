@@ -93,11 +93,10 @@ public class Race {
      * Deletes this Race, cascading down to delete all stages and checkpoints
      */
     public void delete() {
-        races.remove(myId);
 
-        for (int stageId : stageIds) {
+        for (int stageIndex =0; stageIndex < stageIds.size(); stageIndex++) {
             try {
-                Stage.getStageById(stageId).delete();
+                Stage.getStageById(stageIds.get(stageIndex)).delete();
             } catch (IDNotRecognisedException e) {
                 // Should never happen as we are iterating through the list of stageIds
                 // which are valid and checked
@@ -105,6 +104,8 @@ public class Race {
         }
 
         // No need to remove stages from list as they are already deleted
+        races.remove(myId);
+
     }
 
     /**

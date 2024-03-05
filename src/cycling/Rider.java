@@ -90,10 +90,6 @@ public class Rider {
      * Removes the rider from the system
      */
     public void remove() throws IDNotRecognisedException {
-        // TODO actually do something when we remove a rider
-        // ie cascade down removing riders scores and shifting points
-        // Then remove it from static riders hashmap
-
         // remove this Id from the parent team
         Team.getTeamById(myTeam).removeRider(this.myId);
 

@@ -103,9 +103,14 @@ public class Team {
      * Remove the team from the system
      */
     public void remove() {
-        // TODO actually do something when we remove a team
-        // ie cascade down removing riders and shifting points
-        // Then remove it from static teams hashmap
+        // Go through all riders in the team and remove them
+        while (!riderIds.isEmpty()) { // needs to be while loop to stop concurrent modification exception
+            try {
+                Rider.getRiderById(riderIds.getFirst()).remove();
+            } catch (IDNotRecognisedException e) {
+                throw new RuntimeException(e);
+            }
+        }
         teams.remove(myId);
     }
 
