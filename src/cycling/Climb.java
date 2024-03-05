@@ -2,6 +2,13 @@ package cycling;
 
 import java.util.HashMap;
 
+/**
+ * The Climb class is a subclass of the Checkpoint class and is used to represent
+ * a climb in a stage
+ *
+ * @author 730003140 & 730002704
+ * @version 1.0
+ */
 public class Climb extends Checkpoint {
 
     private static final HashMap<CheckpointType, int[]> POINTS = new HashMap<CheckpointType, int[]>();
@@ -24,6 +31,9 @@ public class Climb extends Checkpoint {
      * @param length        the length of the climb
      * @param avgGradient   the average gradient of the climb
      * @param parentStageId the stage that the checkpoint is in
+     * @throws InvalidLocationException if the location is out of range of the stage
+     * @throws InvalidStageStateException if the stage is not in the correct state
+     * @throws InvalidStageTypeException if the stage is not of the correct type
      */
     public Climb(CheckpointType type, Double location, Double length, Double avgGradient, int parentStageId)
             throws InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {

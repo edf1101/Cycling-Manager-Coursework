@@ -2,11 +2,15 @@ package cycling;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.function.Function;
 
+/**
+ * Class to represent an entire Race in the system
+ *
+ * @author 730003140 & 730002704
+ * @version 1.0
+ */
 public class Race {
 
     private static final HashMap<Integer, Race> races = new HashMap<Integer, Race>();
@@ -20,6 +24,7 @@ public class Race {
      *
      * @param name        Name of the race
      * @param description Description of the race
+     * @throws InvalidNameException When the name is empty/null, too long/short, or contains whitespace
      */
     public Race(String name, String description) throws InvalidNameException {
         // Check for invalid (rule breaking) name
@@ -28,13 +33,11 @@ public class Race {
         }
 
         // Set up attributes for the object
-
         this.myId = UniqueIdGenerator.calculateUniqueId(races);
         this.name = name;
         this.description = description;
 
         // add the new object to the hashmap of all races
-
         races.put(this.myId, this);
     }
 
@@ -93,7 +96,7 @@ public class Race {
      * Deletes this Race, cascading down to delete all stages and checkpoints
      */
     public void delete() {
-
+        // NOTE: this cannot be done with a for each loop as it throws concurrent modification exception
         for (int stageIndex =0; stageIndex < stageIds.size(); stageIndex++) {
             try {
                 Stage.getStageById(stageIds.get(stageIndex)).delete();
@@ -105,7 +108,6 @@ public class Race {
 
         // No need to remove stages from list as they are already deleted
         races.remove(myId);
-
     }
 
     /**
@@ -121,6 +123,7 @@ public class Race {
      * Deletes a stage
      *
      * @param stageId the stage ID to delete
+     * @throws IDNotRecognisedException When the stage ID does not exist in the system
      */
     public void deleteStage(int stageId) throws IDNotRecognisedException {
         if (!stageIds.contains(stageId)) {
@@ -137,7 +140,6 @@ public class Race {
      *
      * @param stageId the stage ID to remove from the list
      */
-    // TODO Check if this is ever needed, or if deleteStage is enough
     public void removeStage(int stageId) {
         stageIds.remove(Integer.valueOf(stageId));
     }

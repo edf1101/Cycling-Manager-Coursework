@@ -6,6 +6,9 @@ import java.util.ArrayList;
  * The portal does certain things many times, ie check a stage is part of its
  * system.
  * This class holds those functions to avoid repetition.
+ *
+ * @author 730003140 & 730002704
+ * @version 1.0
  */
 public class ErrorChecker {
     private final CyclingPortalImpl portal;
@@ -23,6 +26,7 @@ public class ErrorChecker {
      * Checks if a rider is part of the system
      *
      * @param riderId the rider ID to check
+     * @throws IDNotRecognisedException thrown if the rider is not part of the system
      */
     public void checkRiderBelongsToSystem(int riderId) throws IDNotRecognisedException {
         int riderTeam = Rider.getRiderById(riderId).getMyTeam(); // Check if the ID is in any system
@@ -52,7 +56,7 @@ public class ErrorChecker {
      * Checks if a race is part of the system
      *
      * @param raceId the raceId to check
-     * @throws IDNotRecognisedException thrown if the team is not part of the system
+     * @throws IDNotRecognisedException thrown if the race is not part of the system
      */
     public void checkRaceBelongsToSystem(int raceId) throws IDNotRecognisedException {
         if (!portal.getMyRaceIds().contains(raceId)) {
@@ -65,6 +69,7 @@ public class ErrorChecker {
      * Checks if a stage is part of the system
      *
      * @param stageId the stage ID to check
+     * @throws IDNotRecognisedException thrown if the stage is not part of the system
      */
     public void checkStageBelongsToSystem(int stageId) throws IDNotRecognisedException {
         Stage.getStageById(stageId); // if it's not in any system this throws error
@@ -83,6 +88,7 @@ public class ErrorChecker {
      * Checks if a checkpoint is part of the system
      *
      * @param checkpointId the checkpoint ID to check
+     * @throws IDNotRecognisedException thrown if the checkpoint is not part of the system
      */
     public void checkCheckpointBelongsToSystem(int checkpointId) throws IDNotRecognisedException {
 
@@ -164,10 +170,6 @@ public class ErrorChecker {
                 throw new IllegalNameException("The name " + name + " has already been taken");
             }
         }
-
     }
-
-
-
 
 }

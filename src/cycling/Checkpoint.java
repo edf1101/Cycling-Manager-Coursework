@@ -4,6 +4,13 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Abstract class for a checkpoint
+ * This class is the superclass for the subclasses IntermediateSprint and Climb
+ *
+ * @author 730003140 & 730002704
+ * @version 1.0
+ */
 public abstract class Checkpoint {
 
     private static final HashMap<Integer, Checkpoint> checkpoints = new HashMap<Integer, Checkpoint>();
@@ -18,6 +25,13 @@ public abstract class Checkpoint {
     /**
      * Constructor for the abstract superclass checkpoint.
      * This will be called via super() in the subclasses
+     *
+     * @param type the type of checkpoint
+     * @param location the location of the checkpoint
+     * @param parentStageId the stage that the checkpoint is in
+     * @throws InvalidLocationException if the location is out of range of the stage
+     * @throws InvalidStageTypeException if the stage is not of the correct type
+     * @throws InvalidStageStateException if the stage is already prepared
      */
     public Checkpoint(CheckpointType type, Double location, int parentStageId)
             throws InvalidLocationException, InvalidStageTypeException, InvalidStageStateException {
@@ -66,6 +80,7 @@ public abstract class Checkpoint {
      * Getter for a checkpoint by its ID
      *
      * @param id the ID to query
+     * @return the checkpoint with the given ID
      */
     public static Checkpoint getCheckpointById(int id) throws IDNotRecognisedException{
         if (!checkpoints.containsKey(id)) {
@@ -76,6 +91,7 @@ public abstract class Checkpoint {
 
     /**
      * Getter for all checkpoint IDs
+     * @return an ArrayList of all checkpoint IDs
      */
     public static ArrayList<Integer> getIds() {
         return new ArrayList<Integer>(checkpoints.keySet());
@@ -135,6 +151,9 @@ public abstract class Checkpoint {
 
     /**
      * Delete this checkpoint
+     *
+     * @throws IDNotRecognisedException if the checkpoint ID is not recognised
+     * @throws InvalidStageStateException if the stage is already prepared
      */
     public void delete() throws IDNotRecognisedException, InvalidStageStateException {
         Stage.getStageById(parentStageId).removeCheckpoint(myId);

@@ -1,5 +1,11 @@
 package cycling;
 
+/**
+ * Represents an intermediate sprint checkpoint
+ *
+ * @author 730003140 & 730002704
+ * @version 1.0
+ */
 public class IntermediateSprint extends Checkpoint {
 
     // The points distribution for crossing the intermediate sprint checkpoint
@@ -11,6 +17,9 @@ public class IntermediateSprint extends Checkpoint {
      *
      * @param location the location of the intermediate sprint
      * @param parentStageId the ID of the stage that the intermediate sprint is on
+     * @throws InvalidLocationException if the location is out of range of the stage
+     * @throws InvalidStageStateException if the stage is not in the correct state
+     * @throws InvalidStageTypeException if the stage is not of the correct type
      */
     public IntermediateSprint(Double location, int parentStageId)
             throws InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {

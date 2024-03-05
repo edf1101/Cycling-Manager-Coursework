@@ -8,7 +8,6 @@ import java.util.HashMap;
  *
  * @author 730003140, 730002704
  * @version 1.0
- *
  */
 public class Team {
 
@@ -26,6 +25,7 @@ public class Team {
      *
      * @param name        Name of the team
      * @param description Description of the team
+     * @throws InvalidNameException if the name is invalid (too long/short or contains whitespace)
      */
     public Team(String name, String description) throws InvalidNameException {
 
@@ -83,7 +83,7 @@ public class Team {
      * Gets details about the team
      * Not required by spec but Adding it in case / extension
      *
-     * @return A short
+     * @return A short description of the team
      */
     public String getDetails() {
         return String.format("Name: %s  Description: %s", name, description);
@@ -108,7 +108,7 @@ public class Team {
             try {
                 Rider.getRiderById(riderIds.getFirst()).remove();
             } catch (IDNotRecognisedException e) {
-                throw new RuntimeException(e);
+                assert false : "Rider Id not found in team, this should not happen here";
             }
         }
         teams.remove(myId);

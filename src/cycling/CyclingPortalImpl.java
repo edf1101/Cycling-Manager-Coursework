@@ -6,9 +6,14 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 // TODO list:
-//  - Make sure javadoc is completed everywhere with appropriate tags
 //  - put assertions into the src code
-
+/**
+ * This class is the implementation of the CyclingPortal interface.
+ * It is the only backend class that the frontend application can interact with.
+ *
+ * @author 730003140 & 730002704
+ * @version 1.0
+ */
 public class CyclingPortalImpl implements CyclingPortal {
 
 	// Lists of the various IDs that belong to this instance of CyclingPortalImpl
@@ -53,7 +58,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	/**
 	 * Get the details from a race.
-	 * <p>
+	 *
 	 * The state of this MiniCyclingPortal must be unchanged if any
 	 * exceptions are thrown.
 	 *

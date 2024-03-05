@@ -8,8 +8,11 @@ import java.util.function.Function;
 /**
  * This handles the sorting and ranking of points/times to riderIds using Generic
  * types for modularity.
+ *
  * @param <T> The type of object being sorted.
  *          LocalTime for times, Integer/int for points.
+ * @author 730003140 & 730002704
+ * @version 1.0
  */
 public class PointsHandler<T extends Comparable<T>> {
 // There was a lot of code in Race class that could be shortened with a generic type.
@@ -17,8 +20,8 @@ public class PointsHandler<T extends Comparable<T>> {
     private int[] riderRanks; // The riderIds in order of their points/times
     private T[] riderScores; // The points/times of the riders
     private final boolean reversed; // whether the order is reversed or not (false for times, true for points)
-    private Function<Integer,T> getScore; // The method to get the score from the rider
-    private ArrayList<Integer> stageIds; // The stages to get the riders from
+    private final Function<Integer,T> getScore; // The method to get the score from the rider
+    private final ArrayList<Integer> stageIds; // The stages to get the riders from
     /**
      * Constructor for the PointsHandler class
      * @param reversed Whether the order is reversed or not (false for times, true for points)
@@ -63,8 +66,6 @@ public class PointsHandler<T extends Comparable<T>> {
 
         }
 
-        // Convert the keys to a list
-
         // Sort the list according to whether it's reversed or not
         ArrayList<T> scoresList = new ArrayList<>(riderTimes.keySet());
         if (reversed)
@@ -75,14 +76,12 @@ public class PointsHandler<T extends Comparable<T>> {
         // Convert ArrayList to array
         riderScores = scoresList.toArray((T[]) new Comparable[scoresList.size()]);
 
-
         // create a list to store int values of the riderIds in order
         int[] riderIds = new int[scoresList.size()];
         for(int i = 0; i < scoresList.size(); i++){
             riderIds[i] = riderTimes.get(scoresList.get(i));
         }
         riderRanks = riderIds;
-
     }
 
     /**
@@ -93,19 +92,17 @@ public class PointsHandler<T extends Comparable<T>> {
     public int[] getRiderRanks() {
         return riderRanks;
     }
+
+    /**
+     * Getter for the riderScores array
+     *
+     * @return the scores of the riders as LocalTime format
+     */
     public LocalTime[] getRiderTimes() {
         LocalTime[] riderTimes = new LocalTime[riderScores.length];
         for(int i = 0; i < riderScores.length; i++){
             riderTimes[i] = (LocalTime) riderScores[i];
         }
         return riderTimes;
-    }
-
-    public int[] getRiderPoints() {
-        int[] riderPoints = new int[riderScores.length];
-        for(int i = 0; i < riderScores.length; i++){
-            riderPoints[i] = (int)(Integer) riderScores[i];
-        }
-        return riderPoints;
     }
 }

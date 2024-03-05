@@ -9,6 +9,12 @@ import java.util.function.Function;
 
 // TODO we haven't handled time trials yet, oops
 
+/**
+ * Class to represent a stage in the staged bike race
+ *
+ * @author 730003140 & 730002704
+ * @version 1.0
+ */
 public class Stage {
     private static final HashMap<Integer, Stage> stages = new HashMap<Integer, Stage>(); // Hashmap of all stages
 
@@ -185,7 +191,6 @@ public class Stage {
      * @throws IDNotRecognisedException if the rider ID is not recognised
      */
     public int getSprintPoints(int riderId) throws IDNotRecognisedException {
-        // TODO this should throw an error if the rider isn't in the system,
         // If its only not in the stage then it should return empty array.
         // check if the rider has a start and finish time recorded
         if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
@@ -204,7 +209,6 @@ public class Stage {
         int[] pointsArray = POINTS.get(type);
 
         // Assume the rider gets 0 points if they finish outside the top 15
-        // TODO check this with diogo
         int points = (position >= pointsArray.length) ? 0 : pointsArray[position - 1];
 
         // Add the points from the checkpoints for intermediate sprints
@@ -216,6 +220,13 @@ public class Stage {
         return points;
     }
 
+    /**
+     * Get the sprint points for an array of riders.
+     *
+     * @param orderedRiders the array of riders to calculate the sprint points for.
+     * @return an array of the number of sprint points each rider gets for this stage.
+     * @throws IDNotRecognisedException if a rider ID is not recognised.
+     */
     public int[] getSprintPointsInStage(int[] orderedRiders) throws IDNotRecognisedException {
         int[] sprintPoints = new int[orderedRiders.length];
         for (int index = 0; index < orderedRiders.length; index++) {
@@ -268,6 +279,7 @@ public class Stage {
      * Remove a checkpoint from the stage's list of checkpoints.
      *
      * @param checkpointId the ID of the checkpoint to remove
+     * @throws InvalidStageStateException if the stage is already prepared
      */
     public void removeCheckpoint(int checkpointId) throws InvalidStageStateException {
         if (prepared)
@@ -342,7 +354,6 @@ public class Stage {
      *
      * @param riderId the ID of the rider to get the elapsed time for
      * @return the elapsed time
-     * @throws IDNotRecognisedException if the rider ID is not recognised
      */
     private LocalTime getElapsedTime(int riderId)  {
 
@@ -516,6 +527,12 @@ public class Stage {
         return pointsHandler.getRiderTimes();
     }
 
+    /**
+     * This function returns the mountain points for each rider a given array of riderIds
+     * @param orderedRiders a list of riderIds which will determine the order of the output array
+     * @return an array of mountain points for each rider.
+     * @throws IDNotRecognisedException If any of the riders in the input array are not recognised
+     */
     public int[] getRidersMountainPointsInStage(int[] orderedRiders ) throws IDNotRecognisedException {
         // Get the ordered list of riders
         int[] mountainPoints = new int[orderedRiders.length];

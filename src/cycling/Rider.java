@@ -25,8 +25,10 @@ public class Rider {
      * @param name        Name of the rider
      * @param yearOfBirth Year of birth of the rider
      * @param team        The team the rider belongs to
+     * @throws IllegalArgumentException If the name is empty or null, or the year of birth is < 1900
      */
-    public Rider(String name, int yearOfBirth, int team) {
+    public Rider(String name, int yearOfBirth, int team)
+            throws IllegalArgumentException{
         // Check the arguments are legal
         if (name == null || name.isEmpty() || yearOfBirth < 1900) {
             throw new IllegalArgumentException("The name mustn't be empty or null, and the year must be >= 1900");
@@ -56,6 +58,7 @@ public class Rider {
      *
      * @param riderId The rider to find
      * @return The rider's object
+     * @throws IDNotRecognisedException If the rider is not in the system
      */
     public static Rider getRiderById(int riderId) throws IDNotRecognisedException {
         if (!riders.containsKey(riderId)) {
@@ -88,6 +91,7 @@ public class Rider {
 
     /**
      * Removes the rider from the system
+     * @throws IDNotRecognisedException If the rider is not in the system
      */
     public void remove() throws IDNotRecognisedException {
         // remove this Id from the parent team
