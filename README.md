@@ -1,5 +1,7 @@
 # Cycling Manager - OOP Coursework
 
+<img src="http://e0.365dm.com/22/06/2048x1152/skysports-edwards-dunbar-cycling_5807396.jpg" alt="drawing" width="650"/>
+
 ## Introduction
 
 This is a backend for a system to design, manage and score staged bike races such as the
