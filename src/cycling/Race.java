@@ -11,7 +11,7 @@ import java.util.function.Function;
  * @author 730003140 & 730002704
  * @version 1.0
  */
-public class Race {
+public class Race implements java.io.Serializable {
 
     private static final HashMap<Integer, Race> races = new HashMap<Integer, Race>();
     private final int myId;

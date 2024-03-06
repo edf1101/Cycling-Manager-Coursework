@@ -21,8 +21,8 @@ import java.util.ArrayList;
 public class CyclingPortalImpl implements CyclingPortal {
 
 	// Lists of the various IDs that belong to this instance of CyclingPortalImpl
-	private ArrayList<Integer> myRaceIds = new ArrayList<>();
-	private ArrayList<Integer> myTeamIds = new ArrayList<>();
+	private final ArrayList<Integer> myRaceIds = new ArrayList<>();
+	private final ArrayList<Integer> myTeamIds = new ArrayList<>();
 
 	// class to encapsulate error checking functions
 	private final ErrorChecker errorChecker = new ErrorChecker(this);
@@ -560,49 +560,31 @@ public class CyclingPortalImpl implements CyclingPortal {
 		assert getRaceIds().length == 0 : "Races not erased";
 	}
 
+	/**
+	 * Method saves this MiniCyclingPortal contents into a serialised file,
+	 * with the filename given in the argument.
+	 *
+	 * @param filename Location of the file to be saved.
+	 * @throws IOException If there is a problem experienced when trying to save the
+	 *                     store contents to the file.
+	 */
 	@Override
 	public void saveCyclingPortal(String filename) throws IOException {
-		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename));
-
-		try {
-			SerializedData data = new SerializedData(this);
-			out.writeObject(data);
-			out.close();
-		} catch (IDNotRecognisedException e) {
-			// This should never happen as we are giving it an ID that we have found in the system
-		}
+		SerializedData.saveData(filename, this);
 	}
 
+	/**
+	 * Method should load and replace this MiniCyclingPortal contents with the
+	 * serialised contents stored in the file given in the argument.
+	 * @param filename Location of the file to be loaded.
+	 * @throws IOException            If there is a problem experienced when trying
+	 *                                to load the store contents from the file.
+	 * @throws ClassNotFoundException If required class files cannot be found when
+	 *                                loading.
+	 */
 	@Override
 	public void loadCyclingPortal(String filename) throws IOException, ClassNotFoundException {
-		ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
-		SerializedData loadedPortal = (SerializedData) in.readObject();
-		in.close();
-
-		// Copy the loaded data into this instance
-		eraseCyclingPortal();
-		myRaceIds = loadedPortal.getPortal().myRaceIds;
-		myTeamIds = loadedPortal.getPortal().myTeamIds;
-
-		for (int raceId : loadedPortal.getRaces().keySet()) {
-			Race.pushRace(raceId, loadedPortal.getRaces().get(raceId));
-		}
-
-		for (int stageId : loadedPortal.getStages().keySet()) {
-			Stage.pushStage(stageId, loadedPortal.getStages().get(stageId));
-		}
-
-		for (int checkpointId : loadedPortal.getCheckpoints().keySet()) {
-			Checkpoint.pushCheckpoint(checkpointId, loadedPortal.getCheckpoints().get(checkpointId));
-		}
-
-		for (int riderId : loadedPortal.getRiders().keySet()) {
-			Rider.pushRider(riderId, loadedPortal.getRiders().get(riderId));
-		}
-
-		for (int teamId : loadedPortal.getTeams().keySet()) {
-			Team.pushTeam(teamId, loadedPortal.getTeams().get(teamId));
-		}
+		SerializedData.loadData(filename, this);
 	}
 
 	/**

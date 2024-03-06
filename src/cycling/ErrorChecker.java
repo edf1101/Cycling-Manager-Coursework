@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * @author 730003140 & 730002704
  * @version 1.0
  */
-public class ErrorChecker {
+public class ErrorChecker implements java.io.Serializable {
     private final CyclingPortalImpl portal;
 
     /**

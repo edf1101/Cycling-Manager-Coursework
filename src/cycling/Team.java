@@ -9,7 +9,7 @@ import java.util.HashMap;
  * @author 730003140, 730002704
  * @version 1.0
  */
-public class Team {
+public class Team implements java.io.Serializable {
 
     // Holds reference to all the teams created
     static private final HashMap<Integer, Team> teams = new HashMap<Integer, Team>();

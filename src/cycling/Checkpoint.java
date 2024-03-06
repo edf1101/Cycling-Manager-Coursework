@@ -11,7 +11,7 @@ import java.util.HashMap;
  * @author 730003140 & 730002704
  * @version 1.0
  */
-public abstract class Checkpoint {
+public abstract class Checkpoint implements java.io.Serializable{
 
     private static final HashMap<Integer, Checkpoint> checkpoints = new HashMap<Integer, Checkpoint>();
     private final int myId; // its unique ID for checkpoints

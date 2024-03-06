@@ -14,7 +14,7 @@ import java.util.function.Function;
  * @author 730003140 & 730002704
  * @version 1.0
  */
-public class Stage {
+public class Stage implements java.io.Serializable {
     private static final HashMap<Integer, Stage> stages = new HashMap<Integer, Stage>(); // Hashmap of all stages
 
     private static final HashMap<StageType, int[]> POINTS = new HashMap<StageType, int[]>(); // Points for each stage

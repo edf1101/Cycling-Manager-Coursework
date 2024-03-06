@@ -9,7 +9,7 @@ import java.util.HashMap;
  * @author 730002704 & 730003140
  * @version 1.0
  */
-public class Rider {
+public class Rider implements java.io.Serializable {
 
     // Holds reference to all the riders created by their Id
     static private final HashMap<Integer, Rider> riders = new HashMap<Integer, Rider>();

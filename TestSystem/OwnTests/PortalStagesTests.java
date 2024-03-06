@@ -67,7 +67,6 @@ public class PortalStagesTests {
 
         // test removing a stage then readding to check the Id is reused
         portal.removeStageById(stage2Id);
-        System.out.println(portal.getMyStageIds());
         assert (portal.getRaceStages(race1Id).length == 1) : "Race1 should have 1 stage now";
         assert (portal.getRaceStages(race2Id).length == 0) : "Race2 should have 0 stage now";
 
