@@ -2,7 +2,6 @@ package cycling;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -45,10 +44,10 @@ public class Stage {
     /**
      * Constructor for the Stage class.
      *
-     * @param name        Name of the stage
-     * @param description Description of the stage
-     * @param type        The type of the stage
-     * @param length      The length of the stage
+     * @param name         Name of the stage
+     * @param description  Description of the stage
+     * @param type         The type of the stage
+     * @param length       The length of the stage
      * @param parentRaceId The ID of the parent race that this stage belongs to
      * @throws InvalidNameException   if the name is not 0<characters<=30 or
      *                                contains whitespace
@@ -81,7 +80,18 @@ public class Stage {
     }
 
     /**
+     * Pushes a stage into the system.
+     *
+     * @param id the ID of the stage to add
+     * @param stage the stage object to add
+     */
+    public static void pushStage(int id, Stage stage) {
+        stages.put(id, stage);
+    }
+
+    /**
      * Getter for the parent race this stage belongs to
+     *
      * @return the race Id
      */
     public int getRaceId() {
@@ -136,7 +146,8 @@ public class Stage {
         if (startTimes.containsKey(riderId) || finishTimes.containsKey(riderId)) {
             throw new DuplicatedResultException("Rider ID already has a finish time");
         }
-        //System.out.println("Checkpoint size: " + checkpoints.size()+ " times size: " + times.length);
+        // System.out.println("Checkpoint size: " + checkpoints.size()+ " times size: "
+        // + times.length);
         // Check the number of times is correct
         if (times.length != checkpoints.size() + 2) {
             throw new InvalidCheckpointTimesException("Number of times given is not number of checkpoints + 2");
@@ -160,11 +171,11 @@ public class Stage {
         for (int i = 0; i < times.length - 2; i++) {
             try {
                 Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpoints.get(i));
-                checkpoint.recordTime(riderId, times[i+1]);
+                checkpoint.recordTime(riderId, times[i + 1]);
 
-            }
-            catch (IDNotRecognisedException e) {
-                // will never happen as we are iterating through a list of already validated checkpoints
+            } catch (IDNotRecognisedException e) {
+                // will never happen as we are iterating through a list of already validated
+                // checkpoints
             }
         }
 
@@ -175,7 +186,7 @@ public class Stage {
      *
      * @param checkpointId the ID of the checkpoint to add
      */
-    public void addCheckpoint(int checkpointId){
+    public void addCheckpoint(int checkpointId) {
 
         checkpoints.add(checkpointId);
     }
@@ -224,7 +235,8 @@ public class Stage {
      * Get the sprint points for an array of riders.
      *
      * @param orderedRiders the array of riders to calculate the sprint points for.
-     * @return an array of the number of sprint points each rider gets for this stage.
+     * @return an array of the number of sprint points each rider gets for this
+     *         stage.
      * @throws IDNotRecognisedException if a rider ID is not recognised.
      */
     public int[] getSprintPointsInStage(int[] orderedRiders) throws IDNotRecognisedException {
@@ -287,7 +299,6 @@ public class Stage {
         checkpoints.remove(checkpointId);
     }
 
-
     /**
      * Removes all of a rider's results from the stage and its checkpoints.
      *
@@ -321,7 +332,7 @@ public class Stage {
         stages.remove(myId); // Remove from the dictionary of stages
 
         for (int checkpointId : checkpoints) {
-            //checkpoints.remove(Integer.valueOf(checkpointId));
+            // checkpoints.remove(Integer.valueOf(checkpointId));
             Checkpoint.removeFromHashmap(checkpointId);
         }
 
@@ -334,7 +345,7 @@ public class Stage {
      *
      * @param checkpointId the ID of the checkpoint to delete
      * @throws InvalidStageStateException if the stage is already prepared
-     * @throws IDNotRecognisedException  if the checkpoint ID is not recognised
+     * @throws IDNotRecognisedException   if the checkpoint ID is not recognised
      */
     public void deleteCheckpoint(int checkpointId) throws InvalidStageStateException, IDNotRecognisedException {
         if (prepared) {
@@ -355,7 +366,7 @@ public class Stage {
      * @param riderId the ID of the rider to get the elapsed time for
      * @return the elapsed time
      */
-    private LocalTime getElapsedTime(int riderId)  {
+    private LocalTime getElapsedTime(int riderId) {
 
         return LocalTime
                 .ofNanoOfDay(finishTimes.get(riderId).toNanoOfDay() - startTimes.get(riderId).toNanoOfDay());
@@ -363,7 +374,8 @@ public class Stage {
 
     /**
      * Gets a rider's adjusted elapsed time for the stage.
-     * Adjusted time recursively gives riders that finish within 1 second of each other the same time.
+     * Adjusted time recursively gives riders that finish within 1 second of each
+     * other the same time.
      *
      * @param riderId the ID of the rider to get the adjusted time for
      * @return the adjusted time
@@ -377,28 +389,29 @@ public class Stage {
         LocalTime adjustedElapsedTime = getElapsedTime(riderId);
 
         // Repeat until no more adjustments are made
-        // There might be a better way to do this by decreasing the elapsed time by 1 second at a time until it's outside the range
+        // There might be a better way to do this by decreasing the elapsed time by 1
+        // second at a time until it's outside the range
         boolean adjusted = true;
-		while (adjusted) {
-			adjusted = false;
+        while (adjusted) {
+            adjusted = false;
 
-			// Iterate through all registered riders in the stage
-			for (int otherRiderID : getRegisteredRiders()) {
-				if (otherRiderID != riderId) {
-					// Calculate the time difference between the current rider and other riders
+            // Iterate through all registered riders in the stage
+            for (int otherRiderID : getRegisteredRiders()) {
+                if (otherRiderID != riderId) {
+                    // Calculate the time difference between the current rider and other riders
 
                     // TODO check if spec says to combine times <= or < 1 second
-					float difference = (float) (getElapsedTime(otherRiderID).toNanoOfDay() -
-                            adjustedElapsedTime.toNanoOfDay()) /1000000000; // nanoseconds to seconds
+                    float difference = (float) (getElapsedTime(otherRiderID).toNanoOfDay() -
+                            adjustedElapsedTime.toNanoOfDay()) / 1000000000; // nanoseconds to seconds
 
-					// Adjust the elapsed time if the difference is within the range [-1, 0)
-					if (-1 < difference && difference < 0) {
-						adjustedElapsedTime = getElapsedTime(otherRiderID);
-						adjusted = true;
-					}
-				}
-			}
-		}
+                    // Adjust the elapsed time if the difference is within the range [-1, 0)
+                    if (-1 < difference && difference < 0) {
+                        adjustedElapsedTime = getElapsedTime(otherRiderID);
+                        adjusted = true;
+                    }
+                }
+            }
+        }
 
         return adjustedElapsedTime;
     }
@@ -478,7 +491,7 @@ public class Stage {
      *
      * @return the stage checkpoints
      */
-    public ArrayList<Integer> getCheckpoints() {
+    public ArrayList<Integer> getCheckpointIds() {
         return checkpoints;
     }
 
@@ -506,8 +519,8 @@ public class Stage {
      *
      * @return The IDs of the riders sorted by elapsed time
      */
-    public int[] getRidersRankInStage(){
-        Function<Integer,LocalTime> func = this::getElapsedTime;
+    public int[] getRidersRankInStage() {
+        Function<Integer, LocalTime> func = this::getElapsedTime;
         PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false,
                 new ArrayList<>(List.of(myId)));
         return pointsHandler.getRiderRanks();
@@ -520,20 +533,24 @@ public class Stage {
      * @return The ranked list of adjusted elapsed times sorted by their finish
      *         time.
      */
-    public LocalTime[] getRankedAdjustedElapsedTimesInStage(){
-        Function<Integer,LocalTime> func = this::getElapsedTime;
+    public LocalTime[] getRankedAdjustedElapsedTimesInStage() {
+        Function<Integer, LocalTime> func = this::getElapsedTime;
         PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false,
                 new ArrayList<>(List.of(myId)));
         return pointsHandler.getRiderTimes();
     }
 
     /**
-     * This function returns the mountain points for each rider a given array of riderIds
-     * @param orderedRiders a list of riderIds which will determine the order of the output array
+     * This function returns the mountain points for each rider a given array of
+     * riderIds
+     *
+     * @param orderedRiders a list of riderIds which will determine the order of the
+     *                      output array
      * @return an array of mountain points for each rider.
-     * @throws IDNotRecognisedException If any of the riders in the input array are not recognised
+     * @throws IDNotRecognisedException If any of the riders in the input array are
+     *                                  not recognised
      */
-    public int[] getRidersMountainPointsInStage(int[] orderedRiders ) throws IDNotRecognisedException {
+    public int[] getRidersMountainPointsInStage(int[] orderedRiders) throws IDNotRecognisedException {
         // Get the ordered list of riders
         int[] mountainPoints = new int[orderedRiders.length];
         for (int index = 0; index < orderedRiders.length; index++) {

@@ -43,6 +43,16 @@ public class Team {
     }
 
     /**
+     * Pushes a team into the system.
+     *
+     * @param id the ID of the team to add
+     * @param team the team object to add
+     */
+    public static void pushTeam(int id, Team team) {
+        teams.put(id, team);
+    }
+
+    /**
      * Getter for the riders' Ids that belong to this team
      *
      * @return an array of ints for the rider Ids in the team

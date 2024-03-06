@@ -42,9 +42,19 @@ public class Race {
     }
 
     /**
-     * Getter for a race by its Id
+     * Pushes a race into the system.
      *
-     * @param id the Id to query
+     * @param id the ID of the race to add
+     * @param race the race object to add
+     */
+    public static void pushRace(int id, Race race) {
+        races.put(id, race);
+    }
+
+    /**
+     * Getter for a race by its ID
+     *
+     * @param id the ID to query
      * @return The race object reference
      */
     public static Race getRaceById(int id) {

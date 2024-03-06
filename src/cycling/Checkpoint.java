@@ -21,7 +21,7 @@ public abstract class Checkpoint {
     // The times that riders passed the checkpoint format of: <riderId, time>
     protected final HashMap<Integer, LocalTime> passTimes = new HashMap<Integer, LocalTime>();
     private final int parentStageId; // the stage that the checkpoint is in
-    
+
     /**
      * Constructor for the abstract superclass checkpoint.
      * This will be called via super() in the subclasses
@@ -60,6 +60,16 @@ public abstract class Checkpoint {
         this.parentStageId = parentStageId;
         myId = UniqueIdGenerator.calculateUniqueId(checkpoints);
         checkpoints.put(myId, this);
+    }
+
+    /**
+     * Pushes a checkpoint into the system.
+     *
+     * @param id the ID of the checkpoint to add
+     * @param checkpoint the checkpoint object to add
+     */
+    public static void pushCheckpoint(int id, Checkpoint checkpoint) {
+        checkpoints.put(id, checkpoint);
     }
 
     /**

@@ -45,6 +45,16 @@ public class Rider {
     }
 
     /**
+     * Pushes a rider into the system.
+     *
+     * @param id the ID of the rider to add
+     * @param rider the rider object to add
+     */
+    public static void pushRider(int id, Rider rider) {
+        riders.put(id, rider);
+    }
+
+    /**
      * Getter for the Id attribute on the rider class
      *
      * @return this instance of a rider's Id

@@ -1,6 +1,10 @@
 package cycling;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -17,8 +21,8 @@ import java.util.ArrayList;
 public class CyclingPortalImpl implements CyclingPortal {
 
 	// Lists of the various IDs that belong to this instance of CyclingPortalImpl
-	private final ArrayList<Integer> myRaceIds = new ArrayList<>();
-	private final ArrayList<Integer> myTeamIds = new ArrayList<>();
+	private ArrayList<Integer> myRaceIds = new ArrayList<>();
+	private ArrayList<Integer> myTeamIds = new ArrayList<>();
 
 	// class to encapsulate error checking functions
 	private final ErrorChecker errorChecker = new ErrorChecker(this);
@@ -240,8 +244,9 @@ public class CyclingPortalImpl implements CyclingPortal {
 		Checkpoint.getCheckpointById(checkpointId).delete(); // delete it using its own object's delete function
 	}
 
-	// TODO ik its not actually used anywhere but the specicifity of stage states implies we should have "waiting for results"
-	//  etc instead of bool
+	// TODO ik its not actually used anywhere but the specicifity of stage states
+	// implies we should have "waiting for results"
+	// etc instead of bool
 	/**
 	 * Concludes the preparation of a stage. After conclusion, the stage's state
 	 * should be "waiting for results".
@@ -269,7 +274,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public int[] getStageCheckpoints(int stageId) throws IDNotRecognisedException {
 		errorChecker.checkStageBelongsToSystem(stageId); // Check if the system contains this stage
 		// convert the ArrayList of Integers to an array of ints and return it
-		return Stage.getStageById(stageId).getCheckpoints().stream().mapToInt(Integer::intValue).toArray();
+		return Stage.getStageById(stageId).getCheckpointIds().stream().mapToInt(Integer::intValue).toArray();
 	}
 
 	/**
@@ -305,7 +310,6 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		Team.getTeamById(teamId).remove(); // remove the team from its own class
 		myTeamIds.remove(Integer.valueOf(teamId)); // remove it from the cycling portals list of associated teams
-
 	}
 
 	/**
@@ -440,7 +444,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 * @param riderId The ID of the rider.
 	 * @return The adjusted time taken in a stage
 	 * @throws IDNotRecognisedException If the stage ID is not part of the
-	 * system or the RiderID is not part of the system
+	 *                                  system or the RiderID is not part of the
+	 *                                  system
 	 */
 	@Override
 	public LocalTime getRiderAdjustedElapsedTimeInStage(int stageId, int riderId) throws IDNotRecognisedException {
@@ -535,36 +540,69 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public void eraseCyclingPortal() {
 		// Use while loops as for loops will not work with concurrent modification
-		while (!myTeamIds.isEmpty()){
-            try {
-                removeTeam(myTeamIds.getFirst());
-            } catch (IDNotRecognisedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-		while (!myRaceIds.isEmpty()){
+		while (!myTeamIds.isEmpty()) {
+			try {
+				removeTeam(myTeamIds.getFirst());
+			} catch (IDNotRecognisedException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		while (!myRaceIds.isEmpty()) {
 			try {
 				removeRaceById(myRaceIds.getFirst());
 			} catch (IDNotRecognisedException e) {
 				throw new RuntimeException(e);
 			}
 		}
+
 		assert getTeams().length == 0 : "Teams not erased";
-		assert getRaceIds().length == 0: "Races not erased";
-
-
+		assert getRaceIds().length == 0 : "Races not erased";
 	}
 
 	@Override
 	public void saveCyclingPortal(String filename) throws IOException {
-		// TODO Auto-generated method stub
+		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename));
 
+		try {
+			SerializedData data = new SerializedData(this);
+			out.writeObject(data);
+			out.close();
+		} catch (IDNotRecognisedException e) {
+			// This should never happen as we are giving it an ID that we have found in the system
+		}
 	}
 
 	@Override
 	public void loadCyclingPortal(String filename) throws IOException, ClassNotFoundException {
-		// TODO Auto-generated method stub
+		ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
+		SerializedData loadedPortal = (SerializedData) in.readObject();
+		in.close();
 
+		// Copy the loaded data into this instance
+		eraseCyclingPortal();
+		myRaceIds = loadedPortal.getPortal().myRaceIds;
+		myTeamIds = loadedPortal.getPortal().myTeamIds;
+
+		for (int raceId : loadedPortal.getRaces().keySet()) {
+			Race.pushRace(raceId, loadedPortal.getRaces().get(raceId));
+		}
+
+		for (int stageId : loadedPortal.getStages().keySet()) {
+			Stage.pushStage(stageId, loadedPortal.getStages().get(stageId));
+		}
+
+		for (int checkpointId : loadedPortal.getCheckpoints().keySet()) {
+			Checkpoint.pushCheckpoint(checkpointId, loadedPortal.getCheckpoints().get(checkpointId));
+		}
+
+		for (int riderId : loadedPortal.getRiders().keySet()) {
+			Rider.pushRider(riderId, loadedPortal.getRiders().get(riderId));
+		}
+
+		for (int teamId : loadedPortal.getTeams().keySet()) {
+			Team.pushTeam(teamId, loadedPortal.getTeams().get(teamId));
+		}
 	}
 
 	/**
@@ -603,14 +641,18 @@ public class CyclingPortalImpl implements CyclingPortal {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
 		return Race.getRaceById(raceId).getRidersGeneralClassificationTimes();
 	}
+
 	/**
 	 * Get the overall points of riders in a race.
 	 *
 	 * @param raceId The ID of the race being queried.
-	 * @return An array of riders' points (i.e., the sum of their points in all stages
-	 *         of the race), sorted by the total adjusted elapsed time. An empty array if
+	 * @return An array of riders' points (i.e., the sum of their points in all
+	 *         stages
+	 *         of the race), sorted by the total adjusted elapsed time. An empty
+	 *         array if
 	 *         there is no result for any stage in the race. These points should
-	 *         match the riders returned by {@link #getRidersGeneralClassificationRank(int)}.
+	 *         match the riders returned by
+	 *         {@link #getRidersGeneralClassificationRank(int)}.
 	 * @throws IDNotRecognisedException If the ID does not match any race in the
 	 *                                  system.
 	 */
@@ -626,7 +668,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 *
 	 * @param raceId The ID of the race being queried.
 	 * @return An array of riders' mountain points (i.e., the sum of their mountain
-	 *         points in all stages of the race), sorted by the total adjusted elapsed time.
+	 *         points in all stages of the race), sorted by the total adjusted
+	 *         elapsed time.
 	 *         An empty array if there is no result for any stage in the race. These
 	 *         points should match the riders returned by
 	 *         {@link #getRidersGeneralClassificationRank(int)}.
@@ -639,6 +682,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		return Race.getRaceById(raceId).getRidersMountainPoints();
 	}
+
 	/**
 	 * Get the general classification rank of riders in a race.
 	 *
@@ -715,8 +759,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	public ArrayList<Integer> getMyStageIds() {
 		ArrayList<Integer> myStageIds = new ArrayList<Integer>();
-		for (int raceId :getMyRaceIds()) {
-            myStageIds.addAll(Race.getRaceById(raceId).getStageIds());
+		for (int raceId : getMyRaceIds()) {
+			myStageIds.addAll(Race.getRaceById(raceId).getStageIds());
 		}
 		return myStageIds;
 	}
