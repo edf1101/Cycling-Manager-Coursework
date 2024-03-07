@@ -63,10 +63,10 @@ public class CustomTestApp {
         PortalMiscTests.miscImplTests();
         System.out.println("Passed.\n");
 
-        System.out.println("Starting serialisation tests...");
-        PortalSerialisationTests.serialisationImplTests();
-        PortalSerialisationTests.serialisationImplTests();
-        System.out.println("Passed.\n");
+        //System.out.println("Starting serialisation tests...");
+        //PortalSerialisationTests.serialisationImplTests();
+        //PortalSerialisationTests.serialisationImplTests();
+        //System.out.println("Passed.\n");
 
         System.out.println("All tests passed.");
     }

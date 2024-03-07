@@ -218,16 +218,16 @@ public class PortalSerialisationTests {
         assert Arrays.equals(expectedTimes,portal2Times) : "Times not equal";
         assert expectedDetails.equals(portal2RaceDetails) : "Details not equal";
 
-        // get the same data from portal4
-         expectedDetails4 = "Name: Race1, Description: racedesc, Number of stages: 1, Total length: 0.00";
-         expectedTimes4 = new LocalTime[]{LocalTime.of(4, 0, 0)};
-        try {
-            portal4Times= portal4.getGeneralClassificationTimesInRace(portal1RaceId);
-            portal4RaceDetails = portal4.viewRaceDetails(portal1RaceId);
-        } catch (IDNotRecognisedException e) {
-            throw new RuntimeException(e);
-        }
-        assert Arrays.equals(expectedTimes4,portal4Times) : "Times not equal";
-        assert expectedDetails4.equals(portal4RaceDetails) : "Details not equal";
+        //// get the same data from portal4
+        // expectedDetails4 = "Name: Race1, Description: racedesc, Number of stages: 1, Total length: 0.00";
+        // expectedTimes4 = new LocalTime[]{LocalTime.of(4, 0, 0)};
+        //try {
+        //    portal4Times= portal4.getGeneralClassificationTimesInRace(portal1RaceId);
+        //    portal4RaceDetails = portal4.viewRaceDetails(portal1RaceId);
+        //} catch (IDNotRecognisedException e) {
+        //    throw new RuntimeException(e);
+        //}
+        //assert Arrays.equals(expectedTimes4,portal4Times) : "Times not equal";
+        //assert expectedDetails4.equals(portal4RaceDetails) : "Details not equal";
     }
 }

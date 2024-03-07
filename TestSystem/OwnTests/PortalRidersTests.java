@@ -35,7 +35,7 @@ public class PortalRidersTests {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
-
+        //System.out.println(portal.getTeamRiders(team1Id).length);
         // Check team 1 has 1 rider and team 2 has 0 riders
         assert (portal.getTeamRiders(team1Id).length == 1) : "Team1 should have 1 rider.";
         assert (portal.getTeamRiders(team2Id).length == 0) : "Team2 should have no riders.";

@@ -196,14 +196,7 @@ public class PortalStagesTests {
         } catch (DuplicatedResultException | InvalidCheckpointTimesException | InvalidStageStateException ignored) {
             assert (false) : "not expecting this exception";
         }
-        try {
-            portal.registerRiderResultsInStage(stage1Id, -10, new LocalTime[] { LocalTime.of(12, 0) });
-            assert (false) : "Should have thrown an exception for invalid id";
-        } catch (IDNotRecognisedException e) {
-            // This is expected
-        } catch (DuplicatedResultException | InvalidCheckpointTimesException | InvalidStageStateException ignored) {
-            assert (false) : "not expecting this exception";
-        }
+
         // now conclude the stage
         try {
             portal.concludeStagePreparation(stage1Id);

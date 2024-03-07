@@ -139,6 +139,7 @@ public class Stage implements java.io.Serializable {
 
         // Check stage is fully set up
         if (!prepared) {
+
             throw new InvalidStageStateException("Stage not prepared");
         }
 
@@ -146,8 +147,7 @@ public class Stage implements java.io.Serializable {
         if (startTimes.containsKey(riderId) || finishTimes.containsKey(riderId)) {
             throw new DuplicatedResultException("Rider ID already has a finish time");
         }
-        // System.out.println("Checkpoint size: " + checkpoints.size()+ " times size: "
-        // + times.length);
+
         // Check the number of times is correct
         if (times.length != checkpoints.size() + 2) {
             throw new InvalidCheckpointTimesException("Number of times given is not number of checkpoints + 2");

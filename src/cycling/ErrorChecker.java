@@ -23,23 +23,6 @@ public class ErrorChecker implements java.io.Serializable {
     }
 
     /**
-     * Checks if a rider is part of the system
-     *
-     * @param riderId the rider ID to check
-     * @throws IDNotRecognisedException thrown if the rider is not part of the system
-     */
-    public void checkRiderBelongsToSystem(int riderId) throws IDNotRecognisedException {
-        int riderTeam = Rider.getRiderById(riderId).getMyTeam(); // Check if the ID is in any system
-
-        if (!portal.getMyTeamIds().contains(riderTeam)) {
-            // Throw if it's not in our specific system
-            throw new IDNotRecognisedException("Rider " + riderId + " is not part of the system");
-        }
-
-        // Return otherwise
-    }
-
-    /**
      * Checks if a team is part of the system
      *
      * @param teamId the teamID to check
@@ -157,7 +140,11 @@ public class ErrorChecker implements java.io.Serializable {
                     }
                     break;
                 case TEAM:
-                    name = Team.getTeamById(id).getName();
+                    try{
+                    name = portal.getTeam(id).getName();}
+                    catch (IDNotRecognisedException e){
+                        // Will never happen as iterating through already valid ids so ignore
+                    }
                     break;
                 case RACE:
                     name = Race.getRaceById(id).getName();

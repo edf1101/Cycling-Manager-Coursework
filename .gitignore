@@ -11,7 +11,7 @@
 *.ctxt
 
 # serialization data
-#*.ser
+*.ser
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

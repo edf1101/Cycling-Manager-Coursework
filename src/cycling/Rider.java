@@ -12,10 +12,11 @@ import java.util.HashMap;
 public class Rider implements java.io.Serializable {
 
     // Holds reference to all the riders created by their Id
-    static private final HashMap<Integer, Rider> riders = new HashMap<Integer, Rider>();
+    //static private final HashMap<Integer, Rider> riders = new HashMap<Integer, Rider>();
+    static private final ArrayList<Integer> idsUsed = new ArrayList<>();
 
     private final int myId;
-    private final int myTeam;
+    private final Team myTeam;
     private final String name;
     private final int yearOfBirth;
 
@@ -27,32 +28,32 @@ public class Rider implements java.io.Serializable {
      * @param team        The team the rider belongs to
      * @throws IllegalArgumentException If the name is empty or null, or the year of birth is < 1900
      */
-    public Rider(String name, int yearOfBirth, int team)
+    public Rider(String name, int yearOfBirth, Team team)
             throws IllegalArgumentException{
         // Check the arguments are legal
         if (name == null || name.isEmpty() || yearOfBirth < 1900) {
             throw new IllegalArgumentException("The name mustn't be empty or null, and the year must be >= 1900");
         }
 
-        this.myId = UniqueIdGenerator.calculateUniqueId(riders);
+        this.myId = UniqueIdGenerator.calculateUniqueId(idsUsed);
         this.name = name;
         this.yearOfBirth = yearOfBirth;
         this.myTeam = team;
-        riders.put(this.myId, this); // add to static hashmap of riders in system
+        idsUsed.add(this.myId); // Add this rider to the list of riders
 
         // Add the rider to the team
-        Team.getTeamById(team).addRider(this.myId);
+        //Team.getTeamById(team).addRider(this.myId);
     }
 
-    /**
-     * Pushes a rider into the system.
-     *
-     * @param id the ID of the rider to add
-     * @param rider the rider object to add
-     */
-    public static void pushRider(int id, Rider rider) {
-        riders.put(id, rider);
-    }
+    ///**
+    // * Pushes a rider into the system.
+    // *
+    // * @param id the ID of the rider to add
+    // * @param rider the rider object to add
+    // */
+    //public static void pushRider(int id, Rider rider) {
+    //    riders.put(id, rider);
+    //}
 
     /**
      * Getter for the Id attribute on the rider class
@@ -63,19 +64,19 @@ public class Rider implements java.io.Serializable {
         return myId;
     }
 
-    /**
-     * Gets the rider specified by the Id
-     *
-     * @param riderId The rider to find
-     * @return The rider's object
-     * @throws IDNotRecognisedException If the rider is not in the system
-     */
-    public static Rider getRiderById(int riderId) throws IDNotRecognisedException {
-        if (!riders.containsKey(riderId)) {
-            throw new IDNotRecognisedException("Rider " + riderId + " is not part of the system");
-        }
-        return riders.get(riderId);
-    }
+    ///**
+    // * Gets the rider specified by the Id
+    // *
+    // * @param riderId The rider to find
+    // * @return The rider's object
+    // * @throws IDNotRecognisedException If the rider is not in the system
+    // */
+    //public static Rider getRiderById(int riderId) throws IDNotRecognisedException {
+    //    if (!riders.containsKey(riderId)) {
+    //        throw new IDNotRecognisedException("Rider " + riderId + " is not part of the system");
+    //    }
+    //    return riders.get(riderId);
+    //}
 
     /**
      * Get the details of the rider in a string form
@@ -84,7 +85,7 @@ public class Rider implements java.io.Serializable {
      */
     public String getDetails() {
         // Get the name of the team
-        String teamName = Team.getTeamById(myTeam).getName();
+        String teamName = myTeam.getName();
 
         return "Rider: " + name + " Year of Birth:" + yearOfBirth + " Team " + teamName;
     }
@@ -104,20 +105,7 @@ public class Rider implements java.io.Serializable {
      * @throws IDNotRecognisedException If the rider is not in the system
      */
     public void remove() throws IDNotRecognisedException {
-        // remove this Id from the parent team
-        Team.getTeamById(myTeam).removeRider(this.myId);
-
-        // then remove it from my list of all riders
-        riders.remove(this.myId);
-    }
-
-    /**
-     * Getter for all the rider Ids in the system.
-     *
-     * @return An array of all the rider Ids
-     */
-    public static ArrayList<Integer> getRiderIds() {
-        return new ArrayList<Integer>(riders.keySet());
+        idsUsed.remove(Integer.valueOf(this.myId));
     }
 
     /**
@@ -125,7 +113,7 @@ public class Rider implements java.io.Serializable {
      *
      * @return The team the rider is in
      */
-    public int getMyTeam() {
+    public Team getMyTeam() {
         return myTeam;
     }
 }

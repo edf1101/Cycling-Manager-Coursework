@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 // TODO list:
 //  - put assertions into the src code
@@ -22,7 +23,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	// Lists of the various IDs that belong to this instance of CyclingPortalImpl
 	private final ArrayList<Integer> myRaceIds = new ArrayList<>();
-	private final ArrayList<Integer> myTeamIds = new ArrayList<>();
+	private final HashMap<Integer,Team> myTeams = new HashMap<>();
 
 	// class to encapsulate error checking functions
 	private final ErrorChecker errorChecker = new ErrorChecker(this);
@@ -293,7 +294,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		Team newTeam = new Team(name, description); // Create instance of the team
 		int newId = newTeam.getId(); // The new ID for the created team
-		myTeamIds.add(newTeam.getId());
+		myTeams.put(newTeam.getId(),newTeam);
 		return newId;
 	}
 
@@ -308,8 +309,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public void removeTeam(int teamId) throws IDNotRecognisedException {
 		errorChecker.checkTeamBelongsToSystem(teamId); // Check the teamID exists in this system
 
-		Team.getTeamById(teamId).remove(); // remove the team from its own class
-		myTeamIds.remove(Integer.valueOf(teamId)); // remove it from the cycling portals list of associated teams
+		myTeams.get(teamId).remove(); // remove the team from its own class
+		myTeams.remove(Integer.valueOf(teamId)); // remove it from the cycling portals list of associated teams
 	}
 
 	/**
@@ -320,7 +321,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int[] getTeams() {
 		// convert the ArrayList of Integers to an array of ints and return it
-		return myTeamIds.stream().mapToInt(Integer::intValue).toArray();
+		return myTeams.keySet().stream().mapToInt(Integer::intValue).toArray();
 	}
 
 	/**
@@ -334,7 +335,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public int[] getTeamRiders(int teamId) throws IDNotRecognisedException {
 
 		errorChecker.checkTeamBelongsToSystem(teamId); // Check the teamID exists in this system
-		return Team.getTeamById(teamId).getRiders();
+		return myTeams.get(teamId).getRiders().keySet().stream().mapToInt(Integer::intValue).toArray();
 	}
 
 	/**
@@ -352,8 +353,10 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int createRider(int teamId, String name, int yearOfBirth)
 			throws IDNotRecognisedException, IllegalArgumentException {
-		errorChecker.checkTeamBelongsToSystem(teamId); // Check the teamID exists in this system
-		return new Rider(name, yearOfBirth, teamId).getId(); // Create the rider and return its ID
+		//errorChecker.checkTeamBelongsToSystem(teamId); // Check the teamID exists in this system
+		Rider newRider = new Rider(name, yearOfBirth, myTeams.get(teamId)); // Create the rider
+		getTeam(teamId).addRider(newRider); // Add the rider to the team
+		return newRider.getId(); // Return the new rider's ID
 	}
 
 	/**
@@ -366,8 +369,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	@Override
 	public void removeRider(int riderId) throws IDNotRecognisedException {
-		errorChecker.checkRiderBelongsToSystem(riderId); // check rider is in system
-		Rider.getRiderById(riderId).remove(); // remove the rider using its own object's remove function
+		getRider(riderId).getMyTeam().removeRider(riderId); // remove the rider using its own object's remove function
 	}
 
 	/**
@@ -407,9 +409,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public void registerRiderResultsInStage(int stageId, int riderId, LocalTime... checkpoints)
 			throws IDNotRecognisedException, DuplicatedResultException, InvalidCheckpointTimesException,
 			InvalidStageStateException {
-		errorChecker.checkRiderBelongsToSystem(riderId); // Check stageId and riderId exists in this system
+		//errorChecker.checkRiderBelongsToSystem(riderId); // Check stageId and riderId exists in this system
 		errorChecker.checkStageBelongsToSystem(stageId);
-
 		Stage.getStageById(stageId).registerResults(riderId, checkpoints);
 	}
 
@@ -426,8 +427,9 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public LocalTime[] getRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
-		errorChecker.checkRiderBelongsToSystem(riderId); // check rider and stage are in the system
 		errorChecker.checkStageBelongsToSystem(stageId);
+		getRider(riderId); // Check rider is in system (will throw error if not
+
 
 		Stage stage = Stage.getStageById(stageId);
 		try {
@@ -449,7 +451,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public LocalTime getRiderAdjustedElapsedTimeInStage(int stageId, int riderId) throws IDNotRecognisedException {
-		errorChecker.checkRiderBelongsToSystem(riderId); // Do checks for stage and rider Ids
+		getRider(riderId); // Check rider is in system (will throw error if not
 		errorChecker.checkStageBelongsToSystem(stageId);
 		return Stage.getStageById(stageId).getAdjustedElapsedTime(riderId);
 	}
@@ -540,9 +542,9 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public void eraseCyclingPortal() {
 		// Use while loops as for loops will not work with concurrent modification
-		while (!myTeamIds.isEmpty()) {
+		while (!myTeams.isEmpty()) {
 			try {
-				removeTeam(myTeamIds.getFirst());
+				removeTeam(new ArrayList<Integer>(myTeams.keySet()).getFirst());
 			} catch (IDNotRecognisedException e) {
 				throw new RuntimeException(e);
 			}
@@ -570,7 +572,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public void saveCyclingPortal(String filename) throws IOException {
-		SerializedData.saveData(filename, this);
+		//SerializedData.saveData(filename, this);
 	}
 
 	/**
@@ -584,7 +586,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public void loadCyclingPortal(String filename) throws IOException, ClassNotFoundException {
-		SerializedData.loadData(filename, this);
+		//SerializedData.loadData(filename, this);
 	}
 
 	/**
@@ -731,7 +733,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 * @return ArrayList of team IDs
 	 */
 	public ArrayList<Integer> getMyTeamIds() {
-		return myTeamIds;
+		return new ArrayList<Integer>(myTeams.keySet());
 	}
 
 	/**
@@ -745,5 +747,24 @@ public class CyclingPortalImpl implements CyclingPortal {
 			myStageIds.addAll(Race.getRaceById(raceId).getStageIds());
 		}
 		return myStageIds;
+	}
+
+	public Rider getRider(int riderId) throws IDNotRecognisedException {
+		for(Team team : myTeams.values()){
+			for(Rider rider : team.getRiders().values()){
+				if (rider.getId() == riderId){
+					return rider;
+				}
+			}
+		}
+		throw new IDNotRecognisedException("Rider " + riderId + " is not part of the system");
+	}
+	public Team getTeam(int teamId) throws IDNotRecognisedException {
+		for(Team team : myTeams.values()){
+			if (team.getId() == teamId){
+				return team;
+			}
+		}
+		throw new IDNotRecognisedException("Team " + teamId + " is not part of the system");
 	}
 }
