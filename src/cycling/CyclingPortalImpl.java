@@ -197,8 +197,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 			InvalidStageTypeException {
 		errorChecker.checkStageBelongsToSystem(stageId); // Check if the system contains this stage
 
-		Checkpoint newClimb = new Climb(type, location, length, averageGradient, stageId); // create the new climb
-		Stage.getStageById(stageId).addCheckpoint(newClimb.getMyId()); // add it to the parent stage's list of
+		Checkpoint newClimb = new Climb(type, location, length, averageGradient, Stage.getStageById(stageId)); // create the new climb
+		Stage.getStageById(stageId).addCheckpoint(newClimb); // add it to the parent stage's list of
 																		// checkpoints
 		return newClimb.getMyId();
 	}
@@ -225,8 +225,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 			InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
 		errorChecker.checkStageBelongsToSystem(stageId); // Check if the system contains this stage
 
-		Checkpoint newInterSprint = new IntermediateSprint(location, stageId); // create the new climb
-		Stage.getStageById(stageId).addCheckpoint(newInterSprint.getMyId()); // add it to the parent stage's list of
+		Checkpoint newInterSprint = new IntermediateSprint(location, Stage.getStageById(stageId)); // create the new climb
+		Stage.getStageById(stageId).addCheckpoint(newInterSprint); // add it to the parent stage's list of
 																				// checkpoints
 		return newInterSprint.getMyId();
 	}
@@ -241,8 +241,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public void removeCheckpoint(int checkpointId) throws IDNotRecognisedException, InvalidStageStateException {
-		errorChecker.checkCheckpointBelongsToSystem(checkpointId); // Check checkpoint id exists in this system
-		Checkpoint.getCheckpointById(checkpointId).delete(); // delete it using its own object's delete function
+		Checkpoint check = getCheckpoint(checkpointId);
+		check.getParentStage().removeCheckpoint(checkpointId);
 	}
 
 	// TODO ik its not actually used anywhere but the specicifity of stage states
@@ -275,7 +275,12 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public int[] getStageCheckpoints(int stageId) throws IDNotRecognisedException {
 		errorChecker.checkStageBelongsToSystem(stageId); // Check if the system contains this stage
 		// convert the ArrayList of Integers to an array of ints and return it
-		return Stage.getStageById(stageId).getCheckpointIds().stream().mapToInt(Integer::intValue).toArray();
+		//return Stage.getStageById(stageId).getCheckpointIds().stream().mapToInt(Integer::intValue).toArray();
+		int[] ids = new int[Stage.getStageById(stageId).getCheckpoints().size()];
+		for (Checkpoint checkpoint: Stage.getStageById(stageId).getCheckpoints()) {
+			ids[checkpoint.getMyId()] = checkpoint.getMyId();
+		}
+		return ids;
 	}
 
 	/**
@@ -766,5 +771,15 @@ public class CyclingPortalImpl implements CyclingPortal {
 			}
 		}
 		throw new IDNotRecognisedException("Team " + teamId + " is not part of the system");
+	}
+	public Checkpoint getCheckpoint(int checkId) throws IDNotRecognisedException {
+		for (int stageId : getMyStageIds()) {
+			for (Checkpoint check : Stage.getStageById(stageId).getCheckpoints()) {
+				if (check.getMyId() == checkId) {
+					return check;
+				}
+			}
+		}
+		throw new IDNotRecognisedException("Checkpoint " + checkId + " is not part of the system");
 	}
 }

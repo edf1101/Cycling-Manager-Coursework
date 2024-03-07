@@ -30,15 +30,15 @@ public class Climb extends Checkpoint {
      * @param location      the location of the checkpoint
      * @param length        the length of the climb
      * @param avgGradient   the average gradient of the climb
-     * @param parentStageId the stage that the checkpoint is in
+     * @param parentStage the stage that the checkpoint is in
      * @throws InvalidLocationException if the location is out of range of the stage
      * @throws InvalidStageStateException if the stage is not in the correct state
      * @throws InvalidStageTypeException if the stage is not of the correct type
      */
-    public Climb(CheckpointType type, Double location, Double length, Double avgGradient, int parentStageId)
+    public Climb(CheckpointType type, Double location, Double length, Double avgGradient, Stage parentStage)
             throws InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
 
-        super(type, location, parentStageId);
+        super(type, location, parentStage);
         this.averageGradient = avgGradient;
         this.length = length;
     }

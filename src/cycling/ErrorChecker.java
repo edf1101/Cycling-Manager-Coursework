@@ -67,24 +67,24 @@ public class ErrorChecker implements java.io.Serializable {
         // Return otherwise
     }
 
-    /**
-     * Checks if a checkpoint is part of the system
-     *
-     * @param checkpointId the checkpoint ID to check
-     * @throws IDNotRecognisedException thrown if the checkpoint is not part of the system
-     */
-    public void checkCheckpointBelongsToSystem(int checkpointId) throws IDNotRecognisedException {
-
-        // if it's not in any system this throws error
-        int parentRace = Checkpoint.getCheckpointById(checkpointId).getParentStage().getRaceId();
-
-        if (!portal.getMyRaceIds().contains(parentRace)) { // if it's not in our specific system throw error
-            {
-                throw new IDNotRecognisedException("Checkpoint " + checkpointId + " is not part of the system");
-            }
-        }
-        // else return
-    }
+    ///**
+    // * Checks if a checkpoint is part of the system
+    // *
+    // * @param checkpointId the checkpoint ID to check
+    // * @throws IDNotRecognisedException thrown if the checkpoint is not part of the system
+    // */
+    //public void checkCheckpointBelongsToSystem(int checkpointId) throws IDNotRecognisedException {
+    //
+    //    // if it's not in any system this throws error
+    //    int parentRace = Checkpoint.getCheckpointById(checkpointId).getParentStage().getRaceId();
+    //
+    //    if (!portal.getMyRaceIds().contains(parentRace)) { // if it's not in our specific system throw error
+    //        {
+    //            throw new IDNotRecognisedException("Checkpoint " + checkpointId + " is not part of the system");
+    //        }
+    //    }
+    //    // else return
+    //}
 
     /**
      * enum type to determine what type of name to check

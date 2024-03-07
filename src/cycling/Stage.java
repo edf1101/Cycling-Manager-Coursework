@@ -2,6 +2,7 @@ package cycling;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -31,7 +32,8 @@ public class Stage implements java.io.Serializable {
     private final String description;
     private final StageType type;
     private final double length;
-    private final ArrayList<Integer> checkpoints = new ArrayList<Integer>();
+    private final ArrayList<Integer> checkpointOrder = new ArrayList<Integer>();
+    private final HashMap<Integer,Checkpoint> myCheckpoints = new HashMap<Integer,Checkpoint>();
     private boolean prepared = false;
 
     private final int parentRaceId;
@@ -147,9 +149,9 @@ public class Stage implements java.io.Serializable {
         if (startTimes.containsKey(riderId) || finishTimes.containsKey(riderId)) {
             throw new DuplicatedResultException("Rider ID already has a finish time");
         }
-
+        
         // Check the number of times is correct
-        if (times.length != checkpoints.size() + 2) {
+        if (times.length != myCheckpoints.size() + 2) {
             throw new InvalidCheckpointTimesException("Number of times given is not number of checkpoints + 2");
         }
 
@@ -169,14 +171,9 @@ public class Stage implements java.io.Serializable {
         // Consider that the array is [start, checkpoint1, checkpoint2, ..., finish]
         // The nth checkpoint starts at index n and ends at index n+1
         for (int i = 0; i < times.length - 2; i++) {
-            try {
-                Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpoints.get(i));
-                checkpoint.recordTime(riderId, times[i + 1]);
+            Checkpoint checkpoint = myCheckpoints.get(checkpointOrder.get(i));
+            checkpoint.recordTime(riderId, times[i + 1]);
 
-            } catch (IDNotRecognisedException e) {
-                // will never happen as we are iterating through a list of already validated
-                // checkpoints
-            }
         }
 
     }
@@ -184,11 +181,13 @@ public class Stage implements java.io.Serializable {
     /**
      * Adds a checkpoint to the stage.
      *
-     * @param checkpointId the ID of the checkpoint to add
+     * @param checkpoint the checkpoint object to add
      */
-    public void addCheckpoint(int checkpointId) {
+    public void addCheckpoint(Checkpoint checkpoint) {
 
-        checkpoints.add(checkpointId);
+        checkpointOrder.add(checkpoint.getMyId());
+        myCheckpoints.put(checkpoint.getMyId(),checkpoint);
+
     }
 
     /**
@@ -223,8 +222,8 @@ public class Stage implements java.io.Serializable {
         int points = (position >= pointsArray.length) ? 0 : pointsArray[position - 1];
 
         // Add the points from the checkpoints for intermediate sprints
-        for (int checkpointId : checkpoints) {
-            Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpointId);
+        for (Checkpoint checkpoint : myCheckpoints.values()) {
+            //Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpointId);
             points += checkpoint.getIntermediateSprintPoints(riderId);
         }
 
@@ -266,8 +265,8 @@ public class Stage implements java.io.Serializable {
 
         int points = 0;
 
-        for (int checkpointId : checkpoints) {
-            Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpointId);
+        for (Checkpoint checkpoint : myCheckpoints.values()) {
+            //Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpointId);
             points += checkpoint.getMountainPoints(riderId);
         }
 
@@ -296,7 +295,8 @@ public class Stage implements java.io.Serializable {
     public void removeCheckpoint(int checkpointId) throws InvalidStageStateException {
         if (prepared)
             throw new InvalidStageStateException("Stage already prepared");
-        checkpoints.remove(checkpointId);
+        myCheckpoints.remove(checkpointId);
+        checkpointOrder.remove(Integer.valueOf(checkpointId));
     }
 
     /**
@@ -313,8 +313,7 @@ public class Stage implements java.io.Serializable {
         startTimes.remove(riderId);
         finishTimes.remove(riderId);
 
-        for (int checkpointId : checkpoints) {
-            Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpointId);
+        for (Checkpoint checkpoint : myCheckpoints.values()) {
             checkpoint.removeRider(riderId);
         }
     }
@@ -331,9 +330,10 @@ public class Stage implements java.io.Serializable {
 
         stages.remove(myId); // Remove from the dictionary of stages
 
-        for (int checkpointId : checkpoints) {
+        for (Checkpoint checkpoint : myCheckpoints.values()) {
             // checkpoints.remove(Integer.valueOf(checkpointId));
-            Checkpoint.removeFromHashmap(checkpointId);
+            checkpoint.removeFromHashmap();
+            //deleteCheckpoint();
         }
 
         // remove this stage from the parent
@@ -352,12 +352,12 @@ public class Stage implements java.io.Serializable {
             throw new InvalidStageStateException("Stage already prepared");
         }
 
-        if (!checkpoints.contains(checkpointId)) {
+        if (!myCheckpoints.containsKey(checkpointId)) {
             throw new IDNotRecognisedException("Checkpoint ID not recognised");
         }
-
-        checkpoints.remove(checkpointId);
-        Checkpoint.removeFromHashmap(checkpointId);
+        myCheckpoints.get(checkpointId).delete();
+        myCheckpoints.remove(checkpointId);
+        checkpointOrder.remove(Integer.valueOf(checkpointId));
     }
 
     /**
@@ -429,13 +429,14 @@ public class Stage implements java.io.Serializable {
             throw new IDNotRecognisedException("Rider ID not recognised");
         }
 
-        LocalTime[] results = new LocalTime[checkpoints.size() + 1];
+        LocalTime[] results = new LocalTime[myCheckpoints.size() + 1];
 
         // Set the last element to the elapsed time
         results[results.length - 1] = getElapsedTime(riderId);
 
         for (int i = 0; i < results.length - 2; i++) {
-            results[i] = Checkpoint.getCheckpointById(checkpoints.get(i)).getPassTime(riderId);
+            Checkpoint checkpoint = myCheckpoints.get(checkpointOrder.get(i));
+            results[i] = checkpoint.getPassTime(riderId);
         }
 
         return results;
@@ -491,7 +492,11 @@ public class Stage implements java.io.Serializable {
      *
      * @return the stage checkpoints
      */
-    public ArrayList<Integer> getCheckpointIds() {
+    public ArrayList<Checkpoint> getCheckpoints() {
+        ArrayList<Checkpoint> checkpoints = new ArrayList<Checkpoint>();
+        for (int checkpointId : checkpointOrder) {
+            checkpoints.add(myCheckpoints.get(checkpointId));
+        }
         return checkpoints;
     }
 

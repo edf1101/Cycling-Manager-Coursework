@@ -16,14 +16,14 @@ public class IntermediateSprint extends Checkpoint {
      * Constructor for the intermediate sprint
      *
      * @param location the location of the intermediate sprint
-     * @param parentStageId the ID of the stage that the intermediate sprint is on
+     * @param parentStage the parent stage of the intermediate sprint
      * @throws InvalidLocationException if the location is out of range of the stage
      * @throws InvalidStageStateException if the stage is not in the correct state
      * @throws InvalidStageTypeException if the stage is not of the correct type
      */
-    public IntermediateSprint(Double location, int parentStageId)
+    public IntermediateSprint(Double location, Stage parentStage)
             throws InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
-        super(CheckpointType.SPRINT, location,parentStageId);
+        super(CheckpointType.SPRINT, location,parentStage);
     }
 
 
