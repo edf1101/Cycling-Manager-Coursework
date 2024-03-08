@@ -370,7 +370,11 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	@Override
 	public void removeRider(int riderId) throws IDNotRecognisedException {
-		getRider(riderId).getMyTeam().removeRider(riderId); // remove the rider using its own object's remove function
+		Rider rider = getRider(riderId);
+		rider.getMyTeam().removeRider(riderId); // remove the rider using its own object's remove function
+		for(int stageId : rider.getRegisteredStages()){
+			getStage(stageId).removeRider(riderId);
+		}
 	}
 
 	/**
@@ -412,6 +416,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 			InvalidStageStateException {
 		//errorChecker.checkRiderBelongsToSystem(riderId); // Check stageId and riderId exists in this system
 		errorChecker.checkStageBelongsToSystem(stageId);
+		getRider(riderId).registerForStage(stageId); // Check rider is in system and register for stage
 		getStage(stageId).registerResults(riderId, checkpoints);
 	}
 

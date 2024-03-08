@@ -169,9 +169,10 @@ public class PortalScoringTests {
 
         // Get the GC scores + Ranking
         int[] rankings;
+        LocalTime[] GC;
         try {
             rankings = portal.getRidersGeneralClassificationRank(raceId);
-            LocalTime[] GC = portal.getGeneralClassificationTimesInRace(raceId);
+            GC = portal.getGeneralClassificationTimesInRace(raceId);
 
             assert (Arrays.equals(rankings, new int[]{riderId1, riderId2, riderId3, riderId4})):
                     "GC Rankings are not working";
@@ -249,6 +250,24 @@ public class PortalScoringTests {
         } catch (IDNotRecognisedException e) {
             throw new RuntimeException(e);
         }
+
+        // test if removing a rider modifies scores
+        System.out.println(Arrays.toString(GC));
+        LocalTime[] oldGC = GC;
+        // try removing a time
+        try {
+            portal.removeRider(riderId1);
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+        // get new times
+        try {
+            rankings = portal.getRidersGeneralClassificationRank(raceId);
+            GC = portal.getGeneralClassificationTimesInRace(raceId);
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+        assert (!Arrays.equals(oldGC, GC)) : "Removing a rider did not modify the GC times";
 
     }
 }

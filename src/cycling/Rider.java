@@ -15,6 +15,8 @@ public class Rider implements java.io.Serializable {
     //static private final HashMap<Integer, Rider> riders = new HashMap<Integer, Rider>();
     static private final ArrayList<Integer> idsUsed = new ArrayList<>();
 
+    private final ArrayList<Integer> stagesRegistered = new ArrayList<>();
+
     private final int myId;
     private final Team myTeam;
     private final String name;
@@ -62,6 +64,22 @@ public class Rider implements java.io.Serializable {
         String teamName = myTeam.getName();
 
         return "Rider: " + name + " Year of Birth:" + yearOfBirth + " Team " + teamName;
+    }
+
+    /**
+     * Register the rider for a stage
+     *
+     * @param stageId The stage to say I have registered for
+     */
+    public void registerForStage(int stageId) {
+        stagesRegistered.add(stageId);
+    }
+
+    /**
+     * Getter for registered stages
+     */
+    public ArrayList<Integer> getRegisteredStages() {
+        return stagesRegistered;
     }
 
     /**
