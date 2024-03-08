@@ -8,8 +8,8 @@ import java.util.HashMap;
 
 // TODO list:
 //  - put assertions into the src code
-//  - add in time trial things
-//  - test removing a player changes next results
+//  - given time trial is explicitly said that its the elapsed time not mass start, for non TT should we use elapsed time
+//  as starting from stage start time not rider start?
 /**
  * This class is the implementation of the CyclingPortal interface.
  * It is the only backend class that the frontend application can interact with.
@@ -241,9 +241,6 @@ public class CyclingPortalImpl implements CyclingPortal {
 		check.getParentStage().removeCheckpoint(checkpointId);
 	}
 
-	// TODO ik its not actually used anywhere but the specicifity of stage states
-	// implies we should have "waiting for results"
-	// etc instead of bool
 	/**
 	 * Concludes the preparation of a stage. After conclusion, the stage's state
 	 * should be "waiting for results".

@@ -10,11 +10,8 @@ import java.util.HashMap;
  * @version 1.0
  */
 public class Team implements java.io.Serializable {
-    // TODO does removing a rider remove its results?
 
-    // Holds reference to all the teams created
     static private final ArrayList<Integer> idsUsed = new ArrayList<>();
-
     private final int myId; // Unique Id of the team
     private final String name; // Name of the team
     private final String description; // Description of the team

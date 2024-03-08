@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 
-// TODO we haven't handled time trials yet, oops
-
 /**
  * Class to represent a stage in the staged bike race
  *
@@ -128,8 +126,11 @@ public class Stage implements java.io.Serializable {
         startTimes.put(riderId, times[0]);
         finishTimes.put(riderId, times[times.length - 1]);
 
-        // TODO this code for adding times will fail if its a time trial type (i think),
-        // will add a check for that when we add them
+        if (type == StageType.TT) {
+            // If the stage is a time trial, then the rider's time is the time they
+            // finished the stage
+            return;
+        }
 
         // Consider that the array is [start, checkpoint1, checkpoint2, ..., finish]
         // The nth checkpoint starts at index n and ends at index n+1
@@ -186,7 +187,6 @@ public class Stage implements java.io.Serializable {
 
         // Add the points from the checkpoints for intermediate sprints
         for (Checkpoint checkpoint : myCheckpoints.values()) {
-            //Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpointId);
             points += checkpoint.getIntermediateSprintPoints(riderId);
         }
 

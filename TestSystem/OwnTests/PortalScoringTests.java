@@ -42,6 +42,7 @@ public class PortalScoringTests {
         int stageId1 = -1;
         int stageId2 = -1;
         int stageId3 = -1;
+        int stageId4 = -1;
         try {
             stageId1 = portal.addStageToRace(raceId, "Stage1",
                     "Test stage 1",25.0,
@@ -55,6 +56,11 @@ public class PortalScoringTests {
                     "Test stage 3",10.0,
                     LocalDateTime.of(2024, 1, 2, 12, 0),
                     StageType.FLAT);
+            stageId4 = portal.addStageToRace(raceId, "Stage4",
+                    "Test stage 4",10.0,
+                    LocalDateTime.of(2024, 1, 3, 12, 0),
+                    StageType.FLAT);
+
         }
         catch (InvalidNameException | IllegalNameException | IDNotRecognisedException | InvalidLengthException e) {
             throw new RuntimeException(e);
@@ -88,6 +94,7 @@ public class PortalScoringTests {
             portal.concludeStagePreparation(stageId1);
             portal.concludeStagePreparation(stageId2);
             portal.concludeStagePreparation(stageId3);
+            portal.concludeStagePreparation(stageId4);
         } catch (IDNotRecognisedException | InvalidStageStateException e) {
             throw new RuntimeException(e);
         }
@@ -162,6 +169,24 @@ public class PortalScoringTests {
                     LocalTime.of(12, 14, 0), LocalTime.of(12, 35, 0),
                     LocalTime.of(13, 22, 1)};
             portal.registerRiderResultsInStage(stageId3,riderId4,rider4TimesS3);
+
+            // Stage 4
+            // Rider 1 times
+            LocalTime[] rider1TimesS4 = new LocalTime[]{LocalTime.of(13, 0, 0),
+                    LocalTime.of(13, 10, 0)};
+            portal.registerRiderResultsInStage(stageId4,riderId1,rider1TimesS4);
+            // Rider 2 times
+            LocalTime[] rider2TimesS4 = new LocalTime[]{LocalTime.of(14, 0, 0),
+                    LocalTime.of(14, 40, 0)};
+            portal.registerRiderResultsInStage(stageId4,riderId2,rider2TimesS4);
+            // Rider 3 times
+            LocalTime[] rider3TimesS4 = new LocalTime[]{LocalTime.of(15, 0, 0),
+                    LocalTime.of(15, 50, 0)};
+            portal.registerRiderResultsInStage(stageId4,riderId3,rider3TimesS4);
+            // Rider 4 times
+            LocalTime[] rider4TimesS4 = new LocalTime[]{LocalTime.of(16, 0, 0),
+                    LocalTime.of(16, 15, 0)};
+            portal.registerRiderResultsInStage(stageId4,riderId4,rider4TimesS4);
         } catch (IDNotRecognisedException | InvalidStageStateException | InvalidCheckpointTimesException |
                  DuplicatedResultException e) {
             throw new RuntimeException(e);
@@ -174,12 +199,12 @@ public class PortalScoringTests {
             rankings = portal.getRidersGeneralClassificationRank(raceId);
             GC = portal.getGeneralClassificationTimesInRace(raceId);
 
-            assert (Arrays.equals(rankings, new int[]{riderId1, riderId2, riderId3, riderId4})):
+            assert (Arrays.equals(rankings, new int[]{riderId1, riderId2, riderId4, riderId3})):
                     "GC Rankings are not working";
 
-            LocalTime[] expectedGTimes = new LocalTime[]{LocalTime.of(3, 57, 4),
-                    LocalTime.of(4, 27, 45), LocalTime.of(4, 45, 33),
-                    LocalTime.of(4, 57, 1)};
+            LocalTime[] expectedGTimes = new LocalTime[]{LocalTime.of(4, 7, 4),
+                    LocalTime.of(5, 7, 45), LocalTime.of(5, 12, 1),
+                    LocalTime.of(5, 35, 33)};
             assert (Arrays.equals(GC, expectedGTimes)): "GC Times are not working";
 
         } catch (IDNotRecognisedException e) {
@@ -234,7 +259,7 @@ public class PortalScoringTests {
         // Test getting the race mountain points
         try {
             assert Arrays.equals(portal.getRidersMountainPointsInRace(raceId),
-                    new int[]{27, 22, 14, 25}) : "Mountain points for race isn't working";
+                    new int[]{27, 22, 25, 14}) : "Mountain points for race isn't working";
             assert Arrays.equals(portal.getRidersMountainPointClassificationRank(raceId),
                     new int[]{riderId1, riderId4, riderId2, riderId3}) : "Mountain points for race isn't working";
         } catch (IDNotRecognisedException e) {
@@ -244,7 +269,7 @@ public class PortalScoringTests {
         // Test getting the sprint points
         try {
             assert Arrays.equals(portal.getRidersPointsInRace(raceId),
-                    new int[]{167, 123, 109, 128}) : "Sprint points for race failed";
+                    new int[]{217, 143, 158, 127}) : "Sprint points for race failed";
             assert Arrays.equals(portal.getRidersPointClassificationRank(raceId),
                     new int[]{riderId1, riderId4, riderId2, riderId3}) : "Sprint points for race failed";
         } catch (IDNotRecognisedException e) {

@@ -172,6 +172,9 @@ public class Race implements java.io.Serializable {
     private LocalTime getRiderGeneralClassificationTime(int riderId) {
         LocalTime summedTime = LocalTime.of(0, 0, 0);
         for(Stage stage : stages.values()){
+            if (!stage.isPrepared()){
+                continue;
+            }
             try {
                 LocalTime stageTime = stage.getAdjustedElapsedTime(riderId);
                 summedTime = summedTime.plusHours(stageTime.getHour())
@@ -180,8 +183,7 @@ public class Race implements java.io.Serializable {
                         .plusNanos(stageTime.getNano());
 
             } catch (IDNotRecognisedException e) {
-                // Should never happen since we are iterating through the list of stageIds already validated
-                assert(false) : "Stage ID not recognised"; // assertion so we can see if it happened
+                // This comes up if a rider isn't in the stage so just do nothing
             }
         }
         return summedTime;
