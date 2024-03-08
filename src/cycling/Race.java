@@ -13,7 +13,8 @@ import java.util.function.Function;
  */
 public class Race implements java.io.Serializable {
 
-    private static final HashMap<Integer, Race> races = new HashMap<Integer, Race>();
+    //private static final HashMap<Integer, Race> races = new HashMap<Integer, Race>();
+    private static ArrayList<Integer> idsUsed = new ArrayList<Integer>(); // list of all the raceIds used
     private final int myId;
     private final String name;
     private final String description;
@@ -33,33 +34,34 @@ public class Race implements java.io.Serializable {
         }
 
         // Set up attributes for the object
-        this.myId = UniqueIdGenerator.calculateUniqueId(races);
+        this.myId = UniqueIdGenerator.calculateUniqueId(idsUsed);
         this.name = name;
         this.description = description;
 
         // add the new object to the hashmap of all races
-        races.put(this.myId, this);
+        //races.put(this.myId, this);
+        idsUsed.add(this.myId);
     }
 
-    /**
-     * Pushes a race into the system.
-     *
-     * @param id the ID of the race to add
-     * @param race the race object to add
-     */
-    public static void pushRace(int id, Race race) {
-        races.put(id, race);
-    }
+    ///**
+    // * Pushes a race into the system.
+    // *
+    // * @param id the ID of the race to add
+    // * @param race the race object to add
+    // */
+    //public static void pushRace(int id, Race race) {
+    //    races.put(id, race);
+    //}
 
-    /**
-     * Getter for a race by its ID
-     *
-     * @param id the ID to query
-     * @return The race object reference
-     */
-    public static Race getRaceById(int id) {
-        return races.get(id);
-    }
+    ///**
+    // * Getter for a race by its ID
+    // *
+    // * @param id the ID to query
+    // * @return The race object reference
+    // */
+    //public static Race getRaceById(int id) {
+    //    return races.get(id);
+    //}
 
     /**
      * Getter for the Race's name
@@ -117,7 +119,7 @@ public class Race implements java.io.Serializable {
         }
 
         // No need to remove stages from list as they are already deleted
-        races.remove(myId);
+        idsUsed.remove(myId);
     }
 
     /**
@@ -163,34 +165,34 @@ public class Race implements java.io.Serializable {
         return stages;
     }
 
-    /**
-     * Gets the Id of a Race by its name
-     *
-     * @param name       The name of the race to find an Id for.
-     * @param portalsIds the list of the raceIds that are contained by this portal
-     *                   instance, so we don't mix up this
-     *                   with another portals race with a same name
-     * @return The id of the race with the given name (in the context of the portal)
-     * @throws NameNotRecognisedException When the name has not been found in the
-     *                                    system
-     */
-    public static int getIdByName(String name, ArrayList<Integer> portalsIds) throws NameNotRecognisedException {
-        // Check the name exists in this system by iterating through
-        // all raceIds in system and checking name
-        boolean foundName = false;
-        int foundId = 0;
-        for (int raceId : portalsIds) {
-            if (Race.getRaceById(raceId).getName().equals(name)) {
-                foundName = true;
-                foundId = raceId;
-                break;
-            }
-        }
-        if (!foundName) {
-            throw new NameNotRecognisedException("The Race name: " + name + ", does not exist in this system");
-        }
-        return foundId;
-    }
+    ///**
+    // * Gets the Id of a Race by its name
+    // *
+    // * @param name       The name of the race to find an Id for.
+    // * @param portalsIds the list of the raceIds that are contained by this portal
+    // *                   instance, so we don't mix up this
+    // *                   with another portals race with a same name
+    // * @return The id of the race with the given name (in the context of the portal)
+    // * @throws NameNotRecognisedException When the name has not been found in the
+    // *                                    system
+    // */
+    //public static int getIdByName(String name, ArrayList<Integer> portalsIds) throws NameNotRecognisedException {
+    //    // Check the name exists in this system by iterating through
+    //    // all raceIds in system and checking name
+    //    boolean foundName = false;
+    //    int foundId = 0;
+    //    for (int raceId : portalsIds) {
+    //        if (Race.getRaceById(raceId).getName().equals(name)) {
+    //            foundName = true;
+    //            foundId = raceId;
+    //            break;
+    //        }
+    //    }
+    //    if (!foundName) {
+    //        throw new NameNotRecognisedException("The Race name: " + name + ", does not exist in this system");
+    //    }
+    //    return foundId;
+    //}
 
     /**
      * Gets the general classification times for all riders in the race ordered by time

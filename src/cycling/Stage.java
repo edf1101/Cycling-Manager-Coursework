@@ -36,7 +36,7 @@ public class Stage implements java.io.Serializable {
     private final HashMap<Integer,Checkpoint> myCheckpoints = new HashMap<Integer,Checkpoint>();
     private boolean prepared = false;
 
-    private final int parentRaceId;
+    private final Race parentRace;
 
     // Hashmaps to store the start and finish times for each rider format of
     // <riderId, time>
@@ -50,12 +50,12 @@ public class Stage implements java.io.Serializable {
      * @param description  Description of the stage
      * @param type         The type of the stage
      * @param length       The length of the stage
-     * @param parentRaceId The ID of the parent race that this stage belongs to
+     * @param parentRace The parent race that this stage belongs to
      * @throws InvalidNameException   if the name is not 0<characters<=30 or
      *                                contains whitespace
      * @throws InvalidLengthException if the length is less than 5km
      */
-    public Stage(String name, String description, StageType type, double length, int parentRaceId)
+    public Stage(String name, String description, StageType type, double length, Race parentRace)
             throws InvalidNameException, InvalidLengthException {
 
         // Check name is not null, empty or >30 chars
@@ -75,7 +75,7 @@ public class Stage implements java.io.Serializable {
         this.type = type;
         this.length = length;
         this.prepared = false;
-        this.parentRaceId = parentRaceId;
+        this.parentRace = parentRace;
 
         idsUsed.add(myId);  // Add the ID to the list of used IDs
     }
@@ -95,8 +95,8 @@ public class Stage implements java.io.Serializable {
      *
      * @return the race Id
      */
-    public int getRaceId() {
-        return parentRaceId;
+    public Race getParentRace() {
+        return parentRace;
     }
 
     ///**
@@ -337,7 +337,7 @@ public class Stage implements java.io.Serializable {
         }
 
         // remove this stage from the parent
-        Race.getRaceById(parentRaceId).removeStage(myId);
+        parentRace.removeStage(myId);
     }
 
     /**

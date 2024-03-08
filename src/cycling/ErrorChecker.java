@@ -57,9 +57,9 @@ public class ErrorChecker implements java.io.Serializable {
     public void checkStageBelongsToSystem(int stageId) throws IDNotRecognisedException {
         portal.getStage(stageId); // if it's not in any system this throws error
 
-        int stageRace = portal.getStage(stageId).getRaceId();
+        Race stageRace = portal.getStage(stageId).getParentRace();
 
-        if (!portal.getMyRaceIds().contains(stageRace)) {
+        if (!portal.getMyRaceIds().contains(stageRace.getId())) {
             // Throw if it's not in our specific system
             throw new IDNotRecognisedException("Stage " + stageId + " is not part of the system");
         }
@@ -147,7 +147,11 @@ public class ErrorChecker implements java.io.Serializable {
                     }
                     break;
                 case RACE:
-                    name = Race.getRaceById(id).getName();
+                    try {
+                        name = portal.getRaceById(id).getName();
+                    } catch (IDNotRecognisedException e) {
+                        throw new RuntimeException(e);
+                    }
                     break;
                 default:
                     assert (false) : "Invalid nameUnusedType";

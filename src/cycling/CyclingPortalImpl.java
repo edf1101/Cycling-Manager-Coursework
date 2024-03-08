@@ -22,7 +22,7 @@ import java.util.HashMap;
 public class CyclingPortalImpl implements CyclingPortal {
 
 	// Lists of the various IDs that belong to this instance of CyclingPortalImpl
-	private final ArrayList<Integer> myRaceIds = new ArrayList<>();
+	private final HashMap<Integer,Race> myRaces = new HashMap<>();
 	private final HashMap<Integer,Team> myTeams = new HashMap<>();
 
 	// class to encapsulate error checking functions
@@ -36,7 +36,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int[] getRaceIds() {
 		// convert the ArrayList of Integers to an array of ints and return it
-		return myRaceIds.stream().mapToInt(Integer::intValue).toArray();
+		return myRaces.keySet().stream().mapToInt(Integer::intValue).toArray();
 	}
 
 	/**
@@ -54,11 +54,9 @@ public class CyclingPortalImpl implements CyclingPortal {
 		errorChecker.checkNameUnused(name, ErrorChecker.nameUnusedType.RACE); // Check the name is unused
 
 		Race newRace = new Race(name, description); // Create instance
-		int newId = newRace.getId(); // The new ID for the created
-		myRaceIds.add(newRace.getId());
+		myRaces.put(newRace.getId(),newRace); //
 
-		return newId;
-
+		return newRace.getId();
 	}
 
 	/**
@@ -76,7 +74,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public String viewRaceDetails(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // check race belongs to this system
-		return Race.getRaceById(raceId).getDetails();
+		return getRaceById(raceId).getDetails();
 	}
 
 	/**
@@ -90,8 +88,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 		errorChecker.checkRaceBelongsToSystem(raceId); // check race belongs to this system
 
 		// Delete the race and remove it from the list of races
-		Race.getRaceById(raceId).delete();
-		myRaceIds.remove(Integer.valueOf(raceId));
+		getRaceById(raceId).delete();
+		myRaces.remove(Integer.valueOf(raceId));
 	}
 
 	/**
@@ -116,8 +114,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check Race matches system list of races
 
 		// Create the stage and add it to the list of stage Ids and return Id.
-		Stage newStage = new Stage(stageName, description, type, length, raceId);
-		Race.getRaceById(raceId).addStage(newStage);
+		Stage newStage = new Stage(stageName, description, type, length, getRaceById(raceId));
+		getRaceById(raceId).addStage(newStage);
 
 		return newStage.getId();
 	}
@@ -134,7 +132,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check the race exists in this system
 
 		// Get the race instance
-		Race myRace = Race.getRaceById(raceId);
+		Race myRace = getRaceById(raceId);
 		// convert its list of stage IDs to an array of ints and return it
 		return myRace.getStages().keySet().stream().mapToInt(Integer::intValue).toArray();
 	}
@@ -555,9 +553,9 @@ public class CyclingPortalImpl implements CyclingPortal {
 			}
 		}
 
-		while (!myRaceIds.isEmpty()) {
+		while (!myRaces.isEmpty()) {
 			try {
-				removeRaceById(myRaceIds.getFirst());
+				removeRaceById(myRaces.keySet().stream().toList().getFirst());
 			} catch (IDNotRecognisedException e) {
 				throw new RuntimeException(e);
 			}
@@ -603,15 +601,18 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public void removeRaceByName(String name) throws NameNotRecognisedException {
-		// Pass in list of this portal's race IDs so it doesn't get mixed
-		// up with another portal's races which may share names
-		int raceIDWithName = Race.getIdByName(name, myRaceIds);
-		try {
-			removeRaceById(raceIDWithName);
-		} catch (IDNotRecognisedException e) {
-			// This should never happen as we are giving it an ID that we have found in the
-			// system
+		// go through all races check their names
+		for (Race race: myRaces.values()){
+			if (race.getName().equals(name)){
+                try {
+                    removeRaceById(race.getId());
+                } catch (IDNotRecognisedException e) {
+                    assert false : "This should never happen";
+                }
+                return;
+			}
 		}
+		throw new NameNotRecognisedException("The name " + name + " has not been found in the system");
 	}
 
 	/**
@@ -628,7 +629,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public LocalTime[] getGeneralClassificationTimesInRace(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
-		return Race.getRaceById(raceId).getRidersGeneralClassificationTimes();
+		return getRaceById(raceId).getRidersGeneralClassificationTimes();
 	}
 
 	/**
@@ -649,7 +650,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public int[] getRidersPointsInRace(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
 
-		return Race.getRaceById(raceId).getRidersSprintPoints();
+		return getRaceById(raceId).getRidersSprintPoints();
 	}
 
 	/**
@@ -669,7 +670,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public int[] getRidersMountainPointsInRace(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
 
-		return Race.getRaceById(raceId).getRidersMountainPoints();
+		return getRaceById(raceId).getRidersMountainPoints();
 	}
 
 	/**
@@ -686,7 +687,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int[] getRidersGeneralClassificationRank(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
-		return Race.getRaceById(raceId).getRidersGeneralClassificationRanks();
+		return getRaceById(raceId).getRidersGeneralClassificationRanks();
 
 	}
 
@@ -704,7 +705,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int[] getRidersPointClassificationRank(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
-		return Race.getRaceById(raceId).getRidersSprintPointsRankings();
+		return getRaceById(raceId).getRidersSprintPointsRankings();
 	}
 
 	/**
@@ -720,7 +721,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public int[] getRidersMountainPointClassificationRank(int raceId) throws IDNotRecognisedException {
 		errorChecker.checkRaceBelongsToSystem(raceId); // Check race is in this system
 
-		return Race.getRaceById(raceId).getRidersMountainPointsRankings();
+		return getRaceById(raceId).getRidersMountainPointsRankings();
 	}
 
 	/**
@@ -729,7 +730,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 * @return ArrayList of race IDs
 	 */
 	public ArrayList<Integer> getMyRaceIds() {
-		return myRaceIds;
+		return new ArrayList<Integer>(myRaces.keySet());
 	}
 
 	/**
@@ -749,8 +750,12 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public ArrayList<Integer> getMyStageIds() {
 		ArrayList<Integer> myStageIds = new ArrayList<Integer>();
 		for (int raceId : getMyRaceIds()) {
-			myStageIds.addAll(Race.getRaceById(raceId).getStages().keySet());
-		}
+            try {
+                myStageIds.addAll(getRaceById(raceId).getStages().keySet());
+            } catch (IDNotRecognisedException e) {
+                // should never happen
+            }
+        }
 		return myStageIds;
 	}
 
@@ -773,8 +778,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		throw new IDNotRecognisedException("Team " + teamId + " is not part of the system");
 	}
 	public Checkpoint getCheckpoint(int checkId) throws IDNotRecognisedException {
-		for (int raceId: myRaceIds) {
-			Race race = Race.getRaceById(raceId);
+		for (Race race: myRaces.values()) {
 			for (Stage stage : race.getStages().values()) {
 				for (Checkpoint checkpoint : stage.getCheckpoints()) {
 					if (checkpoint.getMyId() == checkId) {
@@ -786,13 +790,20 @@ public class CyclingPortalImpl implements CyclingPortal {
 		throw new IDNotRecognisedException("Checkpoint " + checkId + " is not part of the system");
 	}
 	public Stage getStage(int stageId) throws IDNotRecognisedException {
-		for (int raceId: myRaceIds){
-			for (Stage stage : Race.getRaceById(raceId).getStages().values()){
+		for (Race race: myRaces.values()){
+			for (Stage stage : race.getStages().values()){
 				if (stage.getId() == stageId){
 					return stage;
 				}
 			}
 		}
 		throw new IDNotRecognisedException("Stage " + stageId + " is not part of the system");
+	}
+
+	public Race getRaceById(int raceId) throws IDNotRecognisedException {
+		if (myRaces.containsKey(raceId)) {
+			return myRaces.get(raceId);
+		}
+		throw new IDNotRecognisedException("Race " + raceId + " is not part of the system");
 	}
 }
