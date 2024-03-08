@@ -21,17 +21,17 @@ public class PointsHandler<T extends Comparable<T>> {
     private T[] riderScores; // The points/times of the riders
     private final boolean reversed; // whether the order is reversed or not (false for times, true for points)
     private final Function<Integer,T> getScore; // The method to get the score from the rider
-    private final ArrayList<Integer> stageIds; // The stages to get the riders from
+    private final ArrayList<Stage> stages; // The stages to get the riders from
     /**
      * Constructor for the PointsHandler class
      * @param reversed Whether the order is reversed or not (false for times, true for points)
      * @param scoringFunction The method to get the score from the rider
-     * @param stageIds The stages to get the riders from
+     * @param stages The stages to get the riders from
      */
-    public PointsHandler(Function<Integer,T>  scoringFunction,boolean reversed, ArrayList<Integer> stageIds) {
+    public PointsHandler(Function<Integer,T>  scoringFunction,boolean reversed, ArrayList<Stage> stages) {
         this.reversed = reversed;
         this.getScore = scoringFunction;
-        this.stageIds = stageIds;
+        this.stages = stages;
 
         sortRiders();
     }
@@ -43,13 +43,8 @@ public class PointsHandler<T extends Comparable<T>> {
         HashMap<T, Integer> riderTimes= new HashMap<T,Integer>();
         // may well be a better way to do this idk
         // Add all riders and their GC times to the hashmap
-        for(int stageId : stageIds){
-            Stage stage = null;
-            try {
-                stage = Stage.getStageById(stageId);
-            } catch (IDNotRecognisedException e) {
-                assert false : "Stage ID not recognised - shouldn't happen";
-            }
+        for(Stage stage : stages){
+
             for(int riderId : stage.getRegisteredRiders()){
                 T score = null;
                 try {

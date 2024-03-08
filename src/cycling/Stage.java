@@ -16,8 +16,8 @@ import java.util.function.Function;
  * @version 1.0
  */
 public class Stage implements java.io.Serializable {
-    private static final HashMap<Integer, Stage> stages = new HashMap<Integer, Stage>(); // Hashmap of all stages
-
+    //private static final HashMap<Integer, Stage> stages = new HashMap<Integer, Stage>(); // Hashmap of all stages
+    private static final ArrayList<Integer> idsUsed = new ArrayList<Integer>();
     private static final HashMap<StageType, int[]> POINTS = new HashMap<StageType, int[]>(); // Points for each stage
                                                                                              // type
     static {
@@ -69,7 +69,7 @@ public class Stage implements java.io.Serializable {
         }
 
         // Set up attributes for the object
-        this.myId = UniqueIdGenerator.calculateUniqueId(stages);
+        this.myId = UniqueIdGenerator.calculateUniqueId(idsUsed);
         this.name = name;
         this.description = description;
         this.type = type;
@@ -77,19 +77,18 @@ public class Stage implements java.io.Serializable {
         this.prepared = false;
         this.parentRaceId = parentRaceId;
 
-        // add the new object to the hashmap of all stages
-        stages.put(this.myId, this);
+        idsUsed.add(myId);  // Add the ID to the list of used IDs
     }
 
-    /**
-     * Pushes a stage into the system.
-     *
-     * @param id the ID of the stage to add
-     * @param stage the stage object to add
-     */
-    public static void pushStage(int id, Stage stage) {
-        stages.put(id, stage);
-    }
+    ///**
+    // * Pushes a stage into the system.
+    // *
+    // * @param id the ID of the stage to add
+    // * @param stage the stage object to add
+    // */
+    //public static void pushStage(int id, Stage stage) {
+    //    stages.put(id, stage);
+    //}
 
     /**
      * Getter for the parent race this stage belongs to
@@ -100,29 +99,29 @@ public class Stage implements java.io.Serializable {
         return parentRaceId;
     }
 
-    /**
-     * Getter for a stage by its ID.
-     *
-     * @param id the ID to query
-     * @return The stage object reference
-     * @throws IDNotRecognisedException if the ID is not recognised
-     */
-    public static Stage getStageById(int id) throws IDNotRecognisedException {
-        if (!stages.containsKey(id)) {
-            throw new IDNotRecognisedException("Stage ID not recognised");
-        }
+    ///**
+    // * Getter for a stage by its ID.
+    // *
+    // * @param id the ID to query
+    // * @return The stage object reference
+    // * @throws IDNotRecognisedException if the ID is not recognised
+    // */
+    //public static Stage getStageById(int id) throws IDNotRecognisedException {
+    //    if (!stages.containsKey(id)) {
+    //        throw new IDNotRecognisedException("Stage ID not recognised");
+    //    }
+    //
+    //    return stages.get(id);
+    //}
 
-        return stages.get(id);
-    }
-
-    /**
-     * Getter for all stage IDs.
-     *
-     * @return an array of all stage IDs
-     */
-    public static ArrayList<Integer> getIds() {
-        return new ArrayList<Integer>(stages.keySet());
-    }
+    ///**
+    // * Getter for all stage IDs.
+    // *
+    // * @return an array of all stage IDs
+    // */
+    //public static ArrayList<Integer> getIds() {
+    //    return new ArrayList<Integer>(stages.keySet());
+    //}
 
     /**
      * Register a rider's results at each checkpoint.
@@ -149,7 +148,7 @@ public class Stage implements java.io.Serializable {
         if (startTimes.containsKey(riderId) || finishTimes.containsKey(riderId)) {
             throw new DuplicatedResultException("Rider ID already has a finish time");
         }
-        
+
         // Check the number of times is correct
         if (times.length != myCheckpoints.size() + 2) {
             throw new InvalidCheckpointTimesException("Number of times given is not number of checkpoints + 2");
@@ -324,11 +323,12 @@ public class Stage implements java.io.Serializable {
      * @throws IDNotRecognisedException if the stage ID is not recognised
      */
     public void delete() throws IDNotRecognisedException {
-        if (!stages.containsKey(myId)) {
-            throw new IDNotRecognisedException("Stage ID not recognised");
-        }
+        //if (!stages.containsKey(myId)) {
+        //    throw new IDNotRecognisedException("Stage ID not recognised");
+        //}
 
-        stages.remove(myId); // Remove from the dictionary of stages
+        //stages.remove(myId); // Remove from the dictionary of stages
+        idsUsed.remove(Integer.valueOf(myId)); // Remove the ID from the list of used IDs
 
         for (Checkpoint checkpoint : myCheckpoints.values()) {
             // checkpoints.remove(Integer.valueOf(checkpointId));
@@ -527,7 +527,7 @@ public class Stage implements java.io.Serializable {
     public int[] getRidersRankInStage() {
         Function<Integer, LocalTime> func = this::getElapsedTime;
         PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false,
-                new ArrayList<>(List.of(myId)));
+                new ArrayList<>(List.of(this)));
         return pointsHandler.getRiderRanks();
 
     }
@@ -541,7 +541,7 @@ public class Stage implements java.io.Serializable {
     public LocalTime[] getRankedAdjustedElapsedTimesInStage() {
         Function<Integer, LocalTime> func = this::getElapsedTime;
         PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false,
-                new ArrayList<>(List.of(myId)));
+                new ArrayList<>(List.of(this)));
         return pointsHandler.getRiderTimes();
     }
 

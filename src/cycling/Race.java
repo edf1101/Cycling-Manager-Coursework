@@ -17,7 +17,7 @@ public class Race implements java.io.Serializable {
     private final int myId;
     private final String name;
     private final String description;
-    private final ArrayList<Integer> stageIds = new ArrayList<Integer>(); // list of the stages belonging to this race
+    private final HashMap<Integer,Stage> stages = new HashMap<>(); // hashmap of the stages belonging to this race
 
     /**
      * Constructor for the Race class
@@ -86,7 +86,7 @@ public class Race implements java.io.Serializable {
      * @return The formatted descriptor string
      */
     public String getDetails() {
-        int numStages = stageIds.size();
+        int numStages = stages.size();
         double length = 0.0;
         return String.format("Name: %s, Description: %s, Number of stages: %d, Total length: %.2f",
                 name, description, numStages, length);
@@ -107,9 +107,9 @@ public class Race implements java.io.Serializable {
      */
     public void delete() {
         // NOTE: this cannot be done with a for each loop as it throws concurrent modification exception
-        for (int stageIndex =0; stageIndex < stageIds.size(); stageIndex++) {
+        for (Stage stage : stages.values()) {
             try {
-                Stage.getStageById(stageIds.get(stageIndex)).delete();
+                stage.delete();
             } catch (IDNotRecognisedException e) {
                 // Should never happen as we are iterating through the list of stageIds
                 // which are valid and checked
@@ -123,10 +123,10 @@ public class Race implements java.io.Serializable {
     /**
      * Adds a stage to the list of stages that belong to this race
      *
-     * @param stageId the stage ID to add to the list
+     * @param stage the stage to add to the list
      */
-    public void addStage(int stageId) {
-        stageIds.add(stageId);
+    public void addStage(Stage stage) {
+        stages.put(stage.getId(),stage);
     }
 
     /**
@@ -136,12 +136,12 @@ public class Race implements java.io.Serializable {
      * @throws IDNotRecognisedException When the stage ID does not exist in the system
      */
     public void deleteStage(int stageId) throws IDNotRecognisedException {
-        if (!stageIds.contains(stageId)) {
+        if (!stages.containsKey(stageId)) {
             throw new IDNotRecognisedException("The stage ID: " + stageId + ", does not exist in this system");
         }
 
-        Stage.getStageById(stageId).delete();
-        stageIds.remove(Integer.valueOf(stageId));
+        stages.get(stageId).delete();
+        stages.remove(Integer.valueOf(stageId));
     }
 
     /**
@@ -151,7 +151,7 @@ public class Race implements java.io.Serializable {
      * @param stageId the stage ID to remove from the list
      */
     public void removeStage(int stageId) {
-        stageIds.remove(Integer.valueOf(stageId));
+        stages.remove(Integer.valueOf(stageId));
     }
 
     /**
@@ -159,8 +159,8 @@ public class Race implements java.io.Serializable {
      *
      * @return The stage IDs belonging to this race
      */
-    public ArrayList<Integer> getStageIds() {
-        return stageIds;
+    public HashMap<Integer,Stage> getStages() {
+        return stages;
     }
 
     /**
@@ -199,7 +199,7 @@ public class Race implements java.io.Serializable {
      */
     public LocalTime[] getRidersGeneralClassificationTimes() {
         Function<Integer,LocalTime> func = this::getRiderGeneralClassificationTime;
-        PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false, stageIds);
+        PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false, new ArrayList<Stage>(stages.values()));
         return pointsHandler.getRiderTimes();
     }
 
@@ -210,7 +210,7 @@ public class Race implements java.io.Serializable {
      */
     public int[] getRidersGeneralClassificationRanks() {
         Function<Integer,LocalTime> func = this::getRiderGeneralClassificationTime;
-        PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false, stageIds);
+        PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false, new ArrayList<Stage>(stages.values()));
         return pointsHandler.getRiderRanks();
 
     }
@@ -223,9 +223,9 @@ public class Race implements java.io.Serializable {
      */
     private LocalTime getRiderGeneralClassificationTime(int riderId) {
         LocalTime summedTime = LocalTime.of(0, 0, 0);
-        for(int stageId : stageIds){
+        for(Stage stage : stages.values()){
             try {
-                LocalTime stageTime = Stage.getStageById(stageId).getAdjustedElapsedTime(riderId);
+                LocalTime stageTime = stage.getAdjustedElapsedTime(riderId);
                 summedTime = summedTime.plusHours(stageTime.getHour())
                         .plusMinutes(stageTime.getMinute())
                         .plusSeconds(stageTime.getSecond())
@@ -260,7 +260,7 @@ public class Race implements java.io.Serializable {
      */
     public int[] getRidersMountainPointsRankings() {
         Function<Integer,Integer> func = this::getRiderMountainPoints;
-        PointsHandler<Integer> pointsHandler = new PointsHandler<Integer>(func, true, stageIds);
+        PointsHandler<Integer> pointsHandler = new PointsHandler<Integer>(func, true, new ArrayList<Stage>(stages.values()));
         return pointsHandler.getRiderRanks();
     }
 
@@ -271,7 +271,7 @@ public class Race implements java.io.Serializable {
      */
     public int[] getRidersSprintPointsRankings() {
         Function<Integer,Integer> func = this::getRiderSprintPoints;
-        PointsHandler<Integer> pointsHandler = new PointsHandler<Integer>(func, true, stageIds);
+        PointsHandler<Integer> pointsHandler = new PointsHandler<Integer>(func, true, new ArrayList<Stage>(stages.values()));
         return pointsHandler.getRiderRanks();
     }
 
@@ -297,9 +297,9 @@ public class Race implements java.io.Serializable {
      */
     private int getRiderMountainPoints(int riderId) {
         int pointSum = 0;
-        for(int stageId:stageIds){
+        for(Stage stage :stages.values()){
             try {
-                pointSum += Stage.getStageById(stageId).getMountainPoints(riderId);
+                pointSum += stage.getMountainPoints(riderId);
             }
             catch (IDNotRecognisedException e){
                 // Should never happen since we are iterating through the list of stageIds already validated
@@ -317,9 +317,9 @@ public class Race implements java.io.Serializable {
      */
     private int getRiderSprintPoints(int riderId) {
         int pointSum = 0;
-        for(int stageId:stageIds){
+        for(Stage stage :stages.values()){
             try {
-                pointSum += Stage.getStageById(stageId).getSprintPoints(riderId);
+                pointSum += stage.getSprintPoints(riderId);
             }
             catch (IDNotRecognisedException e){
                 // Should never happen since we are iterating through the list of stageIds already validated

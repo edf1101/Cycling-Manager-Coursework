@@ -55,9 +55,9 @@ public class ErrorChecker implements java.io.Serializable {
      * @throws IDNotRecognisedException thrown if the stage is not part of the system
      */
     public void checkStageBelongsToSystem(int stageId) throws IDNotRecognisedException {
-        Stage.getStageById(stageId); // if it's not in any system this throws error
+        portal.getStage(stageId); // if it's not in any system this throws error
 
-        int stageRace = Stage.getStageById(stageId).getRaceId();
+        int stageRace = portal.getStage(stageId).getRaceId();
 
         if (!portal.getMyRaceIds().contains(stageRace)) {
             // Throw if it's not in our specific system
@@ -134,7 +134,7 @@ public class ErrorChecker implements java.io.Serializable {
             switch (type) { // use the specific method to get the name
                 case STAGE:
                     try {
-                        name = Stage.getStageById(id).getName();
+                        name = portal.getStage(id).getName();
                     } catch (IDNotRecognisedException e) {
                         // Will never happen
                     }
