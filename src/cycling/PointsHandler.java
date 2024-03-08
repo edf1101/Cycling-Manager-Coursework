@@ -53,12 +53,9 @@ public class PointsHandler<T extends Comparable<T>> {
                     throw new RuntimeException(e);
                 }
                 if(!riderTimes.containsKey(score)){
-
-
                     riderTimes.put(score,riderId);
                 }
             }
-
         }
 
         // Sort the list according to whether it's reversed or not

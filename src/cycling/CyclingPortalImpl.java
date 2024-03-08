@@ -1,10 +1,6 @@
 package cycling;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -198,7 +194,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		Checkpoint newClimb = new Climb(type, location, length, averageGradient, getStage(stageId)); // create the new climb
 		getStage(stageId).addCheckpoint(newClimb); // add it to the parent stage's list of
 																		// checkpoints
-		return newClimb.getMyId();
+		return newClimb.getId();
 	}
 
 	/**
@@ -226,7 +222,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		Checkpoint newInterSprint = new IntermediateSprint(location, getStage(stageId)); // create the new climb
 		getStage(stageId).addCheckpoint(newInterSprint); // add it to the parent stage's list of
 																				// checkpoints
-		return newInterSprint.getMyId();
+		return newInterSprint.getId();
 	}
 
 	/**
@@ -276,7 +272,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		//return Stage.getStageById(stageId).getCheckpointIds().stream().mapToInt(Integer::intValue).toArray();
 		int[] ids = new int[getStage(stageId).getCheckpoints().size()];
 		for (Checkpoint checkpoint: getStage(stageId).getCheckpoints()) {
-			ids[checkpoint.getMyId()] = checkpoint.getMyId();
+			ids[checkpoint.getId()] = checkpoint.getId();
 		}
 		return ids;
 	}
@@ -575,7 +571,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public void saveCyclingPortal(String filename) throws IOException {
-		//SerializedData.saveData(filename, this);
+		SerializedData.saveData(filename, this);
 	}
 
 	/**
@@ -589,7 +585,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	@Override
 	public void loadCyclingPortal(String filename) throws IOException, ClassNotFoundException {
-		//SerializedData.loadData(filename, this);
+		SerializedData.loadData(filename, this);
 	}
 
 	/**
@@ -729,8 +725,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 *
 	 * @return ArrayList of race IDs
 	 */
-	public ArrayList<Integer> getMyRaceIds() {
-		return new ArrayList<Integer>(myRaces.keySet());
+	public HashMap<Integer,Race> getMyRacesMap() {
+		return myRaces;
 	}
 
 	/**
@@ -738,8 +734,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 *
 	 * @return ArrayList of team IDs
 	 */
-	public ArrayList<Integer> getMyTeamIds() {
-		return new ArrayList<Integer>(myTeams.keySet());
+	public HashMap<Integer,Team> getMyTeamsMap() {
+		return myTeams;
 	}
 
 	/**
@@ -749,7 +745,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
 	public ArrayList<Integer> getMyStageIds() {
 		ArrayList<Integer> myStageIds = new ArrayList<Integer>();
-		for (int raceId : getMyRaceIds()) {
+		for (int raceId : getMyRacesMap().keySet()) {
             try {
                 myStageIds.addAll(getRaceById(raceId).getStages().keySet());
             } catch (IDNotRecognisedException e) {
@@ -781,7 +777,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		for (Race race: myRaces.values()) {
 			for (Stage stage : race.getStages().values()) {
 				for (Checkpoint checkpoint : stage.getCheckpoints()) {
-					if (checkpoint.getMyId() == checkId) {
+					if (checkpoint.getId() == checkId) {
 						return checkpoint;
 					}
 				}

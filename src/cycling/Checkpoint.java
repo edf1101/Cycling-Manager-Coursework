@@ -12,8 +12,6 @@ import java.util.HashMap;
  * @version 1.0
  */
 public abstract class Checkpoint implements java.io.Serializable{
-
-    //private static final HashMap<Integer, Checkpoint> checkpoints = new HashMap<Integer, Checkpoint>();
     private static final ArrayList<Integer> idsUsed = new ArrayList<>(); // list of the ids used
     // The times that riders passed the checkpoint format of: <riderId, time>
     protected final HashMap<Integer, LocalTime> passTimes = new HashMap<Integer, LocalTime>();
@@ -57,16 +55,6 @@ public abstract class Checkpoint implements java.io.Serializable{
         idsUsed.add(myId);
     }
 
-    ///**
-    // * Pushes a checkpoint into the system.
-    // *
-    // * @param id the ID of the checkpoint to add
-    // * @param checkpoint the checkpoint object to add
-    // */
-    //public static void pushCheckpoint(int id, Checkpoint checkpoint) {
-    //    checkpoints.put(id, checkpoint);
-    //}
-
     /**
      * Gives the stage object that this belongs to
      *
@@ -75,27 +63,6 @@ public abstract class Checkpoint implements java.io.Serializable{
     public Stage getParentStage() {
         return parentStage;
         }
-
-    ///**
-    // * Getter for a checkpoint by its ID
-    // *
-    // * @param id the ID to query
-    // * @return the checkpoint with the given ID
-    // */
-    //public static Checkpoint getCheckpointById(int id) throws IDNotRecognisedException{
-    //    if (!checkpoints.containsKey(id)) {
-    //        throw new IDNotRecognisedException("Checkpoint " + id + " is not part of the system");
-    //    }
-    //    return checkpoints.get(id);
-    //}
-
-    ///**
-    // * Getter for all checkpoint IDs
-    // * @return an ArrayList of all checkpoint IDs
-    // */
-    //public static ArrayList<Integer> getIds() {
-    //    return new ArrayList<Integer>(checkpoints.keySet());
-    //}
 
     /**
      * Record a rider's time at the checkpoint
@@ -112,7 +79,7 @@ public abstract class Checkpoint implements java.io.Serializable{
      *
      * @return the checkpoint id
      */
-    public int getMyId() {
+    public int getId() {
         return myId;
     }
 
@@ -140,18 +107,8 @@ public abstract class Checkpoint implements java.io.Serializable{
      *
      * @throws IDNotRecognisedException if the id is not in the hashmap
      */
-    public void removeFromHashmap() throws IDNotRecognisedException {
+    public void delete() throws IDNotRecognisedException {
         // check if the checkpoint is in the hashmap
-        idsUsed.remove(Integer.valueOf(myId));
-    }
-
-    /**
-     * Delete this checkpoint
-     *
-     * @throws IDNotRecognisedException if the checkpoint ID is not recognised
-     * @throws InvalidStageStateException if the stage is already prepared
-     */
-    public void delete() throws IDNotRecognisedException, InvalidStageStateException {
         idsUsed.remove(Integer.valueOf(myId));
     }
 

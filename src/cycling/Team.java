@@ -43,19 +43,9 @@ public class Team implements java.io.Serializable {
     }
 
     /**
-     * Pushes a team into the system.
-     *
-     * @param id the ID of the team to add
-     * @param team the team object to add
-     */
-    //public static void pushTeam(int id, Team team) {
-    //    teams.put(id, team);
-    //}
-
-    /**
      * Getter for the riders' Ids that belong to this team
      *
-     * @return an array of ints for the rider Ids in the team
+     * @return a hashmap of ints for the rider Ids in the team
      */
     public HashMap<Integer,Rider> getRiders() {
         return myRiders;
@@ -78,13 +68,6 @@ public class Team implements java.io.Serializable {
     public String getName() {
         return name;
     }
-
-    /**
-     * Function to Get a team reference by its Id.
-     *
-     * @param id the Id of the team to try find
-     * @return the team with the given Id if it exists
-     */
 
     /**
      * Gets details about the team

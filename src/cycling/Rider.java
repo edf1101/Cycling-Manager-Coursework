@@ -40,20 +40,8 @@ public class Rider implements java.io.Serializable {
         this.yearOfBirth = yearOfBirth;
         this.myTeam = team;
         idsUsed.add(this.myId); // Add this rider to the list of riders
-
-        // Add the rider to the team
-        //Team.getTeamById(team).addRider(this.myId);
     }
 
-    ///**
-    // * Pushes a rider into the system.
-    // *
-    // * @param id the ID of the rider to add
-    // * @param rider the rider object to add
-    // */
-    //public static void pushRider(int id, Rider rider) {
-    //    riders.put(id, rider);
-    //}
 
     /**
      * Getter for the Id attribute on the rider class
@@ -63,20 +51,6 @@ public class Rider implements java.io.Serializable {
     public int getId() {
         return myId;
     }
-
-    ///**
-    // * Gets the rider specified by the Id
-    // *
-    // * @param riderId The rider to find
-    // * @return The rider's object
-    // * @throws IDNotRecognisedException If the rider is not in the system
-    // */
-    //public static Rider getRiderById(int riderId) throws IDNotRecognisedException {
-    //    if (!riders.containsKey(riderId)) {
-    //        throw new IDNotRecognisedException("Rider " + riderId + " is not part of the system");
-    //    }
-    //    return riders.get(riderId);
-    //}
 
     /**
      * Get the details of the rider in a string form

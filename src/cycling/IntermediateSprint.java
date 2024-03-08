@@ -11,7 +11,6 @@ public class IntermediateSprint extends Checkpoint {
     // The points distribution for crossing the intermediate sprint checkpoint
     private static final int[] POINTS = {20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
 
-
     /**
      * Constructor for the intermediate sprint
      *

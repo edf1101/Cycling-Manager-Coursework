@@ -29,7 +29,7 @@ public class ErrorChecker implements java.io.Serializable {
      * @throws IDNotRecognisedException thrown if the team is not part of the system
      */
     public void checkTeamBelongsToSystem(int teamId) throws IDNotRecognisedException {
-        if (!portal.getMyTeamIds().contains(teamId)) {
+        if (!portal.getMyTeamsMap().containsKey(teamId)) {
             // Throw if it's not in our specific system
             throw new IDNotRecognisedException("Team " + teamId + " is not part of the system");
         }
@@ -42,7 +42,7 @@ public class ErrorChecker implements java.io.Serializable {
      * @throws IDNotRecognisedException thrown if the race is not part of the system
      */
     public void checkRaceBelongsToSystem(int raceId) throws IDNotRecognisedException {
-        if (!portal.getMyRaceIds().contains(raceId)) {
+        if (!portal.getMyRacesMap().containsKey(raceId)) {
             // Throw if it's not in our specific system
             throw new IDNotRecognisedException("Race " + raceId + " is not part of the system");
         }
@@ -59,32 +59,13 @@ public class ErrorChecker implements java.io.Serializable {
 
         Race stageRace = portal.getStage(stageId).getParentRace();
 
-        if (!portal.getMyRaceIds().contains(stageRace.getId())) {
+        if (!portal.getMyRacesMap().containsKey(stageRace.getId())) {
             // Throw if it's not in our specific system
             throw new IDNotRecognisedException("Stage " + stageId + " is not part of the system");
         }
 
         // Return otherwise
     }
-
-    ///**
-    // * Checks if a checkpoint is part of the system
-    // *
-    // * @param checkpointId the checkpoint ID to check
-    // * @throws IDNotRecognisedException thrown if the checkpoint is not part of the system
-    // */
-    //public void checkCheckpointBelongsToSystem(int checkpointId) throws IDNotRecognisedException {
-    //
-    //    // if it's not in any system this throws error
-    //    int parentRace = Checkpoint.getCheckpointById(checkpointId).getParentStage().getRaceId();
-    //
-    //    if (!portal.getMyRaceIds().contains(parentRace)) { // if it's not in our specific system throw error
-    //        {
-    //            throw new IDNotRecognisedException("Checkpoint " + checkpointId + " is not part of the system");
-    //        }
-    //    }
-    //    // else return
-    //}
 
     /**
      * enum type to determine what type of name to check
@@ -120,10 +101,10 @@ public class ErrorChecker implements java.io.Serializable {
                 ids = portal.getMyStageIds();
                 break;
             case TEAM:
-                ids = portal.getMyTeamIds();
+                ids = new ArrayList<>(portal.getMyTeamsMap().keySet());
                 break;
             case RACE:
-                ids = portal.getMyRaceIds();
+                ids = new ArrayList<>(portal.getMyRacesMap().keySet());
                 break;
             default:
                 assert (false) : "Invalid nameUnusedType";

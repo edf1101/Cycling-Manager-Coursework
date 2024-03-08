@@ -2,7 +2,6 @@ package cycling;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -16,7 +15,6 @@ import java.util.function.Function;
  * @version 1.0
  */
 public class Stage implements java.io.Serializable {
-    //private static final HashMap<Integer, Stage> stages = new HashMap<Integer, Stage>(); // Hashmap of all stages
     private static final ArrayList<Integer> idsUsed = new ArrayList<Integer>();
     private static final HashMap<StageType, int[]> POINTS = new HashMap<StageType, int[]>(); // Points for each stage
                                                                                              // type
@@ -80,16 +78,6 @@ public class Stage implements java.io.Serializable {
         idsUsed.add(myId);  // Add the ID to the list of used IDs
     }
 
-    ///**
-    // * Pushes a stage into the system.
-    // *
-    // * @param id the ID of the stage to add
-    // * @param stage the stage object to add
-    // */
-    //public static void pushStage(int id, Stage stage) {
-    //    stages.put(id, stage);
-    //}
-
     /**
      * Getter for the parent race this stage belongs to
      *
@@ -98,30 +86,6 @@ public class Stage implements java.io.Serializable {
     public Race getParentRace() {
         return parentRace;
     }
-
-    ///**
-    // * Getter for a stage by its ID.
-    // *
-    // * @param id the ID to query
-    // * @return The stage object reference
-    // * @throws IDNotRecognisedException if the ID is not recognised
-    // */
-    //public static Stage getStageById(int id) throws IDNotRecognisedException {
-    //    if (!stages.containsKey(id)) {
-    //        throw new IDNotRecognisedException("Stage ID not recognised");
-    //    }
-    //
-    //    return stages.get(id);
-    //}
-
-    ///**
-    // * Getter for all stage IDs.
-    // *
-    // * @return an array of all stage IDs
-    // */
-    //public static ArrayList<Integer> getIds() {
-    //    return new ArrayList<Integer>(stages.keySet());
-    //}
 
     /**
      * Register a rider's results at each checkpoint.
@@ -184,8 +148,8 @@ public class Stage implements java.io.Serializable {
      */
     public void addCheckpoint(Checkpoint checkpoint) {
 
-        checkpointOrder.add(checkpoint.getMyId());
-        myCheckpoints.put(checkpoint.getMyId(),checkpoint);
+        checkpointOrder.add(checkpoint.getId());
+        myCheckpoints.put(checkpoint.getId(),checkpoint);
 
     }
 
@@ -323,41 +287,13 @@ public class Stage implements java.io.Serializable {
      * @throws IDNotRecognisedException if the stage ID is not recognised
      */
     public void delete() throws IDNotRecognisedException {
-        //if (!stages.containsKey(myId)) {
-        //    throw new IDNotRecognisedException("Stage ID not recognised");
-        //}
-
-        //stages.remove(myId); // Remove from the dictionary of stages
         idsUsed.remove(Integer.valueOf(myId)); // Remove the ID from the list of used IDs
 
         for (Checkpoint checkpoint : myCheckpoints.values()) {
-            // checkpoints.remove(Integer.valueOf(checkpointId));
-            checkpoint.removeFromHashmap();
-            //deleteCheckpoint();
+            checkpoint.delete();
         }
 
-        // remove this stage from the parent
-        parentRace.removeStage(myId);
-    }
-
-    /**
-     * Deletes a checkpoint from the stage.
-     *
-     * @param checkpointId the ID of the checkpoint to delete
-     * @throws InvalidStageStateException if the stage is already prepared
-     * @throws IDNotRecognisedException   if the checkpoint ID is not recognised
-     */
-    public void deleteCheckpoint(int checkpointId) throws InvalidStageStateException, IDNotRecognisedException {
-        if (prepared) {
-            throw new InvalidStageStateException("Stage already prepared");
-        }
-
-        if (!myCheckpoints.containsKey(checkpointId)) {
-            throw new IDNotRecognisedException("Checkpoint ID not recognised");
-        }
-        myCheckpoints.get(checkpointId).delete();
-        myCheckpoints.remove(checkpointId);
-        checkpointOrder.remove(Integer.valueOf(checkpointId));
+        parentRace.removeStage(myId); // remove this stage from the parent
     }
 
     /**
