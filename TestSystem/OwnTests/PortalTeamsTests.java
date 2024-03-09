@@ -36,8 +36,9 @@ public class PortalTeamsTests {
 
         // Test printing the description
 
-        //String supposedMessage = "Name: TeamOne  Description: My favourite";
-        //assert (actualMessage.equals(supposedMessage)) : "The get Description / ToString is broken";
+        // String supposedMessage = "Name: TeamOne Description: My favourite";
+        // assert (actualMessage.equals(supposedMessage)) : "The get Description /
+        // ToString is broken";
 
         // Test removing a team
         portal1.removeTeam(team1Id);
@@ -62,7 +63,7 @@ public class PortalTeamsTests {
         // Test errors are thrown when trying to remove a team that doesn't exist
         try {
             portal1.removeTeam(-10);
-            assert (false) : "Should have thrown an exception for removing a non-existent team.";
+            assert false : "Should have thrown an exception for removing a non-existent team.";
         } catch (IDNotRecognisedException e) {
             // This is expected
         }
@@ -70,7 +71,7 @@ public class PortalTeamsTests {
         // Test errors are thrown when trying to add a team with invalid empty name
         try {
             portal1.createTeam("", "A test team");
-            assert (false) : "Should have thrown an exception for invalid team name test: empty";
+            assert false : "Should have thrown an exception for invalid team name test: empty";
         } catch (InvalidNameException | IllegalNameException e) {
             // This is expected
         }
@@ -78,7 +79,7 @@ public class PortalTeamsTests {
         // Test errors are thrown when trying to add a team with invalid null name
         try {
             portal1.createTeam(null, "A test team");
-            assert (false) : "Should have thrown an exception for invalid team name test: null";
+            assert false : "Should have thrown an exception for invalid team name test: null";
         } catch (InvalidNameException | IllegalNameException e) {
             // This is expected
         }
@@ -86,7 +87,7 @@ public class PortalTeamsTests {
         // Test errors are thrown when trying to add a team with invalid whitespace name
         try {
             portal1.createTeam("Test test", "A test team");
-            assert (false) : "Should have thrown an exception for invalid team name test: with whitespace";
+            assert false : "Should have thrown an exception for invalid team name test: with whitespace";
         } catch (InvalidNameException | IllegalNameException e) {
             // This is expected
         }

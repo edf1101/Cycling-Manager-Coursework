@@ -1,6 +1,7 @@
 package OwnTests;
 
 import cycling.*;
+
 public class PortalRacesTests {
     /**
      * Tests for the race implementation
@@ -37,19 +38,19 @@ public class PortalRacesTests {
         // Test adding race with illegal name
         try {
             portal.createRace("", "TestRidecdesc");
-            assert (false) : "Should have thrown an exception for empty name";
+            assert false : "Should have thrown an exception for empty name";
         } catch (InvalidNameException | IllegalNameException e) {
             // This is expected
         }
         try {
             portal.createRace(null, "TestRidecdesc");
-            assert (false) : "Should have thrown an exception for null name";
+            assert false : "Should have thrown an exception for null name";
         } catch (InvalidNameException | IllegalNameException e) {
             // This is expected
         }
         try {
             portal.createRace("hfjyguydtgkfytuydirttutdutfufufuygyfuyfyfyufuyyyfjfy", "TestRidecdesc");
-            assert (false) : "Should have thrown an exception for too long name";
+            assert false : "Should have thrown an exception for too long name";
         } catch (InvalidNameException | IllegalNameException e) {
             // This is expected
         }
@@ -57,7 +58,7 @@ public class PortalRacesTests {
         // test adding a race with the same name as we had before
         try {
             portal.createRace("Race1", "test2");
-            assert (false) : "Should have thrown an exception for same name";
+            assert false : "Should have thrown an exception for same name";
         } catch (InvalidNameException | IllegalNameException e) {
             // This is expected
         }

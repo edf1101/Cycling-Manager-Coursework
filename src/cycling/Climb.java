@@ -24,7 +24,7 @@ public class Climb extends Checkpoint {
     private final Double averageGradient;
 
     /**
-     * Constructor for the Climb class
+     * Constructor for the Climb class.
      *
      * @param type          the type of checkpoint it is
      * @param location      the location of the checkpoint
@@ -44,7 +44,7 @@ public class Climb extends Checkpoint {
     }
 
     /**
-     * Get sprint points for a rider
+     * Get sprint points for a rider.
      *
      * @param riderId the rider's ID
      * @return 0 as there are no sprint points for a climb
@@ -55,7 +55,7 @@ public class Climb extends Checkpoint {
     }
 
     /**
-     * Get mountain points for a rider
+     * Get mountain points for a rider.
      *
      * @param riderId the rider's ID
      * @return the mountain points for the rider
@@ -79,7 +79,7 @@ public class Climb extends Checkpoint {
     }
 
     /**
-     * Get the length of the climb
+     * Get the length of the climb.
      *
      * @return the length of the climb
      */
@@ -88,7 +88,7 @@ public class Climb extends Checkpoint {
     }
 
     /**
-     * Get the average gradient of the climb
+     * Get the average gradient of the climb.
      *
      * @return the average gradient of the climb
      */

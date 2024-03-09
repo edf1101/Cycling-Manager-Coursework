@@ -1,7 +1,6 @@
 package cycling;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Class to generate unique IDs for the system.

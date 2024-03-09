@@ -67,8 +67,8 @@ public class Team implements java.io.Serializable {
     }
 
     /**
-     * Gets details about the team
-     * Not required by spec but Adding it in case / extension
+     * Gets details about the team.
+     * Format: "Name: [name]  Description: [description]"
      *
      * @return A short description of the team
      */
@@ -77,18 +77,18 @@ public class Team implements java.io.Serializable {
     }
 
     /**
-     * Nice toString method for description of a team object
+     * Gets a short description of the team.
      *
      * @return A string description of this object
      */
     @Override
     public String toString() {
-        return getDetails();
+        return "Team Class " + getDetails();
     }
 
 
     /**
-     * Remove the team from the system
+     * Remove the team from the system.
      */
     public void remove() {
         idsUsed.remove(Integer.valueOf(this.myId)); // Remove this team from the list of teams
@@ -98,30 +98,31 @@ public class Team implements java.io.Serializable {
             try {
                 removeRider(new ArrayList<Integer>(myRiders.keySet()).get(0));
             } catch (IDNotRecognisedException e) {
-                assert false : "Rider Id not found in team, this should not happen here";
+                assert false : "Rider ID not found in team";
             }
         }
     }
 
     /**
-     * Add a rider to the team
+     * Add a rider to the team.
      *
-     * @param rider the rider object to add
+     * @param rider The rider object to add
      */
     public void addRider(Rider rider) {
         myRiders.put(rider.getId(),rider);
     }
 
     /**
-     * Remove a rider from the team
+     * Remove a rider from the team.
      *
-     * @param riderId the Id of the rider to remove
-     * @throws IDNotRecognisedException if the rider Id is not in the team
+     * @param riderId The Id of the rider to remove
+     * @throws IDNotRecognisedException If the rider Id is not in the team
      */
     public void removeRider(int riderId) throws IDNotRecognisedException {
         if (!myRiders.containsKey(riderId)) {
             throw new IDNotRecognisedException("Rider Id " + riderId + " not found in team ");
         }
+
         myRiders.get(riderId).remove(); // Remove the rider through its own method
         myRiders.remove(Integer.valueOf(riderId)); // remove it from our list of riders
     }

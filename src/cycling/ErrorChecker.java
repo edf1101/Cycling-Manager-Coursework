@@ -14,19 +14,19 @@ public class ErrorChecker implements java.io.Serializable {
     private final CyclingPortalImpl portal;
 
     /**
-     * Constructor for the ErrorChecker class
+     * Constructor for the ErrorChecker class.
      *
-     * @param portal the portal that this error checker is for
+     * @param portal The portal that this error checker is for
      */
     public ErrorChecker(CyclingPortalImpl portal) {
         this.portal = portal;
     }
 
     /**
-     * Checks if a team is part of the system
+     * Checks if a team is part of the system.
      *
-     * @param teamId the teamID to check
-     * @throws IDNotRecognisedException thrown if the team is not part of the system
+     * @param teamId The teamID to check
+     * @throws IDNotRecognisedException Thrown if the team is not part of the system
      */
     public void checkTeamBelongsToSystem(int teamId) throws IDNotRecognisedException {
         if (!portal.getMyTeamsMap().containsKey(teamId)) {
@@ -36,10 +36,10 @@ public class ErrorChecker implements java.io.Serializable {
     }
 
     /**
-     * Checks if a race is part of the system
+     * Checks if a race is part of the system.
      *
      * @param raceId the raceId to check
-     * @throws IDNotRecognisedException thrown if the race is not part of the system
+     * @throws IDNotRecognisedException Thrown if the race is not part of the system
      */
     public void checkRaceBelongsToSystem(int raceId) throws IDNotRecognisedException {
         if (!portal.getMyRacesMap().containsKey(raceId)) {
@@ -49,13 +49,14 @@ public class ErrorChecker implements java.io.Serializable {
     }
 
     /**
-     * Checks if a stage is part of the system
+     * Checks if a stage is part of the system.
      *
-     * @param stageId the stage ID to check
-     * @throws IDNotRecognisedException thrown if the stage is not part of the system
+     * @param stageId The stage ID to check
+     * @throws IDNotRecognisedException Thrown if the stage is not part of the
+     *                                  system
      */
     public void checkStageBelongsToSystem(int stageId) throws IDNotRecognisedException {
-        portal.getStage(stageId); // if it's not in any system this throws error
+        portal.getStage(stageId); // If it's not in any system this throws error
 
         Race stageRace = portal.getStage(stageId).getParentRace();
 
@@ -86,15 +87,15 @@ public class ErrorChecker implements java.io.Serializable {
     }
 
     /**
-     * Checks if a name is unused - combined function for stages, teams and races
+     * Checks if a name is unused - combined function for stages, teams and races.
      *
-     * @param trialName the name to try
+     * @param trialName The name to try
      * @param type      What type of name to check
-     * @throws IllegalNameException if the name is already taken
+     * @throws IllegalNameException If the name is already taken
      */
     public void checkNameUnused(String trialName, nameUnusedType type) throws IllegalNameException {
 
-        // Get the list of ids for the type
+        // Get the list of IDs for the type
         ArrayList<Integer> ids = null;
         switch (type) {
             case STAGE:
@@ -107,24 +108,26 @@ public class ErrorChecker implements java.io.Serializable {
                 ids = new ArrayList<>(portal.getMyRacesMap().keySet());
                 break;
             default:
-                assert (false) : "Invalid nameUnusedType";
+                assert false : "Invalid nameUnusedType";
         }
 
         for (int id : ids) {
             String name = null;
-            switch (type) { // use the specific method to get the name
+            switch (type) { // Use the specific method to get the name
                 case STAGE:
                     try {
                         name = portal.getStage(id).getName();
                     } catch (IDNotRecognisedException e) {
-                        // Will never happen
+                        // Will never happen as iterating through already valid IDs so ignore
+                        assert false : "Stage ID not found in system";
                     }
                     break;
                 case TEAM:
                     try {
                         name = portal.getTeam(id).getName();
                     } catch (IDNotRecognisedException e) {
-                        // Will never happen as iterating through already valid ids so ignore
+                        // Will never happen as iterating through already valid IDs so ignore
+                        assert false : "Team ID not found in system";
                     }
                     break;
                 case RACE:
@@ -135,10 +138,10 @@ public class ErrorChecker implements java.io.Serializable {
                     }
                     break;
                 default:
-                    assert (false) : "Invalid nameUnusedType";
+                    assert false : "Invalid nameUnusedType";
             }
 
-            if (name.equals(trialName)) { // if the name is already taken
+            if (name.equals(trialName)) { // If the name is already taken
                 throw new IllegalNameException("The name " + name + " has already been taken");
             }
         }

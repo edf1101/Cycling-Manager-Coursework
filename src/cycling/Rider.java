@@ -1,7 +1,6 @@
 package cycling;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Class holding riders' details
@@ -46,16 +45,16 @@ public class Rider implements java.io.Serializable {
 
 
     /**
-     * Getter for the Id attribute on the rider class
+     * Getter for the ID attribute on the rider class.
      *
-     * @return this instance of a rider's Id
+     * @return This instance of a rider's Id
      */
     public int getId() {
         return myId;
     }
 
     /**
-     * Get the details of the rider in a string form
+     * Get the details of the rider in a string form.
      *
      * @return A string describing the rider
      */
@@ -67,7 +66,7 @@ public class Rider implements java.io.Serializable {
     }
 
     /**
-     * Register the rider for a stage
+     * Register the rider for a stage.
      *
      * @param stageId The stage to say I have registered for
      */
@@ -76,14 +75,16 @@ public class Rider implements java.io.Serializable {
     }
 
     /**
-     * Getter for registered stages
+     * Getter for registered stages.
+     *
+     * @return The stages the rider is registered for
      */
     public ArrayList<Integer> getRegisteredStages() {
         return stagesRegistered;
     }
 
     /**
-     * Get the details of the rider in a string form
+     * Get the details of the rider in a string form.
      *
      * @return A string describing the rider
      */
@@ -93,7 +94,8 @@ public class Rider implements java.io.Serializable {
     }
 
     /**
-     * Removes the rider from the system
+     * Removes the rider from the system.
+     *
      * @throws IDNotRecognisedException If the rider is not in the system
      */
     public void remove() throws IDNotRecognisedException {
@@ -101,7 +103,7 @@ public class Rider implements java.io.Serializable {
     }
 
     /**
-     * Getter for the team the rider is in
+     * Getter for the team the rider is in.
      *
      * @return The team the rider is in
      */

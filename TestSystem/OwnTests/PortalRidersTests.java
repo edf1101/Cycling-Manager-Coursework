@@ -35,7 +35,7 @@ public class PortalRidersTests {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
-        //System.out.println(portal.getTeamRiders(team1Id).length);
+        // System.out.println(portal.getTeamRiders(team1Id).length);
         // Check team 1 has 1 rider and team 2 has 0 riders
         assert (portal.getTeamRiders(team1Id).length == 1) : "Team1 should have 1 rider.";
         assert (portal.getTeamRiders(team2Id).length == 0) : "Team2 should have no riders.";
@@ -76,7 +76,7 @@ public class PortalRidersTests {
         // Test errors are thrown when trying to remove a rider that doesn't exist
         try {
             portal.removeRider(-10);
-            assert (false) : "Should have thrown an exception for removing a non-existent rider.";
+            assert false : "Should have thrown an exception for removing a non-existent rider.";
         } catch (IDNotRecognisedException e) {
             // This is expected
         }
@@ -84,7 +84,7 @@ public class PortalRidersTests {
         // Test errors are thrown when trying to add a rider with invalid date
         try {
             portal.createRider(team1Id, "TestRiderName", 1800);
-            assert (false) : "Should have thrown an exception for invalid rider date";
+            assert false : "Should have thrown an exception for invalid rider date";
         } catch (IllegalArgumentException e) {
             // This is expected
         }
@@ -92,7 +92,7 @@ public class PortalRidersTests {
         // Test errors are thrown when trying to add a rider with invalid empty name
         try {
             portal.createRider(team1Id, "", 2000);
-            assert (false) : "Should have thrown an exception for invalid rider name test: empty";
+            assert false : "Should have thrown an exception for invalid rider name test: empty";
         } catch (IllegalArgumentException e) {
             // This is expected
         }
@@ -100,7 +100,7 @@ public class PortalRidersTests {
         // Test errors are thrown when trying to add a rider with invalid null name
         try {
             portal.createRider(team1Id, null, 2000);
-            assert (false) : "Should have thrown an exception for invalid rider name test: null";
+            assert false : "Should have thrown an exception for invalid rider name test: null";
         } catch (IllegalArgumentException e) {
             // This is expected
         }
@@ -108,12 +108,11 @@ public class PortalRidersTests {
         // Test errors are thrown when trying to add a rider with not found team Id
         try {
             portal.createRider(-100, "Test", 2000);
-            assert (false) : "Should have thrown an exception for non existent team Id";
+            assert false : "Should have thrown an exception for non existent team Id";
         } catch (IDNotRecognisedException e) {
             // This is expected
         }
 
     }
-
 
 }
