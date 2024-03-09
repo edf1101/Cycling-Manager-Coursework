@@ -70,7 +70,7 @@ public class ErrorChecker implements java.io.Serializable {
     /**
      * enum type to determine what type of name to check
      */
-    public enum nameUnusedType{
+    public enum nameUnusedType {
         /**
          * Whether to check a stage name
          */
@@ -89,7 +89,7 @@ public class ErrorChecker implements java.io.Serializable {
      * Checks if a name is unused - combined function for stages, teams and races
      *
      * @param trialName the name to try
-     * @param type What type of name to check
+     * @param type      What type of name to check
      * @throws IllegalNameException if the name is already taken
      */
     public void checkNameUnused(String trialName, nameUnusedType type) throws IllegalNameException {
@@ -121,9 +121,9 @@ public class ErrorChecker implements java.io.Serializable {
                     }
                     break;
                 case TEAM:
-                    try{
-                    name = portal.getTeam(id).getName();}
-                    catch (IDNotRecognisedException e){
+                    try {
+                        name = portal.getTeam(id).getName();
+                    } catch (IDNotRecognisedException e) {
                         // Will never happen as iterating through already valid ids so ignore
                     }
                     break;
