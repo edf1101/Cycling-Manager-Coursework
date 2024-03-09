@@ -550,7 +550,7 @@ public class CyclingPortalImpl implements CyclingPortal {
         // Use while loops as for loops will not work with concurrent modification
         while (!myTeams.isEmpty()) {
             try {
-                removeTeam(new ArrayList<Integer>(myTeams.keySet()).getFirst());
+                removeTeam(new ArrayList<Integer>(myTeams.keySet()).get(0));
             } catch (IDNotRecognisedException e) {
                 throw new RuntimeException(e);
             }
@@ -558,7 +558,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 
         while (!myRaces.isEmpty()) {
             try {
-                removeRaceById(myRaces.keySet().stream().toList().getFirst());
+                removeRaceById(myRaces.keySet().stream().toList().get(0));
             } catch (IDNotRecognisedException e) {
                 throw new RuntimeException(e);
             }

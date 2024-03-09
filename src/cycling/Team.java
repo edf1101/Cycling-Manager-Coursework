@@ -96,7 +96,7 @@ public class Team implements java.io.Serializable {
         // Go through all riders in the team and remove them
         while (!new ArrayList<Integer>(myRiders.keySet()).isEmpty()) { // needs to be while loop to stop concurrent modification exception
             try {
-                removeRider(new ArrayList<Integer>(myRiders.keySet()).getFirst());
+                removeRider(new ArrayList<Integer>(myRiders.keySet()).get(0));
             } catch (IDNotRecognisedException e) {
                 assert false : "Rider Id not found in team, this should not happen here";
             }
