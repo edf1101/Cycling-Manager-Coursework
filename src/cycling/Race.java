@@ -8,7 +8,8 @@ import java.util.function.Function;
 /**
  * Class to represent an entire Race in the system
  *
- * @author 730003140 & 730002704
+ * @author 730003140
+ * @author 730002704
  * @version 1.0
  */
 public class Race implements java.io.Serializable {

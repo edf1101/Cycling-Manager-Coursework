@@ -7,7 +7,8 @@ import java.util.HashMap;
  * This class is used to serialize the data of the CyclingPortalImpl portal
  * instance.
  *
- * @author 730003140 & 730002704
+ * @author 730003140
+ * @author 730002704
  * @version 1.0
  */
 public class SerializedData implements java.io.Serializable {

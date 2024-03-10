@@ -7,7 +7,8 @@ import java.util.ArrayList;
  * system.
  * This class holds those functions to avoid repetition.
  *
- * @author 730003140 & 730002704
+ * @author 730003140
+ * @author 730002704
  * @version 1.0
  */
 public class ErrorChecker implements java.io.Serializable {

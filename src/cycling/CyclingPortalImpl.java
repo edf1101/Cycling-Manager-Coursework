@@ -12,13 +12,13 @@ import java.util.stream.Collectors;
 //  - given time trial is explicitly said that its the elapsed time not mass start,
 //  for non TT should we use elapsed time
 //  as starting from stage start time not rider start?
-//  - Javadoc incorrect symbols > ...
 
 /**
  * This class is the implementation of the CyclingPortal interface.
  * It is the only backend class that the frontend application can interact with.
  *
- * @author 730003140 & 730002704
+ * @author 730003140
+ * @author 730002704
  * @version 1.0
  */
 public class CyclingPortalImpl implements CyclingPortal {

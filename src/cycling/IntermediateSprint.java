@@ -3,7 +3,8 @@ package cycling;
 /**
  * Represents an intermediate sprint checkpoint
  *
- * @author 730003140 & 730002704
+ * @author 730003140
+ * @author 730002704
  * @version 1.0
  */
 public class IntermediateSprint extends Checkpoint {

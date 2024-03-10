@@ -5,10 +5,11 @@ import java.util.ArrayList;
 /**
  * Class to generate unique IDs for the system.
  *
- * @author 730003140 & 730002704
+ * @author 730003140
+ * @author 730002704
  * @version 1.0
  */
-public class UniqueIdGenerator<T> {
+public class UniqueIdGenerator {
 
     /**
      * Method to calculate a unique ID for a team.
@@ -16,7 +17,7 @@ public class UniqueIdGenerator<T> {
      * @param idsUsed The IDs that are already in use.
      * @return The unique ID.
      */
-    public static <T> int calculateUniqueId(ArrayList<Integer> idsUsed) {
+    public static int calculateUniqueId(ArrayList<Integer> idsUsed) {
 
         // Go through all the teams and store their IDs in an array
         // also store the maximum ID

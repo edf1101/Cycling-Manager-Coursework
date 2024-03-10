@@ -6,7 +6,8 @@ import java.util.HashMap;
  * The Climb class is a subclass of the Checkpoint class and is used to represent
  * a climb in a stage
  *
- * @author 730003140 & 730002704
+ * @author 730003140
+ * @author 730002704
  * @version 1.0
  */
 public class Climb extends Checkpoint {

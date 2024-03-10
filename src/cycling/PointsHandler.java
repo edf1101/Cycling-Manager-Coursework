@@ -12,7 +12,8 @@ import java.util.function.Function;
  *
  * @param <T> The type of object being sorted.
  *            LocalTime for times, Integer/int for points.
- * @author 730003140 & 730002704
+ * @author 730003140
+ * @author 730002704
  * @version 1.0
  */
 public class PointsHandler<T extends Comparable<T>> {

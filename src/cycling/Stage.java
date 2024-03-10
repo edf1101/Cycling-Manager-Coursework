@@ -8,7 +8,8 @@ import java.util.function.Function;
 /**
  * Class to represent a stage in the staged bike race
  *
- * @author 730003140 & 730002704
+ * @author 730003140
+ * @author 730002704
  * @version 1.0
  */
 public class Stage implements java.io.Serializable {
@@ -46,7 +47,7 @@ public class Stage implements java.io.Serializable {
      * @param type         The type of the stage
      * @param length       The length of the stage
      * @param parentRace The parent race that this stage belongs to
-     * @throws InvalidNameException   if the name is not 0<characters<=30 or
+     * @throws InvalidNameException   if the name is not between 0 and 30 chars or
      *                                contains whitespace
      * @throws InvalidLengthException if the length is less than 5km
      */
@@ -55,7 +56,8 @@ public class Stage implements java.io.Serializable {
 
         // Check name is not null, empty or >30 chars
         if (name == null || name.length() > 30 || name.isEmpty() || name.contains(" ")) {
-            throw new InvalidNameException(" name broke naming rules. Length must be 0<length<=30, and no whitespace");
+            throw new InvalidNameException(" name broke naming rules. Length must be between 0 and 30," +
+                    " and no whitespace");
         }
 
         // Check length is not less than 5km

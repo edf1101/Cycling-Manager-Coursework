@@ -8,7 +8,8 @@ import java.util.HashMap;
  * Abstract class for a checkpoint
  * This class is the superclass for the subclasses IntermediateSprint and Climb
  *
- * @author 730003140 & 730002704
+ * @author 730003140
+ * @author 730002704
  * @version 1.0
  */
 public abstract class Checkpoint implements java.io.Serializable{

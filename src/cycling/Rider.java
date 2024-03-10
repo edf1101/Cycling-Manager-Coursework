@@ -5,7 +5,8 @@ import java.util.ArrayList;
 /**
  * Class holding riders' details
  *
- * @author 730002704 & 730003140
+ * @author 730002704
+ * @author 730003140
  * @version 1.0
  */
 public class Rider implements java.io.Serializable {
@@ -27,7 +28,8 @@ public class Rider implements java.io.Serializable {
      * @param name        Name of the rider
      * @param yearOfBirth Year of birth of the rider
      * @param team        The team the rider belongs to
-     * @throws IllegalArgumentException If the name is empty or null, or the year of birth is < 1900
+     * @throws IllegalArgumentException If the name is empty or null, or the year of birth
+     *                                  is less than 1900
      */
     public Rider(String name, int yearOfBirth, Team team)
             throws IllegalArgumentException{
