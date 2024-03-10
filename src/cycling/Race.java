@@ -114,28 +114,13 @@ public class Race implements java.io.Serializable {
     }
 
     /**
-     * Deletes a stage.
-     *
-     * @param stageId The stage ID to delete
-     * @throws IDNotRecognisedException When the stage ID does not exist in the
-     *                                  system
-     */
-    public void deleteStage(int stageId) throws IDNotRecognisedException {
-        if (!stages.containsKey(stageId)) {
-            throw new IDNotRecognisedException("The stage ID: " + stageId + ", does not exist in this system");
-        }
-
-        stages.get(stageId).delete();
-        stages.remove(Integer.valueOf(stageId));
-    }
-
-    /**
      * Removes a stage to the list of stages that belong to this race.
      * Does not delete the stage, just removes it from the list.
      *
      * @param stageId The stage ID to remove from the list
      */
     public void removeStage(int stageId) {
+        stages.get(stageId).removeIdFromUsedIds(); // Remove the ID from the list of used IDs
         stages.remove(Integer.valueOf(stageId));
     }
 
@@ -184,7 +169,7 @@ public class Race implements java.io.Serializable {
         LocalTime summedTime = LocalTime.of(0, 0, 0);
 
         for (Stage stage : stages.values()) {
-            if (!stage.isPrepared()) {
+            if (!stage.getPrepared()) {
                 continue;
             }
 

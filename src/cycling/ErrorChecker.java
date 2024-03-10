@@ -57,9 +57,9 @@ public class ErrorChecker implements java.io.Serializable {
      *                                  system
      */
     public void checkStageBelongsToSystem(int stageId) throws IDNotRecognisedException {
-        portal.getStage(stageId); // If it's not in any system this throws error
+        portal.getStageById(stageId); // If it's not in any system this throws error
 
-        Race stageRace = portal.getStage(stageId).getParentRace();
+        Race stageRace = portal.getStageById(stageId).getParentRace();
 
         if (!portal.getMyRacesMap().containsKey(stageRace.getId())) {
             // Throw if it's not in our specific system
@@ -100,7 +100,14 @@ public class ErrorChecker implements java.io.Serializable {
         ArrayList<Integer> ids = null;
         switch (type) {
             case STAGE:
-                ids = portal.getMyStageIds();
+                ids = new ArrayList<>();
+                for (int raceId : portal.getMyRacesMap().keySet()) {
+                    try {
+                        ids.addAll(portal.getRaceById(raceId).getStages().keySet());
+                    } catch (IDNotRecognisedException e) {
+                        // Should never happen
+                    }
+                }
                 break;
             case TEAM:
                 ids = new ArrayList<>(portal.getMyTeamsMap().keySet());
@@ -117,7 +124,7 @@ public class ErrorChecker implements java.io.Serializable {
             switch (type) { // Use the specific method to get the name
                 case STAGE:
                     try {
-                        name = portal.getStage(id).getName();
+                        name = portal.getStageById(id).getName();
                     } catch (IDNotRecognisedException e) {
                         // Will never happen as iterating through already valid IDs so ignore
                         assert false : "Stage ID not found in system";
@@ -125,7 +132,7 @@ public class ErrorChecker implements java.io.Serializable {
                     break;
                 case TEAM:
                     try {
-                        name = portal.getTeam(id).getName();
+                        name = portal.getTeamById(id).getName();
                     } catch (IDNotRecognisedException e) {
                         // Will never happen as iterating through already valid IDs so ignore
                         assert false : "Team ID not found in system";

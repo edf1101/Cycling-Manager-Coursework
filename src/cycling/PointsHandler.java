@@ -74,7 +74,7 @@ public class PointsHandler<T extends Comparable<T>> {
         }
 
         // Convert ArrayList to array
-        riderScores = scoresList.toArray(arraylist_to_array(scoresList));
+        riderScores = scoresList.toArray(convertToArray(scoresList));
 
         // Create a list to store int values of the riderIds in order
         int[] riderIds = new int[scoresList.size()];
@@ -91,7 +91,7 @@ public class PointsHandler<T extends Comparable<T>> {
      * @return An array of type T[] containing the elements from the ArrayList
      */
     @SuppressWarnings("unchecked") // Suppresses the unchecked cast warning
-    private T[] arraylist_to_array(ArrayList<T> scoresList) {
+    private T[] convertToArray(ArrayList<T> scoresList) {
         return (T[]) new Comparable[scoresList.size()];
     }
 

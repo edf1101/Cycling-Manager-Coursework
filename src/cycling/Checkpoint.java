@@ -46,7 +46,7 @@ public abstract class Checkpoint implements java.io.Serializable{
             throw new InvalidStageTypeException("Time trial stages cannot have checkpoints");
         }
 
-        if (parentStage.isPrepared()) {
+        if (parentStage.getPrepared()) {
             throw new InvalidStageStateException("Stage already prepared");
         }
 
@@ -111,15 +111,6 @@ public abstract class Checkpoint implements java.io.Serializable{
     public void delete() throws IDNotRecognisedException {
         // check if the checkpoint is in the hashmap
         idsUsed.remove(Integer.valueOf(myId));
-    }
-
-    /**
-     * Get the type of the checkpoint
-     *
-     * @return the type of the checkpoint
-     */
-    public Double getLocation() {
-        return location;
     }
 
     /**

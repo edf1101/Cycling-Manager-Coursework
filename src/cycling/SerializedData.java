@@ -90,7 +90,7 @@ public class SerializedData implements java.io.Serializable {
         }
 
         for (int teamId : portal.getTeams()) {
-            Team team = portal.getTeam(teamId);
+            Team team = portal.getTeamById(teamId);
             teams.put(teamId, team);
         }
     }

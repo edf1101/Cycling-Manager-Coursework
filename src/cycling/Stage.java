@@ -202,7 +202,7 @@ public class Stage implements java.io.Serializable {
      *         stage.
      * @throws IDNotRecognisedException if a rider ID is not recognised.
      */
-    public int[] getSprintPointsInStage(int[] orderedRiders) throws IDNotRecognisedException {
+    public int[] getRidersSprintPoints(int[] orderedRiders) throws IDNotRecognisedException {
         int[] sprintPoints = new int[orderedRiders.length];
         for (int index = 0; index < orderedRiders.length; index++) {
             sprintPoints[index] = getSprintPoints(orderedRiders[index]);
@@ -288,13 +288,20 @@ public class Stage implements java.io.Serializable {
      * @throws IDNotRecognisedException if the stage ID is not recognised
      */
     public void delete() throws IDNotRecognisedException {
-        idsUsed.remove(Integer.valueOf(myId)); // Remove the ID from the list of used IDs
+        removeIdFromUsedIds(); // Remove the ID from the list of used IDs
 
         for (Checkpoint checkpoint : myCheckpoints.values()) {
             checkpoint.delete();
         }
 
         parentRace.removeStage(myId); // remove this stage from the parent
+    }
+
+    /**
+     * Removes the stage ID from the list of used IDs
+     */
+    public void removeIdFromUsedIds() {
+        idsUsed.remove(Integer.valueOf(myId));
     }
 
     /**
@@ -398,15 +405,6 @@ public class Stage implements java.io.Serializable {
     }
 
     /**
-     * Getter for the description of this stage.
-     *
-     * @return the stage description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
      * Getter for the name of this stage.
      *
      * @return the Stage name
@@ -440,9 +438,9 @@ public class Stage implements java.io.Serializable {
     /**
      * Getter for whether the stage is prepared.
      *
-     * @return boolean indicating whether or not the stage is prepared
+     * @return boolean indicating whether the stage is prepared
      */
-    public boolean isPrepared() {
+    public boolean getPrepared() {
         return prepared;
     }
 
@@ -494,7 +492,7 @@ public class Stage implements java.io.Serializable {
      * @throws IDNotRecognisedException If any of the riders in the input array are
      *                                  not recognised
      */
-    public int[] getRidersMountainPointsInStage(int[] orderedRiders) throws IDNotRecognisedException {
+    public int[] getRidersMountainPoints(int[] orderedRiders) throws IDNotRecognisedException {
         // Get the ordered list of riders
         int[] mountainPoints = new int[orderedRiders.length];
         for (int index = 0; index < orderedRiders.length; index++) {
