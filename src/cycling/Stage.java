@@ -3,7 +3,6 @@ package cycling;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -15,7 +14,7 @@ import java.util.function.Function;
 public class Stage implements java.io.Serializable {
     private static final ArrayList<Integer> idsUsed = new ArrayList<Integer>();
     private static final HashMap<StageType, int[]> POINTS = new HashMap<StageType, int[]>(); // Points for each stage
-                                                                                             // type
+    // type
     static {
         POINTS.put(StageType.FLAT, new int[] { 50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2 });
         POINTS.put(StageType.MEDIUM_MOUNTAIN, new int[] { 30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2 });
@@ -462,8 +461,9 @@ public class Stage implements java.io.Serializable {
      */
     public int[] getRidersRankInStage() {
         Function<Integer, LocalTime> func = this::getElapsedTime;
-        PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false,
-                new ArrayList<>(List.of(this)));
+        ArrayList<Stage> points_stages = new ArrayList<Stage>();
+        points_stages.add(this);
+        PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false, points_stages);
         return pointsHandler.getRiderRanks();
 
     }
@@ -476,8 +476,9 @@ public class Stage implements java.io.Serializable {
      */
     public LocalTime[] getRankedAdjustedElapsedTimesInStage() {
         Function<Integer, LocalTime> func = this::getElapsedTime;
-        PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false,
-                new ArrayList<>(List.of(this)));
+        ArrayList<Stage> points_stages = new ArrayList<Stage>();
+        points_stages.add(this);
+        PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false, points_stages);
         return pointsHandler.getRiderTimes();
     }
 

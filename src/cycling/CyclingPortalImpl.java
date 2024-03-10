@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 // TODO list:
 //  - put assertions into the src code
@@ -560,7 +561,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 
         while (!myRaces.isEmpty()) {
             try {
-                removeRaceById(myRaces.keySet().stream().toList().get(0));
+                removeRaceById(new ArrayList<>(myRaces.keySet()).get(0));
             } catch (IDNotRecognisedException e) {
                 throw new RuntimeException(e);
             }
