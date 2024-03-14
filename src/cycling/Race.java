@@ -76,9 +76,11 @@ public class Race extends Entity {
     public void remove() {
         // This cannot be done with a for each loop as it throws concurrent modification
         // exception
-        for (Stage stage : stages.values()) {
-            stage.remove();
+
+        while (!stages.isEmpty()) {
+              new ArrayList<>(stages.values()).get(0).remove();
         }
+
 
         freeId();
     }

@@ -294,5 +294,8 @@ public class PortalScoringTests {
         }
         assert (!Arrays.equals(oldGC, GC)) : "Removing a rider did not modify the GC times";
 
+        // This had caused an error for some reason,
+        // fixed now but keep it here in case it comes up again
+        portal.eraseCyclingPortal();
     }
 }
