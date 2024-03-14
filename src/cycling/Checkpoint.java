@@ -1,7 +1,6 @@
 package cycling;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -12,11 +11,9 @@ import java.util.HashMap;
  * @author 730002704
  * @version 1.0
  */
-public abstract class Checkpoint implements java.io.Serializable{
-    private static final ArrayList<Integer> idsUsed = new ArrayList<>(); // list of the ids used
+public abstract class Checkpoint extends Entity {
     // The times that riders passed the checkpoint format of: <riderId, time>
     protected final HashMap<Integer, LocalTime> passTimes = new HashMap<Integer, LocalTime>();
-    private final int myId; // its unique ID for checkpoints
     protected CheckpointType myType; // the type of checkpoint it is
     private final Double location; // where in the stage it is located
 
@@ -26,15 +23,18 @@ public abstract class Checkpoint implements java.io.Serializable{
      * Constructor for the abstract superclass checkpoint.
      * This will be called via super() in the subclasses
      *
-     * @param type the type of checkpoint
-     * @param location the location of the checkpoint
+     * @param type        the type of checkpoint
+     * @param location    the location of the checkpoint
      * @param parentStage the stage that the checkpoint is in
-     * @throws InvalidLocationException if the location is out of range of the stage
-     * @throws InvalidStageTypeException if the stage is not of the correct type
+     * @throws InvalidLocationException   if the location is out of range of the
+     *                                    stage
+     * @throws InvalidStageTypeException  if the stage is not of the correct type
      * @throws InvalidStageStateException if the stage is already prepared
      */
     public Checkpoint(CheckpointType type, Double location, Stage parentStage)
             throws InvalidLocationException, InvalidStageTypeException, InvalidStageStateException {
+        super(); // Call the entity constructor
+
         // Check conditions are Ok for the checkpoint
         this.parentStage = parentStage;
 
@@ -52,8 +52,6 @@ public abstract class Checkpoint implements java.io.Serializable{
 
         this.myType = type;
         this.location = location;
-        myId = UniqueIdGenerator.calculateUniqueId(idsUsed);
-        idsUsed.add(myId);
     }
 
     /**
@@ -63,7 +61,7 @@ public abstract class Checkpoint implements java.io.Serializable{
      */
     public Stage getParentStage() {
         return parentStage;
-        }
+    }
 
     /**
      * Record a rider's time at the checkpoint
@@ -73,15 +71,6 @@ public abstract class Checkpoint implements java.io.Serializable{
      */
     public void recordTime(int riderId, LocalTime passTime) {
         passTimes.put(riderId, passTime);
-    }
-
-    /**
-     * Get the Id of the checkpoint
-     *
-     * @return the checkpoint id
-     */
-    public int getId() {
-        return myId;
     }
 
     /**
@@ -103,14 +92,9 @@ public abstract class Checkpoint implements java.io.Serializable{
         passTimes.remove(riderId);
     }
 
-    /**
-     * Remove a checkpoint from the hashmap
-     *
-     * @throws IDNotRecognisedException if the id is not in the hashmap
-     */
-    public void delete() throws IDNotRecognisedException {
-        // check if the checkpoint is in the hashmap
-        idsUsed.remove(Integer.valueOf(myId));
+    @Override
+    public void remove() {
+        freeId(); // Remove the checkpoint from the usedIds list
     }
 
     /**

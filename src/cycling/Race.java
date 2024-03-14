@@ -12,10 +12,7 @@ import java.util.function.Function;
  * @author 730002704
  * @version 1.0
  */
-public class Race implements java.io.Serializable {
-
-    private static final ArrayList<Integer> idsUsed = new ArrayList<Integer>(); // List of all the raceIds used
-    private final int myId;
+public class Race extends Entity {
     private final String name;
     private final String description;
     private final HashMap<Integer, Stage> stages = new HashMap<>(); // Hashmap of the stages belonging to this race
@@ -29,18 +26,16 @@ public class Race implements java.io.Serializable {
      *                              contains whitespace
      */
     public Race(String name, String description) throws InvalidNameException {
+        super(); // Call the entity constructor
+
         // Check for invalid (rule breaking) name
         if (name == null || name.length() > 30 || name.isEmpty() || name.contains(" ")) {
             throw new InvalidNameException(" name broke naming rules. Length must be 0<length<=30, and no whitespace");
         }
 
         // Set up attributes for the object
-        this.myId = UniqueIdGenerator.calculateUniqueId(idsUsed);
         this.name = name;
         this.description = description;
-
-        // Add the new id to the list of all race ids
-        idsUsed.add(this.myId);
     }
 
     /**
@@ -50,15 +45,6 @@ public class Race implements java.io.Serializable {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Getter for the Id attribute on this Race instance.
-     *
-     * @return the Id
-     */
-    public int getId() {
-        return myId;
     }
 
     /**
@@ -86,22 +72,15 @@ public class Race implements java.io.Serializable {
         return "Race Class " + getDetails();
     }
 
-    /**
-     * Deletes this Race, cascading down to delete all stages and checkpoints.
-     */
-    public void delete() {
-        // NOTE: this cannot be done with a for each loop as it throws concurrent
-        // modification exception
+    @Override
+    public void remove() {
+        // This cannot be done with a for each loop as it throws concurrent modification
+        // exception
         for (Stage stage : stages.values()) {
-            try {
-                stage.delete();
-            } catch (IDNotRecognisedException e) {
-                // Should never happen since we are iterating through the list of stageIds
-                assert false : "Stage ID not recognised";
-            }
+            stage.remove();
         }
 
-        idsUsed.remove(myId); // Remove the ID from the list of used IDs
+        freeId();
     }
 
     /**
@@ -114,14 +93,13 @@ public class Race implements java.io.Serializable {
     }
 
     /**
-     * Removes a stage to the list of stages that belong to this race.
+     * Removes a stage from the list of stages that belong to this race.
      * Does not delete the stage, just removes it from the list.
      *
      * @param stageId The stage ID to remove from the list
      */
     public void removeStage(int stageId) {
-        stages.get(stageId).removeIdFromUsedIds(); // Remove the ID from the list of used IDs
-        stages.remove(Integer.valueOf(stageId));
+        stages.remove((Integer) stageId);
     }
 
     /**

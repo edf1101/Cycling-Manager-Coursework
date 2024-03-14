@@ -1,0 +1,45 @@
+package cycling;
+
+import java.util.ArrayList;
+
+/**
+ * Represents an entity with a unique ID
+ *
+ * @author 730002704
+ * @author 730003140
+ * @version 1.0
+ */
+public abstract class Entity implements java.io.Serializable {
+    public static final ArrayList<Integer> usedIds = new ArrayList<Integer>();
+    protected int id;
+
+    /**
+     * Constructor for the Entity class. Generates a unique ID for the entity.
+     */
+    public Entity() {
+        this.id = UniqueIdGenerator.calculateUniqueId(usedIds);
+        usedIds.add(this.id);
+    }
+
+    /**
+     * Getter for the ID attribute on the entity class.
+     *
+     * @return This instance of an entity's ID
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * Abstract method to be implemented by subclasses to delete the entity.
+     * Should remove the entity from any parents and delete any children.
+     */
+    public abstract void remove();
+
+    /**
+     * Remove this entity's ID from the usedIds list.
+     */
+    protected void freeId() {
+        usedIds.remove((Integer) id);
+    }
+}

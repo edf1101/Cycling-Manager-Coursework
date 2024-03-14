@@ -9,15 +9,9 @@ import java.util.ArrayList;
  * @author 730003140
  * @version 1.0
  */
-public class Rider implements java.io.Serializable {
-
-    // Holds reference to all the riders created by their Id
-    //static private final HashMap<Integer, Rider> riders = new HashMap<Integer, Rider>();
-    static private final ArrayList<Integer> idsUsed = new ArrayList<>();
-
+public class Rider extends Entity {
     private final ArrayList<Integer> stagesRegistered = new ArrayList<>();
 
-    private final int myId;
     private final Team myTeam;
     private final String name;
     private final int yearOfBirth;
@@ -28,31 +22,22 @@ public class Rider implements java.io.Serializable {
      * @param name        Name of the rider
      * @param yearOfBirth Year of birth of the rider
      * @param team        The team the rider belongs to
-     * @throws IllegalArgumentException If the name is empty or null, or the year of birth
+     * @throws IllegalArgumentException If the name is empty or null, or the year of
+     *                                  birth
      *                                  is less than 1900
      */
     public Rider(String name, int yearOfBirth, Team team)
-            throws IllegalArgumentException{
+            throws IllegalArgumentException {
+        super(); // Call the entity constructor
+
         // Check the arguments are legal
         if (name == null || name.isEmpty() || yearOfBirth < 1900) {
             throw new IllegalArgumentException("The name mustn't be empty or null, and the year must be >= 1900");
         }
 
-        this.myId = UniqueIdGenerator.calculateUniqueId(idsUsed);
         this.name = name;
         this.yearOfBirth = yearOfBirth;
         this.myTeam = team;
-        idsUsed.add(this.myId); // Add this rider to the list of riders
-    }
-
-
-    /**
-     * Getter for the ID attribute on the rider class.
-     *
-     * @return This instance of a rider's Id
-     */
-    public int getId() {
-        return myId;
     }
 
     /**
@@ -95,13 +80,9 @@ public class Rider implements java.io.Serializable {
         return getDetails();
     }
 
-    /**
-     * Removes the rider from the system.
-     *
-     * @throws IDNotRecognisedException If the rider is not in the system
-     */
-    public void remove() throws IDNotRecognisedException {
-        idsUsed.remove(Integer.valueOf(this.myId));
+    @Override
+    public void remove() {
+        freeId(); // Remove the rider from the usedIds list
     }
 
     /**

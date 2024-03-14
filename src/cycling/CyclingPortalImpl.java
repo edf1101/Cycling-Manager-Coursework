@@ -90,7 +90,7 @@ public class CyclingPortalImpl implements CyclingPortal {
         errorChecker.checkRaceBelongsToSystem(raceId); // Check race belongs to this system
 
         // Delete the race and remove it from the list of races
-        getRaceById(raceId).delete();
+        getRaceById(raceId).remove();
         myRaces.remove(Integer.valueOf(raceId));
     }
 
@@ -162,7 +162,7 @@ public class CyclingPortalImpl implements CyclingPortal {
         // Throw error if invalid stage id
         errorChecker.checkStageBelongsToSystem(stageId);
 
-        getStageById(stageId).delete();
+        getStageById(stageId).remove();
     }
 
     /**
@@ -194,8 +194,9 @@ public class CyclingPortalImpl implements CyclingPortal {
             InvalidStageTypeException {
         errorChecker.checkStageBelongsToSystem(stageId); // Check if the system contains this stage
 
-        Checkpoint newClimb = new Climb(type, location, length, averageGradient, getStageById(stageId)); // Create the new
-                                                                                                     // climb
+        Checkpoint newClimb = new Climb(type, location, length, averageGradient, getStageById(stageId)); // Create the
+                                                                                                         // new
+        // climb
         getStageById(stageId).addCheckpoint(newClimb); // Add it to the parent stage's list of checkpoints
         return newClimb.getId();
     }
@@ -308,7 +309,7 @@ public class CyclingPortalImpl implements CyclingPortal {
         errorChecker.checkTeamBelongsToSystem(teamId); // Check the teamID exists in this system
 
         myTeams.get(teamId).remove(); // Remove the team from its own class
-        myTeams.remove(Integer.valueOf(teamId)); // Remove it from the cycling portals list of associated teams
+        myTeams.remove((Integer) teamId); // Remove it from the cycling portals list of associated teams
     }
 
     /**
@@ -369,7 +370,7 @@ public class CyclingPortalImpl implements CyclingPortal {
     @Override
     public void removeRider(int riderId) throws IDNotRecognisedException {
         Rider rider = getRiderById(riderId);
-        rider.getMyTeam().removeRider(riderId); // Remove the rider using its own object's remove function
+        rider.getMyTeam().deleteRider(riderId); // Remove the rider using its own object's remove function
         for (int stageId : rider.getRegisteredStages()) {
             getStageById(stageId).removeRider(riderId);
         }

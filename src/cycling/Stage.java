@@ -12,10 +12,10 @@ import java.util.function.Function;
  * @author 730002704
  * @version 1.0
  */
-public class Stage implements java.io.Serializable {
-    private static final ArrayList<Integer> idsUsed = new ArrayList<Integer>();
-    private static final HashMap<StageType, int[]> POINTS = new HashMap<StageType, int[]>(); // Points for each stage
-    // type
+public class Stage extends Entity {
+
+    // Points for each stage type
+    private static final HashMap<StageType, int[]> POINTS = new HashMap<StageType, int[]>();
     static {
         POINTS.put(StageType.FLAT, new int[] { 50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2 });
         POINTS.put(StageType.MEDIUM_MOUNTAIN, new int[] { 30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2 });
@@ -23,13 +23,12 @@ public class Stage implements java.io.Serializable {
         POINTS.put(StageType.TT, new int[] { 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 });
     }
 
-    private final int myId;
     private final String name;
     private final String description;
     private final StageType type;
     private final double length;
     private final ArrayList<Integer> checkpointOrder = new ArrayList<Integer>();
-    private final HashMap<Integer,Checkpoint> myCheckpoints = new HashMap<Integer,Checkpoint>();
+    private final HashMap<Integer, Checkpoint> myCheckpoints = new HashMap<Integer, Checkpoint>();
     private boolean prepared = false;
 
     private final Race parentRace;
@@ -42,17 +41,18 @@ public class Stage implements java.io.Serializable {
     /**
      * Constructor for the Stage class.
      *
-     * @param name         Name of the stage
-     * @param description  Description of the stage
-     * @param type         The type of the stage
-     * @param length       The length of the stage
-     * @param parentRace The parent race that this stage belongs to
+     * @param name        Name of the stage
+     * @param description Description of the stage
+     * @param type        The type of the stage
+     * @param length      The length of the stage
+     * @param parentRace  The parent race that this stage belongs to
      * @throws InvalidNameException   if the name is not between 0 and 30 chars or
      *                                contains whitespace
      * @throws InvalidLengthException if the length is less than 5km
      */
     public Stage(String name, String description, StageType type, double length, Race parentRace)
             throws InvalidNameException, InvalidLengthException {
+        super(); // Call the entity constructor
 
         // Check name is not null, empty or >30 chars
         if (name == null || name.length() > 30 || name.isEmpty() || name.contains(" ")) {
@@ -66,15 +66,12 @@ public class Stage implements java.io.Serializable {
         }
 
         // Set up attributes for the object
-        this.myId = UniqueIdGenerator.calculateUniqueId(idsUsed);
         this.name = name;
         this.description = description;
         this.type = type;
         this.length = length;
         this.prepared = false;
         this.parentRace = parentRace;
-
-        idsUsed.add(myId);  // Add the ID to the list of used IDs
     }
 
     /**
@@ -151,7 +148,7 @@ public class Stage implements java.io.Serializable {
     public void addCheckpoint(Checkpoint checkpoint) {
 
         checkpointOrder.add(checkpoint.getId());
-        myCheckpoints.put(checkpoint.getId(),checkpoint);
+        myCheckpoints.put(checkpoint.getId(), checkpoint);
 
     }
 
@@ -230,7 +227,7 @@ public class Stage implements java.io.Serializable {
         int points = 0;
 
         for (Checkpoint checkpoint : myCheckpoints.values()) {
-            //Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpointId);
+            // Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpointId);
             points += checkpoint.getMountainPoints(riderId);
         }
 
@@ -282,26 +279,15 @@ public class Stage implements java.io.Serializable {
         }
     }
 
-    /**
-     * Deletes this stage and its associated checkpoints.
-     *
-     * @throws IDNotRecognisedException if the stage ID is not recognised
-     */
-    public void delete() throws IDNotRecognisedException {
-        removeIdFromUsedIds(); // Remove the ID from the list of used IDs
+    @Override
+    public void remove() {
+        freeId(); // Remove the ID from the list of used IDs
 
         for (Checkpoint checkpoint : myCheckpoints.values()) {
-            checkpoint.delete();
+            checkpoint.remove();
         }
 
-        parentRace.removeStage(myId); // remove this stage from the parent
-    }
-
-    /**
-     * Removes the stage ID from the list of used IDs
-     */
-    public void removeIdFromUsedIds() {
-        idsUsed.remove(Integer.valueOf(myId));
+        parentRace.removeStage(id); // Remove this stage from the parent
     }
 
     /**
@@ -384,15 +370,6 @@ public class Stage implements java.io.Serializable {
         }
 
         return results;
-    }
-
-    /**
-     * Getter for the Stage ID.
-     *
-     * @return the Id of the parent Race
-     */
-    public int getId() {
-        return myId;
     }
 
     /**

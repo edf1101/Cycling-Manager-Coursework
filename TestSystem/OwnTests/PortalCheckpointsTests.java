@@ -75,10 +75,11 @@ public class PortalCheckpointsTests {
 
                 // System.out.println(Arrays.toString(portal.getTeamRiders(team1Id)));
                 for (int riderId : portal.getTeamRiders(team1Id)) {
+                        // TODO After changing to entity, IDs went over 60? not sure why
                         LocalTime start = LocalTime.of(0, 0);
-                        LocalTime mid1 = LocalTime.of(0, 1, riderId);
-                        LocalTime mid2 = LocalTime.of(0, 2, riderId);
-                        LocalTime fin = LocalTime.of(0, 3, riderId);
+                        LocalTime mid1 = LocalTime.of(0, 1, riderId / 2);
+                        LocalTime mid2 = LocalTime.of(0, 2, riderId / 2);
+                        LocalTime fin = LocalTime.of(0, 3, riderId / 2);
 
                         portal.registerRiderResultsInStage(stage1Id, riderId, // note to self the riderId in time is so
                                                                               // they are offset? nice - yes

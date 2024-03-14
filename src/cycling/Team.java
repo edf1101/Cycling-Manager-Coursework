@@ -9,22 +9,21 @@ import java.util.HashMap;
  * @author 730003140, 730002704
  * @version 1.0
  */
-public class Team implements java.io.Serializable {
-
-    static private final ArrayList<Integer> idsUsed = new ArrayList<>();
-    private final int myId; // Unique Id of the team
+public class Team extends Entity {
     private final String name; // Name of the team
     private final String description; // Description of the team
-    private final HashMap<Integer,Rider> myRiders = new HashMap<>(); // Holds all the riders in this team
+    private final HashMap<Integer, Rider> myRiders = new HashMap<>(); // Holds all the riders in this team
 
     /**
      * Constructor for the Team class.
      *
      * @param name        Name of the team
      * @param description Description of the team
-     * @throws InvalidNameException if the name is invalid (too long/short or contains whitespace)
+     * @throws InvalidNameException if the name is invalid (too long/short or
+     *                              contains whitespace)
      */
     public Team(String name, String description) throws InvalidNameException {
+        super(); // Call the entity constructor
 
         // Check for invalid (rule breaking) name
         if (name == null || name.length() > 30 || name.isEmpty() || name.contains(" ")) {
@@ -32,11 +31,8 @@ public class Team implements java.io.Serializable {
         }
 
         // Set up this new instance with the essential details
-        this.myId = UniqueIdGenerator.calculateUniqueId(idsUsed);
         this.name = name;
         this.description = description;
-        idsUsed.add(this.myId); // Add this team to the list of teams
-        //teams.put(this.myId, this); // Add this team to the list of teams
     }
 
     /**
@@ -44,17 +40,8 @@ public class Team implements java.io.Serializable {
      *
      * @return a hashmap of ints for the rider Ids in the team
      */
-    public HashMap<Integer,Rider> getRiders() {
+    public HashMap<Integer, Rider> getRiders() {
         return myRiders;
-    }
-
-    /**
-     * Getter for the Id attribute on the team class
-     *
-     * @return this instance of a team's Id
-     */
-    public int getId() {
-        return myId;
     }
 
     /**
@@ -68,7 +55,7 @@ public class Team implements java.io.Serializable {
 
     /**
      * Gets details about the team.
-     * Format: "Name: [name]  Description: [description]"
+     * Format: "Name: [name] Description: [description]"
      *
      * @return A short description of the team
      */
@@ -86,17 +73,14 @@ public class Team implements java.io.Serializable {
         return "Team Class " + getDetails();
     }
 
-
-    /**
-     * Remove the team from the system.
-     */
+    @Override
     public void remove() {
-        idsUsed.remove(Integer.valueOf(this.myId)); // Remove this team from the list of teams
+        freeId(); // Remove the team from the usedIds list
 
-        // Go through all riders in the team and remove them
-        while (!new ArrayList<Integer>(myRiders.keySet()).isEmpty()) { // needs to be while loop to stop concurrent modification exception
+        // Needs to be a while loop to stop concurrent modification exception
+        while (!new ArrayList<Integer>(myRiders.keySet()).isEmpty()) {
             try {
-                removeRider(new ArrayList<Integer>(myRiders.keySet()).get(0));
+                deleteRider(new ArrayList<Integer>(myRiders.keySet()).get(0));
             } catch (IDNotRecognisedException e) {
                 assert false : "Rider ID not found in team";
             }
@@ -109,7 +93,7 @@ public class Team implements java.io.Serializable {
      * @param rider The rider object to add
      */
     public void addRider(Rider rider) {
-        myRiders.put(rider.getId(),rider);
+        myRiders.put(rider.getId(), rider);
     }
 
     /**
@@ -118,13 +102,12 @@ public class Team implements java.io.Serializable {
      * @param riderId The Id of the rider to remove
      * @throws IDNotRecognisedException If the rider Id is not in the team
      */
-    public void removeRider(int riderId) throws IDNotRecognisedException {
+    public void deleteRider(int riderId) throws IDNotRecognisedException {
         if (!myRiders.containsKey(riderId)) {
             throw new IDNotRecognisedException("Rider Id " + riderId + " not found in team ");
         }
 
         myRiders.get(riderId).remove(); // Remove the rider through its own method
-        myRiders.remove(Integer.valueOf(riderId)); // remove it from our list of riders
+        myRiders.remove((Integer) riderId); // Remove it from our list of riders
     }
-
 }
