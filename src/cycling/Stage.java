@@ -370,7 +370,6 @@ public class Stage extends Entity {
                 if (otherRiderID != riderId) {
                     // Calculate the time difference between the current rider and other riders
 
-                    // TODO check if spec says to combine times <= or < 1 second
                     float difference = (float) (getElapsedTime(otherRiderID).toNanoOfDay() -
                             adjustedElapsedTime.toNanoOfDay()) / 1000000000; // nanoseconds to seconds
 

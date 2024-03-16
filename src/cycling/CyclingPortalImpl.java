@@ -6,9 +6,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-// TODO list:
-//  - Check with climb is it awarded for time to complete climb or just first to reach?
-
 /**
  * This class is the implementation of the CyclingPortal interface.
  * It is the only backend class that the frontend application can interact with.
@@ -762,6 +759,13 @@ public class CyclingPortalImpl implements CyclingPortal {
         return myTeams;
     }
 
+    /**
+     * Get a rider by its ID
+     *
+     * @param riderId the id of the rider to search for
+     * @return The rider Object
+     * @throws IDNotRecognisedException if the rider ID is not part of the system
+     */
     protected Rider getRiderById(int riderId) throws IDNotRecognisedException {
         for (Team team : myTeams.values()) {
             for (Rider rider : team.getRiders().values()) {
@@ -773,6 +777,13 @@ public class CyclingPortalImpl implements CyclingPortal {
         throw new IDNotRecognisedException("Rider " + riderId + " is not part of the system");
     }
 
+    /**
+     * Get a team by its ID
+     *
+     * @param teamId the id of the rider to search for
+     * @return The team Object
+     * @throws IDNotRecognisedException if the team ID is not part of the system
+     */
     protected Team getTeamById(int teamId) throws IDNotRecognisedException {
         for (Team team : myTeams.values()) {
             if (team.getId() == teamId) {
@@ -782,6 +793,13 @@ public class CyclingPortalImpl implements CyclingPortal {
         throw new IDNotRecognisedException("Team " + teamId + " is not part of the system");
     }
 
+    /**
+     * Get a checkpoint by its ID
+     *
+     * @param checkId the id of the checkpoint to search for
+     * @return The checkpoint Object
+     * @throws IDNotRecognisedException if the checkpoint ID is not part of the system
+     */
     protected Checkpoint getCheckpointById(int checkId) throws IDNotRecognisedException {
         for (Race race : myRaces.values()) {
             for (Stage stage : race.getStages().values()) {
@@ -795,6 +813,13 @@ public class CyclingPortalImpl implements CyclingPortal {
         throw new IDNotRecognisedException("Checkpoint " + checkId + " is not part of the system");
     }
 
+    /**
+     * Get a stage by its ID
+     *
+     * @param stageId the id of the stage to search for
+     * @return The stage Object
+     * @throws IDNotRecognisedException if the stage ID is not part of the system
+     */
     protected Stage getStageById(int stageId) throws IDNotRecognisedException {
         for (Race race : myRaces.values()) {
             for (Stage stage : race.getStages().values()) {
@@ -806,6 +831,13 @@ public class CyclingPortalImpl implements CyclingPortal {
         throw new IDNotRecognisedException("Stage " + stageId + " is not part of the system");
     }
 
+    /**
+     * Get a race by its ID
+     *
+     * @param raceId the id of the race to search for
+     * @return The race Object
+     * @throws IDNotRecognisedException if the race ID is not part of the system
+     */
     protected Race getRaceById(int raceId) throws IDNotRecognisedException {
         if (myRaces.containsKey(raceId)) {
             return myRaces.get(raceId);
