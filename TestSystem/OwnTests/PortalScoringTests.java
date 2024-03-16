@@ -59,7 +59,7 @@ public class PortalScoringTests {
             stageId4 = portal.addStageToRace(raceId, "Stage4",
                     "Test stage 4",10.0,
                     LocalDateTime.of(2024, 1, 3, 12, 0),
-                    StageType.FLAT);
+                    StageType.TT);
 
         }
         catch (InvalidNameException | IllegalNameException | IDNotRecognisedException | InvalidLengthException e) {
@@ -268,8 +268,9 @@ public class PortalScoringTests {
 
         // Test getting the sprint points
         try {
+            System.out.println(Arrays.toString(portal.getRidersPointsInRace(raceId)));
             assert Arrays.equals(portal.getRidersPointsInRace(raceId),
-                    new int[]{217, 143, 158, 127}) : "Sprint points for race failed";
+                    new int[]{187, 138, 145, 122}) : "Sprint points for race failed";
             assert Arrays.equals(portal.getRidersPointClassificationRank(raceId),
                     new int[]{riderId1, riderId4, riderId2, riderId3}) : "Sprint points for race failed";
         } catch (IDNotRecognisedException e) {

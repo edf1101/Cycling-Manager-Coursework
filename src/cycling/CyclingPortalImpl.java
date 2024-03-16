@@ -7,10 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 // TODO list:
-//  - put assertions into the src code
-//  - given time trial is explicitly said that its the elapsed time not mass start,
-//  for non TT should we use elapsed time
-//  as starting from stage start time not rider start?
 //  - Check with climb is it awarded for time to complete climb or just first to reach?
 
 /**
@@ -134,7 +130,8 @@ public class CyclingPortalImpl implements CyclingPortal {
             throws IDNotRecognisedException, IllegalNameException, InvalidNameException, InvalidLengthException {
         errorChecker.checkNameUnused(stageName, ErrorChecker.nameUnusedType.STAGE); // Check Stage name is Unique
         // Create the stage and add it to the list of stage Ids and return Id.
-        Stage newStage = new Stage(stageName, description, type, length, getRaceById(raceId));
+        Stage newStage = new Stage(stageName, description, type,
+                length, startTime, getRaceById(raceId));
         getRaceById(raceId).addStage(newStage); // this also checks race is in the system
 
         return newStage.getId();

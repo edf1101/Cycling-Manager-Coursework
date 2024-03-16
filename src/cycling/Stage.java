@@ -1,5 +1,6 @@
 package cycling;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public class Stage extends Entity {
     private final ArrayList<Integer> checkpointOrder = new ArrayList<Integer>();
     private final HashMap<Integer, Checkpoint> myCheckpoints = new HashMap<Integer, Checkpoint>();
     private boolean prepared = false;
-
+    private LocalDateTime startStageTime; // The time the stage starts
     private final Race parentRace;
 
     // Hashmaps to store the start and finish times for each rider format of
@@ -45,12 +46,14 @@ public class Stage extends Entity {
      * @param description Description of the stage
      * @param type        The type of the stage
      * @param length      The length of the stage
+     * @param startTime   The time the stage starts
      * @param parentRace  The parent race that this stage belongs to
      * @throws InvalidNameException   if the name is not between 0 and 30 chars or
      *                                contains whitespace
      * @throws InvalidLengthException if the length is less than 5km
      */
-    public Stage(String name, String description, StageType type, double length, Race parentRace)
+    public Stage(String name, String description, StageType type, double length,
+                 LocalDateTime startTime, Race parentRace)
             throws InvalidNameException, InvalidLengthException {
         super(); // Call the entity constructor
 
@@ -70,6 +73,7 @@ public class Stage extends Entity {
         this.description = description;
         this.type = type;
         this.length = length;
+        this.startStageTime = startTime;
         this.prepared = false;
         this.parentRace = parentRace;
     }
@@ -196,6 +200,7 @@ public class Stage extends Entity {
 
         // Add the points from the checkpoints for intermediate sprints
         for (Checkpoint checkpoint : myCheckpoints.values()) {
+            assert type != StageType.TT : "TT stage should not have intermediate sprints";
             points += checkpoint.getIntermediateSprintPoints(riderId);
         }
 
@@ -324,9 +329,17 @@ public class Stage extends Entity {
      * @return the elapsed time
      */
     private LocalTime getElapsedTime(int riderId) {
+        if (type == StageType.TT) {
+            return LocalTime
+                    .ofNanoOfDay(finishTimes.get(riderId).toNanoOfDay() - startTimes.get(riderId).toNanoOfDay());
+        }
+        else{
 
-        return LocalTime
-                .ofNanoOfDay(finishTimes.get(riderId).toNanoOfDay() - startTimes.get(riderId).toNanoOfDay());
+            // get the start time of the stage as localTime not LocalDateTime
+            LocalTime startTime = startStageTime.toLocalTime();
+            return LocalTime
+                    .ofNanoOfDay(finishTimes.get(riderId).toNanoOfDay() - startTime.toNanoOfDay());
+        }
     }
 
     /**
