@@ -93,7 +93,10 @@ public class Team extends Entity {
      * @param rider The rider object to add
      */
     public void addRider(Rider rider) {
+        int ridersBefore = myRiders.size();
         myRiders.put(rider.getId(), rider);
+        // assert rider added
+        assert myRiders.size() == ridersBefore + 1 : "Rider not added to team";
     }
 
     /**
@@ -106,8 +109,10 @@ public class Team extends Entity {
         if (!myRiders.containsKey(riderId)) {
             throw new IDNotRecognisedException("Rider Id " + riderId + " not found in team ");
         }
-
+        int ridersBefore = myRiders.size();
         myRiders.get(riderId).remove(); // Remove the rider through its own method
         myRiders.remove((Integer) riderId); // Remove it from our list of riders
+        // assert rider removed
+        assert myRiders.size() == ridersBefore - 1 : "Rider not removed from team";
     }
 }

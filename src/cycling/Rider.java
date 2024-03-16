@@ -32,6 +32,7 @@ public class Rider extends Entity {
 
         // Check the arguments are legal
         if (name == null || name.isEmpty() || yearOfBirth < 1900) {
+            freeId(); // as super() has been called, we need to free the ID
             throw new IllegalArgumentException("The name mustn't be empty or null, and the year must be >= 1900");
         }
 

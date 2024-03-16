@@ -30,6 +30,7 @@ public class Race extends Entity {
 
         // Check for invalid (rule breaking) name
         if (name == null || name.length() > 30 || name.isEmpty() || name.contains(" ")) {
+            freeId(); // as super() has been called, we need to free the ID
             throw new InvalidNameException(" name broke naming rules. Length must be 0<length<=30, and no whitespace");
         }
 
@@ -91,7 +92,10 @@ public class Race extends Entity {
      * @param stage The stage to add to the list
      */
     public void addStage(Stage stage) {
+        int stagesBefore = stages.size();
         stages.put(stage.getId(), stage);
+        // Check that the stage was added to the list
+        assert stages.size() == stagesBefore + 1 : "Stage was not added to the list";
     }
 
     /**
@@ -101,7 +105,10 @@ public class Race extends Entity {
      * @param stageId The stage ID to remove from the list
      */
     public void removeStage(int stageId) {
+        int stagesBefore = stages.size();
         stages.remove((Integer) stageId);
+        // assert that the stage was removed from the list
+        assert stages.size() == stagesBefore - 1 : "Stage was not removed from the list";
     }
 
     /**

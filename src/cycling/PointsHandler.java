@@ -101,6 +101,10 @@ public class PointsHandler<T extends Comparable<T>> {
      * @return the ids of riders in order of rank
      */
     public int[] getRiderRanks() {
+        // assert all scoring metrics have same amount of riders registered
+        assert riderRanks.length == riderScores.length :
+                "scoring metrics have different amount of riders registered";
+
         return riderRanks;
     }
 
@@ -110,10 +114,17 @@ public class PointsHandler<T extends Comparable<T>> {
      * @return the scores of the riders as LocalTime format
      */
     public LocalTime[] getRiderTimes() {
+        // assert all scoring metrics have same amount of riders registered
+        assert riderRanks.length == riderScores.length:
+                "scoring metrics have different amount of riders registered";
+
         LocalTime[] riderTimes = new LocalTime[riderScores.length];
         for (int i = 0; i < riderScores.length; i++) {
             riderTimes[i] = (LocalTime) riderScores[i];
         }
+        assert riderTimes.length == riderRanks.length:
+                "scoring metrics have different amount of riders registered";
+
         return riderTimes;
     }
 }

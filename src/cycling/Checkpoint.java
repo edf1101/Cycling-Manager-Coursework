@@ -70,7 +70,9 @@ public abstract class Checkpoint extends Entity {
      * @param passTime What time they crossed the checkpoint
      */
     public void recordTime(int riderId, LocalTime passTime) {
+        int passTimesBefore = passTimes.size(); // Get the number of passTimes before the rider is added
         passTimes.put(riderId, passTime);
+        assert passTimes.size() == passTimesBefore + 1; // Check that the rider has been added
     }
 
     /**
@@ -89,12 +91,16 @@ public abstract class Checkpoint extends Entity {
      * @param riderId the Id of the rider to remove from the checkpoint
      */
     public void removeRider(int riderId) {
+        int passTimesBefore = passTimes.size(); // Get the number of passTimes before the rider is removed
         passTimes.remove(riderId);
+        assert passTimes.size() == passTimesBefore - 1; // Check that the rider has been removed
     }
 
     @Override
     public void remove() {
+        int idsBefore = usedIds.size(); // Get the number of usedIds before the checkpoint is removed
         freeId(); // Remove the checkpoint from the usedIds list
+        int idsAfter = usedIds.size(); // Get the number of usedIds after the checkpoint is removed
     }
 
     /**

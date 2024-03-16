@@ -116,7 +116,7 @@ public class ErrorChecker implements java.io.Serializable {
                 ids = new ArrayList<>(portal.getMyRacesMap().keySet());
                 break;
             default:
-                assert false : "Invalid nameUnusedType";
+                assert false : "Invalid nameUnusedType should never happen";
         }
 
         for (int id : ids) {

@@ -54,10 +54,10 @@ public class CyclingPortalImpl implements CyclingPortal {
     @Override
     public int createRace(String name, String description) throws IllegalNameException, InvalidNameException {
         errorChecker.checkNameUnused(name, ErrorChecker.nameUnusedType.RACE); // Check the name is unused
-
+        int racesBefore = myRaces.size(); // Get the number
         Race newRace = new Race(name, description); // Create instance
         myRaces.put(newRace.getId(), newRace); //
-
+        assert myRaces.size() == racesBefore + 1 : "Race wasn't added"; // assert race is added well
         return newRace.getId();
     }
 
@@ -88,10 +88,12 @@ public class CyclingPortalImpl implements CyclingPortal {
     @Override
     public void removeRaceById(int raceId) throws IDNotRecognisedException {
         errorChecker.checkRaceBelongsToSystem(raceId); // Check race belongs to this system
-
+        int racesBefore = myRaces.size();
         // Delete the race and remove it from the list of races
         getRaceById(raceId).remove();
         myRaces.remove(Integer.valueOf(raceId));
+        // assert removal
+        assert myRaces.size() == racesBefore - 1 : "Race didn't remove correctly";
     }
 
     /**
@@ -107,6 +109,25 @@ public class CyclingPortalImpl implements CyclingPortal {
         return getRaceStages(raceId).length;
     }
 
+    /**
+     * Creates a new stage and adds it to the race.
+     *
+     * @param raceId      The race which the stage will be added to.
+     * @param stageName   An identifier name for the stage.
+     * @param description A descriptive text for the stage.
+     * @param length      Stage length in kilometres.
+     * @param startTime   The date and time in which the stage will be raced. It
+     *                    cannot be null.
+     * @param type        The type of the stage. This is used to determine the
+     *                    amount of points given to the winner.
+     * @return the unique ID of the stage.
+     * @throws IDNotRecognisedException If the ID does not match to any race in the
+     *                                  system.
+     * @throws IllegalNameException     If the name already exists in the platform.
+     * @throws InvalidNameException     If the name is null, empty, has more than 30
+     *                              	characters, or has white spaces.
+     * @throws InvalidLengthException   If the length is less than 5km.
+     */
     @Override
     public int addStageToRace(int raceId, String stageName, String description, double length, LocalDateTime startTime,
             StageType type)
@@ -269,12 +290,8 @@ public class CyclingPortalImpl implements CyclingPortal {
     @Override
     public int[] getStageCheckpoints(int stageId) throws IDNotRecognisedException {
         errorChecker.checkStageBelongsToSystem(stageId); // Check if the system contains this stage
-        // Convert the ArrayList of Integers to an array of ints and return it
-        int[] ids = new int[getStageById(stageId).getCheckpoints().size()];
-        for (Checkpoint checkpoint : getStageById(stageId).getCheckpoints()) {
-            ids[checkpoint.getId()] = checkpoint.getId();
-        }
-        return ids;
+
+        return getStageById(stageId).getCheckpointIds();
     }
 
     /**
@@ -291,9 +308,11 @@ public class CyclingPortalImpl implements CyclingPortal {
     public int createTeam(String name, String description) throws IllegalNameException, InvalidNameException {
         errorChecker.checkNameUnused(name, ErrorChecker.nameUnusedType.TEAM); // Check for illegal name, already in use
 
+        int teamsBefore = myTeams.size(); // Get the number of teams before
         Team newTeam = new Team(name, description); // Create instance of the team
         int newId = newTeam.getId(); // The new ID for the created team
         myTeams.put(newTeam.getId(), newTeam);
+        assert myTeams.size() == teamsBefore + 1 : "Team wasn't added"; // assert team is added well
         return newId;
     }
 
@@ -307,9 +326,10 @@ public class CyclingPortalImpl implements CyclingPortal {
     @Override
     public void removeTeam(int teamId) throws IDNotRecognisedException {
         errorChecker.checkTeamBelongsToSystem(teamId); // Check the teamID exists in this system
-
+        int teamsBefore = myTeams.size(); // Get the number of teams before
         myTeams.get(teamId).remove(); // Remove the team from its own class
         myTeams.remove((Integer) teamId); // Remove it from the cycling portals list of associated teams
+        assert myTeams.size() == teamsBefore - 1 : "Team wasn't removed"; // assert team is removed well
     }
 
     /**

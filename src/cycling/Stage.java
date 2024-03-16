@@ -123,6 +123,8 @@ public class Stage extends Entity {
 
         startTimes.put(riderId, times[0]);
         finishTimes.put(riderId, times[times.length - 1]);
+        assert startTimes.size() == finishTimes.size() : "Start and finish times should be the same size";
+
 
         if (type == StageType.TT) {
             // If the stage is a time trial, then the rider's time is the time they
@@ -147,8 +149,17 @@ public class Stage extends Entity {
      */
     public void addCheckpoint(Checkpoint checkpoint) {
 
+        // assert that the stage is not prepared
+        assert !prepared : "Stage should not be prepared when adding a checkpoint";
+        int checkpointCount = myCheckpoints.size();
+
         checkpointOrder.add(checkpoint.getId());
         myCheckpoints.put(checkpoint.getId(), checkpoint);
+        // assert that the checkpoint was added to the list
+        assert myCheckpoints.size() == checkpointCount + 1 :
+                "Checkpoint was not added to the list";
+        assert checkpointOrder.size() == checkpointCount + 1 :
+                "Checkpoint was not added to the list";
 
     }
 
@@ -205,6 +216,8 @@ public class Stage extends Entity {
             sprintPoints[index] = getSprintPoints(orderedRiders[index]);
         }
 
+        assert sprintPoints.length == orderedRiders.length :
+                "Sprint points array should be the same length as the riders array";
         return sprintPoints;
     }
 
@@ -256,8 +269,13 @@ public class Stage extends Entity {
     public void removeCheckpoint(int checkpointId) throws InvalidStageStateException {
         if (prepared)
             throw new InvalidStageStateException("Stage already prepared");
+        int checkpointCount = myCheckpoints.size();
         myCheckpoints.remove(checkpointId);
         checkpointOrder.remove(Integer.valueOf(checkpointId));
+        assert myCheckpoints.size() == checkpointCount - 1 :
+                "Checkpoint was not removed from the list";
+        assert checkpointOrder.size() == checkpointCount - 1 :
+                "Checkpoint was not removed from the list";
     }
 
     /**
@@ -271,8 +289,12 @@ public class Stage extends Entity {
             throw new IDNotRecognisedException("Rider ID not recognised");
         }
 
+        assert startTimes.containsKey(riderId) : "Rider ID not found in start times";
+        int startTimesBefore = startTimes.size();
         startTimes.remove(riderId);
         finishTimes.remove(riderId);
+        assert startTimes.size() == startTimesBefore - 1 : "Rider not removed from start times";
+        assert startTimes.size() == finishTimes.size() : "Start and finish times should be the same size";
 
         for (Checkpoint checkpoint : myCheckpoints.values()) {
             checkpoint.removeRider(riderId);
@@ -283,10 +305,15 @@ public class Stage extends Entity {
     public void remove() {
         freeId(); // Remove the ID from the list of used IDs
 
-        for (Checkpoint checkpoint : myCheckpoints.values()) {
-            checkpoint.remove();
+        // has to be like this so concurrent modification exception is not thrown
+        while (!myCheckpoints.isEmpty()) {
+            // and the checkpoints need to be fetched like this so Java 8 compiles.
+            myCheckpoints.get( myCheckpoints.keySet().toArray()[0]).remove();
+            myCheckpoints.remove(myCheckpoints.keySet().toArray()[0]);
         }
 
+        // assert all checkpoints removal
+        assert myCheckpoints.isEmpty() : "stage's checkpoints should be empty after removing stage";
         parentRace.removeStage(id); // Remove this stage from the parent
     }
 
@@ -396,6 +423,8 @@ public class Stage extends Entity {
      * @return the stage length
      */
     public double getLength() {
+        assert length>=5: "Length should be greater than 5"; // assert length was checked in the constructor
+
         return length;
     }
 
@@ -410,6 +439,21 @@ public class Stage extends Entity {
             checkpoints.add(myCheckpoints.get(checkpointId));
         }
         return checkpoints;
+    }
+
+    /**
+     * Getter for the checkpoint ids of this stage.
+     *
+     * @return the stage checkpoint ids
+     */
+    public int[] getCheckpointIds() {
+        int[] ids = new int[myCheckpoints.size()];
+        int i = 0;
+        for (int checkpointId : checkpointOrder) {
+            ids[i] = myCheckpoints.get(checkpointId).getId();
+            i += 1;
+        }
+        return ids;
     }
 
     /**
@@ -441,7 +485,11 @@ public class Stage extends Entity {
         ArrayList<Stage> points_stages = new ArrayList<Stage>();
         points_stages.add(this);
         PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false, points_stages);
-        return pointsHandler.getRiderRanks();
+
+        int[] riderRanks = pointsHandler.getRiderRanks();
+        assert riderRanks.length == getRegisteredRiders().size() :
+                "Rider ranks array should be the same length as the riders array";
+        return riderRanks;
 
     }
 
@@ -456,7 +504,11 @@ public class Stage extends Entity {
         ArrayList<Stage> points_stages = new ArrayList<Stage>();
         points_stages.add(this);
         PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false, points_stages);
-        return pointsHandler.getRiderTimes();
+
+        LocalTime[] riderTimes = pointsHandler.getRiderTimes();
+        assert riderTimes.length == getRegisteredRiders().size() :
+                "Rider times array should be the same length as the riders array";
+        return riderTimes;
     }
 
     /**
@@ -475,6 +527,8 @@ public class Stage extends Entity {
         for (int index = 0; index < orderedRiders.length; index++) {
             mountainPoints[index] = getMountainPoints(orderedRiders[index]);
         }
+        assert mountainPoints.length == orderedRiders.length :
+                "Sprint points array should be the same length as the riders array";
         return mountainPoints;
     }
 }
