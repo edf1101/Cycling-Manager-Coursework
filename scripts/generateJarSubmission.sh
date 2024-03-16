@@ -2,6 +2,7 @@
 
 # This script generates the .jar submission and checks it runs correctly.
 # make sure build and bin directories are empty
+cd ..
 echo "Cleaning build and bin directories"
 rm -rf build/*
 rm -rf bin/*
