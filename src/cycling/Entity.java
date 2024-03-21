@@ -10,8 +10,8 @@ import java.util.ArrayList;
  * @version 1.0
  */
 public abstract class Entity implements java.io.Serializable {
-    public static final ArrayList<Integer> usedIds = new ArrayList<Integer>();
-    protected int id;
+    protected static final ArrayList<Integer> usedIds = new ArrayList<Integer>();
+    protected final int id;
 
     /**
      * Constructor for the Entity class. Generates a unique ID for the entity.
@@ -29,7 +29,7 @@ public abstract class Entity implements java.io.Serializable {
      *
      * @return This instance of an entity's ID
      */
-    public int getId() {
+    protected int getId() {
         return id;
     }
 
@@ -37,7 +37,7 @@ public abstract class Entity implements java.io.Serializable {
      * Abstract method to be implemented by subclasses to delete the entity.
      * Should remove the entity from any parents and delete any children.
      */
-    public abstract void remove();
+    protected abstract void remove();
 
     /**
      * Remove this entity's ID from the usedIds list.
