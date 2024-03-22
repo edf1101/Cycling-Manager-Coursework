@@ -65,7 +65,7 @@ public abstract class Entity implements java.io.Serializable {
             }
         }
 
-        // If there are gaps in the IDs ie ids = [0, 1, 3, 4] then return the first gap
+        // If there are gaps in the IDs ie `ids = [0, 1, 3, 4]` then return the first gap
         // (in this case 2)
         for (int i = 0; i < maxId; i++) {
             if (!genericIds.contains(i)) {
