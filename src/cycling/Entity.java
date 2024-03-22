@@ -17,7 +17,6 @@ public abstract class Entity implements java.io.Serializable {
      * Constructor for the Entity class. Generates a unique ID for the entity.
      */
     public Entity() {
-
         int idsUsedBefore = usedIds.size();
         this.id = UniqueIdGenerator.calculateUniqueId(usedIds);
         usedIds.add(this.id);

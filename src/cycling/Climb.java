@@ -43,18 +43,7 @@ public class Climb extends Checkpoint {
         this.averageGradient = avgGradient;
         this.length = length;
     }
-
-    /**
-     * Get sprint points for a rider.
-     *
-     * @param riderId the rider's ID
-     * @return 0 as there are no sprint points for a climb
-     */
-    @Override
-    public int getIntermediateSprintPoints(int riderId) {
-        return 0;
-    }
-
+    
     /**
      * Get mountain points for a rider.
      *

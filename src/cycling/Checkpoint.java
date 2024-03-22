@@ -101,22 +101,35 @@ public abstract class Checkpoint extends Entity {
         int idsBefore = usedIds.size(); // Get the number of usedIds before the checkpoint is removed
         freeId(); // Remove the checkpoint from the usedIds list
         int idsAfter = usedIds.size(); // Get the number of usedIds after the checkpoint is removed
+        assert idsBefore == idsAfter - 1: "Number of IDs incorrect after removal";
     }
 
     /**
-     * Get sprint points for a rider
+     * Get sprint points for a rider.
      *
      * @param riderId the rider's ID
-     * @return the sprint points for the rider
+     * @return the sprint points for the rider, 0 by default.
      */
-    public abstract int getIntermediateSprintPoints(int riderId);
+    public int getIntermediateSprintPoints(int riderId) {
+        return 0;
+    }
 
     /**
-     * Get mountain points for a rider
+     * Get mountain points for a rider.
      *
      * @param riderId the rider's ID
-     * @return the mountain points for the rider
+     * @return the mountain points for the rider, 0 by default.
      */
-    public abstract int getMountainPoints(int riderId);
+    public int getMountainPoints(int riderId) {
+        return 0;
+    }
 
+    /**
+     * Get location.
+     *
+     * @return the location of the checkpoint in its stage
+     */
+    public Double getLocation() {
+        return location;
+    }
 }
