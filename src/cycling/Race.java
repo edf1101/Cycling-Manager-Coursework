@@ -82,7 +82,6 @@ public class Race extends Entity {
               new ArrayList<>(stages.values()).get(0).remove();
         }
 
-
         freeId();
     }
 
@@ -194,7 +193,7 @@ public class Race extends Entity {
     /**
      * Gets the rankings of the riders considering their mountain points.
      *
-     * @return An array of the riderIds ordered by their mountain points
+     * @return An int array of the riderIds ordered by their mountain points
      */
     public int[] getRidersMountainPointsRankings() {
         Function<Integer, Integer> func = this::getRiderMountainPoints;
@@ -207,7 +206,7 @@ public class Race extends Entity {
     /**
      * Gets the rankings of the riders considering their sprint points.
      *
-     * @return An array of the riderIds ordered by their sprint points
+     * @return An int array of the riderIds ordered by their sprint points
      */
     public int[] getRidersSprintPointsRankings() {
         Function<Integer, Integer> func = this::getRiderSprintPoints;
@@ -220,14 +219,16 @@ public class Race extends Entity {
     /**
      * Gets the sprint points for all riders ordered by their GC time.
      *
-     * @return An array of the sprint points for each rider ordered by their GC time
+     * @return An int array of the sprint points for each rider ordered by their GC time
      */
     public int[] getRidersSprintPoints() {
         int[] ridersGeneralClassificationRanks = getRidersGeneralClassificationRanks();
         int[] ridersSprintPoints = new int[ridersGeneralClassificationRanks.length];
+
         for (int i = 0; i < ridersGeneralClassificationRanks.length; i++) {
             ridersSprintPoints[i] = getRiderSprintPoints(ridersGeneralClassificationRanks[i]);
         }
+
         return ridersSprintPoints;
     }
 
@@ -259,6 +260,7 @@ public class Race extends Entity {
      */
     private int getRiderSprintPoints(int riderId) {
         int pointSum = 0;
+
         for (Stage stage : stages.values()) {
             try {
                 pointSum += stage.getSprintPoints(riderId);
@@ -268,6 +270,7 @@ public class Race extends Entity {
                 assert false : "Stage ID not recognised";
             }
         }
+        
         return pointSum;
     }
 }

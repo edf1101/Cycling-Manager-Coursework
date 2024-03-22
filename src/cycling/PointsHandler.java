@@ -46,7 +46,7 @@ public class PointsHandler<T extends Comparable<T>> {
      */
     private void sortRiders() {
         HashMap<T, Integer> riderTimes = new HashMap<T, Integer>();
-        // May well be a better way to do this idk
+        
         // Add all riders and their GC times to the hashmap
         for (Stage stage : stages) {
             for (int riderId : stage.getRegisteredRiders()) {

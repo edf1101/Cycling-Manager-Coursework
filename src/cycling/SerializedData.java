@@ -13,8 +13,8 @@ import java.util.HashMap;
  */
 public class SerializedData implements java.io.Serializable {
 
-    private final HashMap<Integer, Race> races = new HashMap<>();
-    private final HashMap<Integer, Team> teams = new HashMap<>();
+    private final HashMap<Integer, Race> RACES = new HashMap<>();
+    private final HashMap<Integer, Team> TEAMS = new HashMap<>();
 
     /**
      * This method is used to save the data of the CyclingPortalImpl portal instance
@@ -68,12 +68,12 @@ public class SerializedData implements java.io.Serializable {
         HashMap<Integer, Team> teamMap = newPortal.getMyTeamsMap();
 
         // Add in all the new data
-        for (Race race : loadedPortal.getRaces().values()) {
+        for (Race race : loadedPortal.getRACES().values()) {
             raceMap.put(race.getId(), race);
         }
 
-        for (int teamId : loadedPortal.getTeams().keySet()) {
-            teamMap.put(teamId, loadedPortal.getTeams().get(teamId));
+        for (int teamId : loadedPortal.getTEAMS().keySet()) {
+            teamMap.put(teamId, loadedPortal.getTEAMS().get(teamId));
         }
     }
 
@@ -86,12 +86,12 @@ public class SerializedData implements java.io.Serializable {
     public SerializedData(CyclingPortalImpl portal) throws IDNotRecognisedException {
         for (int raceId : portal.getRaceIds()) {
             Race race = portal.getRaceById(raceId);
-            races.put(raceId, race);
+            RACES.put(raceId, race);
         }
 
         for (int teamId : portal.getTeams()) {
             Team team = portal.getTeamById(teamId);
-            teams.put(teamId, team);
+            TEAMS.put(teamId, team);
         }
     }
 
@@ -100,8 +100,8 @@ public class SerializedData implements java.io.Serializable {
      *
      * @return The map of races
      */
-    public HashMap<Integer, Race> getRaces() {
-        return races;
+    public HashMap<Integer, Race> getRACES() {
+        return RACES;
     }
 
     /**
@@ -109,7 +109,7 @@ public class SerializedData implements java.io.Serializable {
      *
      * @return The map of teams
      */
-    public HashMap<Integer, Team> getTeams() {
-        return teams;
+    public HashMap<Integer, Team> getTEAMS() {
+        return TEAMS;
     }
 }

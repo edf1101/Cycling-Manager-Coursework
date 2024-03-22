@@ -27,6 +27,7 @@ public class Team extends Entity {
 
         // Check for invalid (rule breaking) name
         if (name == null || name.length() > 30 || name.isEmpty() || name.contains(" ")) {
+            freeId(); // as super() has been called, we need to free the ID
             throw new InvalidNameException(" name broke naming rules. Length must be 0<length<=30, and no whitespace");
         }
 

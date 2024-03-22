@@ -100,8 +100,7 @@ public abstract class Checkpoint extends Entity {
     public void remove() {
         int idsBefore = usedIds.size(); // Get the number of usedIds before the checkpoint is removed
         freeId(); // Remove the checkpoint from the usedIds list
-        int idsAfter = usedIds.size(); // Get the number of usedIds after the checkpoint is removed
-        assert idsBefore == idsAfter - 1: "Number of IDs incorrect after removal";
+        assert idsBefore == usedIds.size() - 1 : "Number of IDs incorrect after removal";
     }
 
     /**
