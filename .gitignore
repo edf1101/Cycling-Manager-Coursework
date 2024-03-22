@@ -1,6 +1,9 @@
 # Compiled class file
 *.class
 
+# draw.io
+*.bkp
+
 # LaTeX Output
 .out/
 
