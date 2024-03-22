@@ -85,7 +85,7 @@ public class Rider extends Entity {
     public void remove() {
         int idsBefore = usedIds.size(); // Get the number of usedIds before the checkpoint is removed
         freeId(); // Remove the checkpoint from the usedIds list
-        assert idsBefore == usedIds.size() - 1 : "Number of IDs incorrect after removal";
+        assert idsBefore == usedIds.size() + 1 : "Number of IDs incorrect after removal";
     }
 
     /**
