@@ -823,7 +823,7 @@ public class CyclingPortalImpl implements CyclingPortal {
         if (myRaces.containsKey(raceId)) {
             return myRaces.get(raceId);
         }
-        
+
         throw new IDNotRecognisedException("Race " + raceId + " is not part of the system");
     }
 
@@ -852,7 +852,7 @@ public class CyclingPortalImpl implements CyclingPortal {
      * @param type      What type of name to check
      * @throws IllegalNameException If the name is already taken
      */
-    public void checkNameLegal(String trialName, NameUnusedType type) throws IllegalNameException {
+    private void checkNameLegal(String trialName, NameUnusedType type) throws IllegalNameException {
 
         // Get the list of IDs for the type
         ArrayList<Integer> ids = null;
