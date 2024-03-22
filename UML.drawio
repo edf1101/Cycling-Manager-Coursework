@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2024-03-22T17:57:26.036Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0" etag="2HhidSUXZnBiUa5Z9mPo" version="24.0.8" type="device">
+<mxfile host="Electron" modified="2024-03-22T23:11:30.235Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.0.4 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="woNE3QlGvjT_1TorqUvz" version="24.0.4" type="device">
   <diagram name="Page-1" id="arwjkRtwd51AYSBVNWPB">
-    <mxGraphModel dx="426" dy="1069" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="4330" dy="4115" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -204,7 +204,7 @@
         <mxCell id="DgH2YeEBz2LFjA33P2SG-42" value="+ getRankedAdjustedElapsedTimesInStage(): LocalTime[*] {nonunique}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="PluiV_uVmu6kRXKaNqSc-33" vertex="1">
           <mxGeometry y="839" width="600" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="R5LlF6CmL_Q-CtnAYFyd-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;" edge="1" parent="1" source="PluiV_uVmu6kRXKaNqSc-55" target="MvrAgjhzQsgvp2eCR5wt-1">
+        <mxCell id="R5LlF6CmL_Q-CtnAYFyd-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;" parent="1" source="PluiV_uVmu6kRXKaNqSc-55" target="MvrAgjhzQsgvp2eCR5wt-1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="2190" y="770" />
@@ -403,10 +403,10 @@
         <mxCell id="yfuVovTwI_u2sJsiJ5sg-12" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="yfuVovTwI_u2sJsiJ5sg-6" vertex="1">
           <mxGeometry y="78" width="390" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="yfuVovTwI_u2sJsiJ5sg-21" value="+ &lt;u&gt;saveData&lt;/u&gt;(String filename, CyclingPortalImpl portal) : void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="yfuVovTwI_u2sJsiJ5sg-6" vertex="1">
+        <mxCell id="yfuVovTwI_u2sJsiJ5sg-21" value="&lt;u&gt;+ saveData(String filename, CyclingPortalImpl portal) : void&lt;/u&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="yfuVovTwI_u2sJsiJ5sg-6" vertex="1">
           <mxGeometry y="86" width="390" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="yfuVovTwI_u2sJsiJ5sg-8" value="+&amp;nbsp;&lt;u&gt;loadData&lt;/u&gt;(String filename, CyclingPortalImpl newPortal) : void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="yfuVovTwI_u2sJsiJ5sg-6" vertex="1">
+        <mxCell id="yfuVovTwI_u2sJsiJ5sg-8" value="&lt;u&gt;+&amp;nbsp;loadData(String filename, CyclingPortalImpl newPortal) : void&lt;/u&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="yfuVovTwI_u2sJsiJ5sg-6" vertex="1">
           <mxGeometry y="112" width="390" height="26" as="geometry" />
         </mxCell>
         <mxCell id="yfuVovTwI_u2sJsiJ5sg-20" value="+ getRaces() : HashMap&amp;lt;Integer, Race&amp;gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="yfuVovTwI_u2sJsiJ5sg-6" vertex="1">
@@ -494,7 +494,7 @@
         <mxCell id="MvrAgjhzQsgvp2eCR5wt-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="MvrAgjhzQsgvp2eCR5wt-1" vertex="1">
           <mxGeometry y="92" width="240" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="uGBbMqtNbvbrODokG8Ux-1" value="- calculateUniqueId() : int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="MvrAgjhzQsgvp2eCR5wt-1" vertex="1">
+        <mxCell id="uGBbMqtNbvbrODokG8Ux-1" value="&lt;u&gt;- calculateUniqueId() : int&lt;/u&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="MvrAgjhzQsgvp2eCR5wt-1" vertex="1">
           <mxGeometry y="100" width="240" height="26" as="geometry" />
         </mxCell>
         <mxCell id="MvrAgjhzQsgvp2eCR5wt-4" value="# getId(): int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="MvrAgjhzQsgvp2eCR5wt-1" vertex="1">
