@@ -5,3 +5,6 @@ _General notes abt the Coursework_
   https://google.github.io/styleguide/javaguide.html
   https://diogofpacheco.github.io/teaching/2024javadoc/cycling/package-summary.html
 - ```javadoc -d ../../doc *.java   ``` worked well to generate the javadoc
+- Should we javadoc attributes
+- should we use protected for all own methods instead of public since only accessed in package
+- for uml arraylist object is final should we write as {readOnly} still
