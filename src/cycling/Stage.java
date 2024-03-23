@@ -32,7 +32,7 @@ public class Stage extends Entity {
     private final ArrayList<Integer> checkpointOrder = new ArrayList<Integer>();
     private final HashMap<Integer, Checkpoint> myCheckpoints = new HashMap<Integer, Checkpoint>();
     private boolean prepared = false;
-    private LocalDateTime startStageTime; // The time the stage starts
+    private final LocalDateTime startStageTime; // The time the stage starts
     private final Race parentRace;
 
     // Hashmaps to store the start and finish times for each rider format of
@@ -536,5 +536,16 @@ public class Stage extends Entity {
         assert mountainPoints.length == orderedRiders.length
                 : "Sprint points array should be the same length as the riders array";
         return mountainPoints;
+    }
+
+    /**
+     * Get the details of the stage in a string form.
+     *
+     * @return A string describing the stage
+     */
+    @Override
+    public String toString() {
+        return "Stage: " + name + " Description: " + description + " Type: " + type + " Start time:" + startStageTime
+                + " Length " + length + "km";
     }
 }

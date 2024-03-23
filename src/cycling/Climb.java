@@ -71,4 +71,14 @@ public class Climb extends Checkpoint {
         return (position <= pointDistribution.length) ? pointDistribution[position - 1] : 0;
     }
 
+    /**
+     * Get the details of the climb Ccheckpoint in a string form.
+     *
+     * @return A string describing the climb checkpoint
+     */
+    @Override
+    public String toString() {
+        return super.toString() + " Length: " + length + "km  Average Gradient: " + averageGradient + "%";
+    }
+
 }

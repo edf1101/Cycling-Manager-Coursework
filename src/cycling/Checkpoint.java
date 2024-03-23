@@ -11,7 +11,7 @@ import java.util.HashMap;
  * @author 730002704
  * @version 1.0
  */
-public abstract class Checkpoint extends Entity {
+public class Checkpoint extends Entity {
     // The times that riders passed the checkpoint format of: <riderId, time>
     protected final HashMap<Integer, LocalTime> passTimes = new HashMap<Integer, LocalTime>();
     protected CheckpointType myType; // the type of checkpoint it is
@@ -121,5 +121,16 @@ public abstract class Checkpoint extends Entity {
      */
     public int getMountainPoints(int riderId) {
         return 0;
+    }
+
+    /**
+     * Get the details of the checkpoint in a string form.
+     *
+     * @return A string describing the checkpoint
+     */
+    @Override
+    public String toString() {
+        return "Checkpoint belonging to: " + parentStage.getName() + " Type:" + myType +
+                " location: " + location + "km";
     }
 }

@@ -42,18 +42,6 @@ public class Rider extends Entity {
     }
 
     /**
-     * Get the details of the rider in a string form.
-     *
-     * @return A string describing the rider
-     */
-    public String getDetails() {
-        // Get the name of the team
-        String teamName = myTeam.getName();
-
-        return "Rider: " + name + " Year of Birth:" + yearOfBirth + " Team " + teamName;
-    }
-
-    /**
      * Register the rider for a stage.
      *
      * @param stageId The stage to say I have registered for
@@ -78,7 +66,7 @@ public class Rider extends Entity {
      */
     @Override
     public String toString() {
-        return getDetails();
+        return "Rider: " + name + " Year of Birth:" + yearOfBirth + " Team " + myTeam.getName();
     }
 
     @Override
