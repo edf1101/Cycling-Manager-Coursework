@@ -42,6 +42,9 @@ public class Climb extends Checkpoint {
         super(type, location, parentStage);
         this.averageGradient = avgGradient;
         this.length = length;
+        if (location + length > parentStage.getLength()) {
+            throw new InvalidLocationException("Climb is out of range of the stage");
+        }
     }
     
     /**

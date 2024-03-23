@@ -51,8 +51,8 @@ public class PortalSerialisationTests {
 
         int portal1CheckId; // add checkpoint
         try {
-            portal1CheckId = portal1.addCategorizedClimbToStage(portal1StageId,10.0,CheckpointType.C1,
-                    10.0,10.0);
+            portal1CheckId = portal1.addCategorizedClimbToStage(portal1StageId,5.0,CheckpointType.C1,
+                    10.0,5.0);
         } catch (IDNotRecognisedException | InvalidStageStateException | InvalidStageTypeException |
                  InvalidLocationException e) {
             throw new RuntimeException(e);
@@ -128,8 +128,8 @@ public class PortalSerialisationTests {
 
         int portal3CheckId; // add checkpoint
         try {
-            portal3CheckId = portal1.addCategorizedClimbToStage(portal3StageId,10.0,CheckpointType.C1,
-                    10.0,10.0);
+            portal3CheckId = portal1.addCategorizedClimbToStage(portal3StageId,5.0,CheckpointType.C1,
+                    10.0,5.0);
         } catch (IDNotRecognisedException | InvalidStageStateException | InvalidStageTypeException |
                  InvalidLocationException e) {
             throw new RuntimeException(e);

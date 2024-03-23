@@ -42,8 +42,8 @@ public class PortalMiscTests {
 
         int oldCheckId; // add stage
         try {
-            oldCheckId = portal.addCategorizedClimbToStage(oldStageId,10.0,CheckpointType.C1,
-                    10.0,10.0);
+            oldCheckId = portal.addCategorizedClimbToStage(oldStageId,5.0,CheckpointType.C1,
+                    10.0,5.0);
         } catch (IDNotRecognisedException | InvalidStageStateException | InvalidStageTypeException |
                  InvalidLocationException e) {
             throw new RuntimeException(e);
@@ -87,8 +87,8 @@ public class PortalMiscTests {
 
         int newCheckId; // add stage
         try {
-            newCheckId = portal.addCategorizedClimbToStage(newStageId,10.0,CheckpointType.C1,
-                    10.0,10.0);
+            newCheckId = portal.addCategorizedClimbToStage(newStageId,5.0,CheckpointType.C1,
+                    10.0,5.0);
         } catch (IDNotRecognisedException | InvalidStageStateException | InvalidStageTypeException |
                  InvalidLocationException e) {
             throw new RuntimeException(e);
