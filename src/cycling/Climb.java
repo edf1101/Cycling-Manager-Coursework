@@ -68,21 +68,4 @@ public class Climb extends Checkpoint {
         return (position <= pointDistribution.length) ? pointDistribution[position - 1] : 0;
     }
 
-    /**
-     * Get the length of the climb.
-     *
-     * @return the length of the climb
-     */
-    public Double getLength() {
-        return length;
-    }
-
-    /**
-     * Get the average gradient of the climb.
-     *
-     * @return the average gradient of the climb
-     */
-    public Double getAverageGradient() {
-        return averageGradient;
-    }
 }

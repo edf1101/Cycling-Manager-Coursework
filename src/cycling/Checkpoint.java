@@ -122,13 +122,4 @@ public abstract class Checkpoint extends Entity {
     public int getMountainPoints(int riderId) {
         return 0;
     }
-
-    /**
-     * Get location.
-     *
-     * @return the location of the checkpoint in its stage
-     */
-    public Double getLocation() {
-        return location;
-    }
 }

@@ -82,15 +82,6 @@ public class Stage extends Entity {
     }
 
     /**
-     * Getter for the parent race this stage belongs to
-     *
-     * @return the race Id
-     */
-    public Race getParentRace() {
-        return parentRace;
-    }
-
-    /**
      * Register a rider's results at each checkpoint.
      *
      * @param riderId the ID of the rider
@@ -545,14 +536,5 @@ public class Stage extends Entity {
         assert mountainPoints.length == orderedRiders.length
                 : "Sprint points array should be the same length as the riders array";
         return mountainPoints;
-    }
-
-    /**
-     * Get the stage description
-     *
-     * @return stage description
-     */
-    public String getDescription() {
-        return description;
     }
 }
