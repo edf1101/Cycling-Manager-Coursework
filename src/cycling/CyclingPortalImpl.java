@@ -69,8 +69,7 @@ public class CyclingPortalImpl implements CyclingPortal {
      */
     @Override
     public String viewRaceDetails(int raceId) throws IDNotRecognisedException {
-        getRaceById(raceId); // Check race belongs to this system
-        return getRaceById(raceId).getDetails();
+        return getRaceById(raceId).getDetails(); // Throws if race doesn't exist
     }
 
     /**

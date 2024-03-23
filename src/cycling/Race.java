@@ -58,7 +58,12 @@ public class Race extends Entity {
      */
     public String getDetails() {
         int numStages = stages.size();
-        double length = 0.0;
+
+        double length = 0.0; // sum up the lengths of all stages
+        for (Stage stage : stages.values()) {
+            length += stage.getLength();
+        }
+
         return String.format("Name: %s, Description: %s, Number of stages: %d, Total length: %.2f",
                 name, description, numStages, length);
     }

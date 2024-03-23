@@ -184,7 +184,7 @@ public class PortalSerialisationTests {
         }
         // get the same data from portal4
         String portal4RaceDetails;
-        String expectedDetails4 = "Name: Race1, Description: racedesc, Number of stages: 1, Total length: 0.00";
+        String expectedDetails4 = "Name: Race1, Description: racedesc, Number of stages: 1, Total length: 10.00";
         LocalTime[] expectedTimes4 = new LocalTime[]{LocalTime.of(4, 0, 0)};
         LocalTime[] portal4Times;
         try {
@@ -206,7 +206,7 @@ public class PortalSerialisationTests {
 
         // get the same data from portal2
         String portal2RaceDetails;
-        String expectedDetails = "Name: Race1, Description: racedesc123, Number of stages: 1, Total length: 0.00";
+        String expectedDetails = "Name: Race1, Description: racedesc123, Number of stages: 1, Total length: 10.00";
         LocalTime[] expectedTimes = new LocalTime[]{LocalTime.of(2, 0, 0)};
         LocalTime[] portal2Times;
         try {
@@ -219,7 +219,7 @@ public class PortalSerialisationTests {
         assert expectedDetails.equals(portal2RaceDetails) : "Details not equal";
 
         // get the same data from portal4
-         expectedDetails4 = "Name: Race1, Description: racedesc, Number of stages: 1, Total length: 0.00";
+         expectedDetails4 = "Name: Race1, Description: racedesc, Number of stages: 1, Total length: 10.00";
          expectedTimes4 = new LocalTime[]{LocalTime.of(4, 0, 0)};
         try {
             portal4Times= portal4.getGeneralClassificationTimesInRace(portal1RaceId);
