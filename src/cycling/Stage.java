@@ -236,7 +236,6 @@ public class Stage extends Entity {
         int points = 0;
 
         for (Checkpoint checkpoint : myCheckpoints.values()) {
-            // Checkpoint checkpoint = Checkpoint.getCheckpointById(checkpointId);
             points += checkpoint.getMountainPoints(riderId);
         }
 
@@ -351,8 +350,6 @@ public class Stage extends Entity {
         LocalTime adjustedElapsedTime = getElapsedTime(riderId);
 
         // Repeat until no more adjustments are made
-        // There might be a better way to do this by decreasing the elapsed time by 1
-        // second at a time until it's outside the range
         boolean adjusted = true;
         while (adjusted) {
             adjusted = false;

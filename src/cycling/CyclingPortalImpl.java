@@ -717,18 +717,18 @@ public class CyclingPortalImpl implements CyclingPortal {
     }
 
     /**
-     * Get all race IDs in the system as an ArrayList.
+     * Get all race IDs in the system as a Hashmap.
      *
-     * @return ArrayList of race IDs
+     * @return Hashmap of race IDs
      */
     protected HashMap<Integer, Race> getMyRacesMap() {
         return myRaces;
     }
 
     /**
-     * Get all team IDs in the system as an ArrayList.
+     * Get all team IDs in the system as a Hashmap.
      *
-     * @return ArrayList of team IDs
+     * @return Hashmap of team IDs
      */
     protected HashMap<Integer, Team> getMyTeamsMap() {
         return myTeams;
