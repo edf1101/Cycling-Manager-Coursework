@@ -9,14 +9,14 @@ import java.util.ArrayList;
  * @author 730003140
  * @version 1.0
  */
-public abstract class Entity implements java.io.Serializable {
+abstract class Entity implements java.io.Serializable {
     protected static final ArrayList<Integer> usedIds = new ArrayList<Integer>();
     protected final int id;
 
     /**
      * Constructor for the Entity class. Generates a unique ID for the entity.
      */
-    public Entity() {
+    protected Entity() {
         int idsUsedBefore = usedIds.size();
         this.id = calculateUniqueId();
         usedIds.add(this.id);

@@ -7,7 +7,7 @@ package cycling;
  * @author 730002704
  * @version 1.0
  */
-public class IntermediateSprint extends Checkpoint {
+class IntermediateSprint extends Checkpoint {
 
     // The points distribution for crossing the intermediate sprint checkpoint
     private static final int[] POINTS = { 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
@@ -22,7 +22,7 @@ public class IntermediateSprint extends Checkpoint {
      * @throws InvalidStageStateException if the stage is not in the correct state
      * @throws InvalidStageTypeException  if the stage is not of the correct type
      */
-    public IntermediateSprint(Double location, Stage parentStage)
+    protected IntermediateSprint(Double location, Stage parentStage)
             throws InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
         super(CheckpointType.SPRINT, location, parentStage);
     }
@@ -34,7 +34,7 @@ public class IntermediateSprint extends Checkpoint {
      * @return the sprint points for the rider
      */
     @Override
-    public int getIntermediateSprintPoints(int riderId) {
+    protected int getIntermediateSprintPoints(int riderId) {
         // This is according to the order that the riders crossed the line,
         // not how long the checkpoint took them
 

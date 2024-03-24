@@ -16,7 +16,7 @@ import java.util.function.Function;
  * @author 730002704
  * @version 1.0
  */
-public class PointsHandler<T extends Comparable<T>> {
+class PointsHandler<T extends Comparable<T>> {
 
     private int[] riderRanks; // The riderIds in order of their points/times
     private T[] riderScores; // The points/times of the riders
@@ -32,7 +32,7 @@ public class PointsHandler<T extends Comparable<T>> {
      * @param scoringFunction The method to get the score from the rider
      * @param stages          The stages to get the riders from
      */
-    public PointsHandler(Function<Integer, T> scoringFunction, boolean reversed, ArrayList<Stage> stages) {
+    protected PointsHandler(Function<Integer, T> scoringFunction, boolean reversed, ArrayList<Stage> stages) {
         this.reversed = reversed;
         this.getScore = scoringFunction;
         this.stages = stages;
@@ -100,7 +100,7 @@ public class PointsHandler<T extends Comparable<T>> {
      *
      * @return the ids of riders in order of rank
      */
-    public int[] getRiderRanks() {
+    protected int[] getRiderRanks() {
         // assert all scoring metrics have same amount of riders registered
         assert riderRanks.length == riderScores.length :
                 "scoring metrics have different amount of riders registered";
@@ -113,7 +113,7 @@ public class PointsHandler<T extends Comparable<T>> {
      *
      * @return the scores of the riders as LocalTime format
      */
-    public LocalTime[] getRiderTimes() {
+    protected LocalTime[] getRiderTimes() {
         // assert all scoring metrics have same amount of riders registered
         assert riderRanks.length == riderScores.length:
                 "scoring metrics have different amount of riders registered";

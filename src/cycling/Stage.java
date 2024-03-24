@@ -13,7 +13,7 @@ import java.util.function.Function;
  * @author 730002704
  * @version 1.0
  */
-public class Stage extends Entity {
+class Stage extends Entity {
 
     // Points for each stage type
     private static final HashMap<StageType, int[]> POINTS = new HashMap<StageType, int[]>();
@@ -53,7 +53,7 @@ public class Stage extends Entity {
      *                                contains whitespace
      * @throws InvalidLengthException if the length is less than 5km
      */
-    public Stage(String name, String description, StageType type, double length,
+    protected Stage(String name, String description, StageType type, double length,
             LocalDateTime startTime, Race parentRace)
             throws InvalidNameException, InvalidLengthException {
         super(); // Call the entity constructor
@@ -93,7 +93,7 @@ public class Stage extends Entity {
      *                                         number of checkpoints + 2
      * @throws InvalidStageStateException      if the stage is not fully set up
      */
-    public void registerResults(int riderId, LocalTime... times)
+    protected void registerResults(int riderId, LocalTime... times)
             throws DuplicatedResultException, InvalidCheckpointTimesException, InvalidStageStateException {
 
         // Check stage is fully set up
@@ -144,7 +144,7 @@ public class Stage extends Entity {
      *
      * @param checkpoint the checkpoint object to add
      */
-    public void addCheckpoint(Checkpoint checkpoint) {
+    protected void addCheckpoint(Checkpoint checkpoint) {
 
         // assert that the stage is not prepared
         assert !prepared : "Stage should not be prepared when adding a checkpoint";
@@ -168,7 +168,7 @@ public class Stage extends Entity {
      * @return the number of sprint points the rider gets for this stage
      * @throws IDNotRecognisedException if the rider ID is not recognised
      */
-    public int getSprintPoints(int riderId) throws IDNotRecognisedException {
+    protected int getSprintPoints(int riderId) throws IDNotRecognisedException {
         // If its only not in the stage then it should return empty array.
         // check if the rider has a start and finish time recorded
         if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
@@ -206,7 +206,7 @@ public class Stage extends Entity {
      *         stage.
      * @throws IDNotRecognisedException if a rider ID is not recognised.
      */
-    public int[] getRidersSprintPoints(int[] orderedRiders) throws IDNotRecognisedException {
+    protected int[] getRidersSprintPoints(int[] orderedRiders) throws IDNotRecognisedException {
         int[] sprintPoints = new int[orderedRiders.length];
         for (int index = 0; index < orderedRiders.length; index++) {
             sprintPoints[index] = getSprintPoints(orderedRiders[index]);
@@ -226,7 +226,7 @@ public class Stage extends Entity {
      * @return the number of mountain points the rider gets for this stage
      * @throws IDNotRecognisedException if the rider ID is not recognised
      */
-    public int getMountainPoints(int riderId) throws IDNotRecognisedException {
+    protected int getMountainPoints(int riderId) throws IDNotRecognisedException {
 
         // check if the rider has a start and finish time recorded
         if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
@@ -247,7 +247,7 @@ public class Stage extends Entity {
      *
      * @throws InvalidStageStateException if the stage is already prepared
      */
-    public void concludePreparation() throws InvalidStageStateException {
+    protected void concludePreparation() throws InvalidStageStateException {
         if (prepared) {
             throw new InvalidStageStateException("Stage already prepared");
         }
@@ -261,7 +261,7 @@ public class Stage extends Entity {
      * @param checkpointId the ID of the checkpoint to remove
      * @throws InvalidStageStateException if the stage is already prepared
      */
-    public void removeCheckpoint(int checkpointId) throws InvalidStageStateException {
+    protected void removeCheckpoint(int checkpointId) throws InvalidStageStateException {
         if (prepared) {
             throw new InvalidStageStateException("Stage already prepared");
         }
@@ -280,7 +280,7 @@ public class Stage extends Entity {
      * @param riderId the ID of the rider to remove
      * @throws IDNotRecognisedException if the rider ID is not recognised
      */
-    public void removeRider(int riderId) throws IDNotRecognisedException {
+    protected void removeRider(int riderId) throws IDNotRecognisedException {
         if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
             throw new IDNotRecognisedException("Rider ID not recognised");
         }
@@ -300,7 +300,7 @@ public class Stage extends Entity {
     }
 
     @Override
-    public void remove() {
+    protected void remove() {
         freeId(); // Remove the ID from the list of used IDs
 
         // has to be like this so concurrent modification exception is not thrown
@@ -342,7 +342,7 @@ public class Stage extends Entity {
      * @return the adjusted time
      * @throws IDNotRecognisedException if the rider ID is not recognised
      */
-    public LocalTime getAdjustedElapsedTime(int riderId) throws IDNotRecognisedException {
+    protected LocalTime getAdjustedElapsedTime(int riderId) throws IDNotRecognisedException {
         if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
             throw new IDNotRecognisedException("Rider ID not recognised");
         }
@@ -382,7 +382,7 @@ public class Stage extends Entity {
      * @return an array in the form [checkpoint1, checkpoint2, ..., finish]
      * @throws IDNotRecognisedException if the rider ID is not recognised
      */
-    public LocalTime[] getResults(int riderId) throws IDNotRecognisedException {
+    protected LocalTime[] getResults(int riderId) throws IDNotRecognisedException {
         if (!(startTimes.containsKey(riderId) && finishTimes.containsKey(riderId))) {
             throw new IDNotRecognisedException("Rider ID not recognised");
         }
@@ -405,7 +405,7 @@ public class Stage extends Entity {
      *
      * @return the Stage name
      */
-    public String getName() {
+    protected String getName() {
         return name;
     }
 
@@ -414,7 +414,7 @@ public class Stage extends Entity {
      *
      * @return the Stage name
      */
-    public StageType getType() {
+    protected StageType getType() {
         return type;
     }
 
@@ -423,7 +423,7 @@ public class Stage extends Entity {
      *
      * @return the stage length
      */
-    public double getLength() {
+    protected double getLength() {
         assert length >= 5 : "Length should be greater than 5"; // assert length was checked in the constructor
 
         return length;
@@ -434,7 +434,7 @@ public class Stage extends Entity {
      *
      * @return the stage checkpoints
      */
-    public ArrayList<Checkpoint> getCheckpoints() {
+    protected ArrayList<Checkpoint> getCheckpoints() {
         ArrayList<Checkpoint> checkpoints = new ArrayList<Checkpoint>();
 
         for (int checkpointId : checkpointOrder) {
@@ -449,7 +449,7 @@ public class Stage extends Entity {
      *
      * @return the stage checkpoint ids
      */
-    public int[] getCheckpointIds() {
+    protected int[] getCheckpointIds() {
         int[] ids = new int[myCheckpoints.size()];
         int i = 0;
         for (int checkpointId : checkpointOrder) {
@@ -464,7 +464,7 @@ public class Stage extends Entity {
      *
      * @return boolean indicating whether the stage is prepared
      */
-    public boolean getPrepared() {
+    protected boolean getPrepared() {
         return prepared;
     }
 
@@ -473,7 +473,7 @@ public class Stage extends Entity {
      *
      * @return the registered riders
      */
-    public ArrayList<Integer> getRegisteredRiders() {
+    protected ArrayList<Integer> getRegisteredRiders() {
         return new ArrayList<Integer>(finishTimes.keySet());
     }
 
@@ -483,7 +483,7 @@ public class Stage extends Entity {
      *
      * @return The IDs of the riders sorted by elapsed time
      */
-    public int[] getRidersRankInStage() {
+    protected int[] getRidersRankInStage() {
         Function<Integer, LocalTime> func = this::getElapsedTime;
         ArrayList<Stage> points_stages = new ArrayList<Stage>();
         points_stages.add(this);
@@ -502,7 +502,7 @@ public class Stage extends Entity {
      * @return The ranked list of adjusted elapsed times sorted by their finish
      *         time.
      */
-    public LocalTime[] getRankedAdjustedElapsedTimesInStage() {
+    protected LocalTime[] getRankedAdjustedElapsedTimesInStage() {
         Function<Integer, LocalTime> func = this::getElapsedTime;
         ArrayList<Stage> points_stages = new ArrayList<Stage>();
         points_stages.add(this);
@@ -524,7 +524,7 @@ public class Stage extends Entity {
      * @throws IDNotRecognisedException If any of the riders in the input array are
      *                                  not recognised
      */
-    public int[] getRidersMountainPoints(int[] orderedRiders) throws IDNotRecognisedException {
+    protected int[] getRidersMountainPoints(int[] orderedRiders) throws IDNotRecognisedException {
         // Get the ordered list of riders
         int[] mountainPoints = new int[orderedRiders.length];
         for (int index = 0; index < orderedRiders.length; index++) {

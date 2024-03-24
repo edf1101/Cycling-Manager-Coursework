@@ -9,7 +9,7 @@ import java.util.HashMap;
  * @author 730003140, 730002704
  * @version 1.0
  */
-public class Team extends Entity {
+class Team extends Entity {
     private final String name; // Name of the team
     private final String description; // Description of the team
     private final HashMap<Integer, Rider> myRiders = new HashMap<>(); // Holds all the riders in this team
@@ -22,7 +22,7 @@ public class Team extends Entity {
      * @throws InvalidNameException if the name is invalid (too long/short or
      *                              contains whitespace)
      */
-    public Team(String name, String description) throws InvalidNameException {
+    protected Team(String name, String description) throws InvalidNameException {
         super(); // Call the entity constructor
 
         // Check for invalid (rule breaking) name
@@ -41,7 +41,7 @@ public class Team extends Entity {
      *
      * @return a hashmap of ints for the rider Ids in the team
      */
-    public HashMap<Integer, Rider> getRiders() {
+    protected HashMap<Integer, Rider> getRiders() {
         return myRiders;
     }
 
@@ -50,7 +50,7 @@ public class Team extends Entity {
      *
      * @return this instance of a team's name
      */
-    public String getName() {
+    protected String getName() {
         return name;
     }
 
@@ -60,7 +60,7 @@ public class Team extends Entity {
      *
      * @return A short description of the team
      */
-    public String getDetails() {
+    protected String getDetails() {
         return String.format("Name: %s  Description: %s", name, description);
     }
 
@@ -75,7 +75,7 @@ public class Team extends Entity {
     }
 
     @Override
-    public void remove() {
+    protected void remove() {
         freeId(); // Remove the team from the usedIds list
 
         // Needs to be a while loop to stop concurrent modification exception
@@ -93,7 +93,7 @@ public class Team extends Entity {
      *
      * @param rider The rider object to add
      */
-    public void addRider(Rider rider) {
+    protected void addRider(Rider rider) {
         int ridersBefore = myRiders.size();
         myRiders.put(rider.getId(), rider);
         // assert rider added
@@ -106,7 +106,7 @@ public class Team extends Entity {
      * @param riderId The Id of the rider to remove
      * @throws IDNotRecognisedException If the rider Id is not in the team
      */
-    public void deleteRider(int riderId) throws IDNotRecognisedException {
+    protected void deleteRider(int riderId) throws IDNotRecognisedException {
         if (!myRiders.containsKey(riderId)) {
             throw new IDNotRecognisedException("Rider Id " + riderId + " not found in team ");
         }

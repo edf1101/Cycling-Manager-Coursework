@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * @author 730003140
  * @version 1.0
  */
-public class Rider extends Entity {
+class Rider extends Entity {
     private final ArrayList<Integer> stagesRegistered = new ArrayList<>();
 
     private final Team myTeam;
@@ -26,7 +26,7 @@ public class Rider extends Entity {
      *                                  birth
      *                                  is less than 1900
      */
-    public Rider(String name, int yearOfBirth, Team team)
+    protected Rider(String name, int yearOfBirth, Team team)
             throws IllegalArgumentException {
         super(); // Call the entity constructor
 
@@ -46,7 +46,7 @@ public class Rider extends Entity {
      *
      * @param stageId The stage to say I have registered for
      */
-    public void registerForStage(int stageId) {
+    protected void registerForStage(int stageId) {
         stagesRegistered.add(stageId);
     }
 
@@ -55,7 +55,7 @@ public class Rider extends Entity {
      *
      * @return The stages the rider is registered for
      */
-    public ArrayList<Integer> getRegisteredStages() {
+    protected ArrayList<Integer> getRegisteredStages() {
         return stagesRegistered;
     }
 
@@ -70,7 +70,7 @@ public class Rider extends Entity {
     }
 
     @Override
-    public void remove() {
+    protected void remove() {
         int idsBefore = usedIds.size(); // Get the number of usedIds before the checkpoint is removed
         freeId(); // Remove the checkpoint from the usedIds list
         assert idsBefore == usedIds.size() + 1 : "Number of IDs incorrect after removal";
@@ -81,7 +81,7 @@ public class Rider extends Entity {
      *
      * @return The team the rider is in
      */
-    public Team getMyTeam() {
+    protected Team getMyTeam() {
         return myTeam;
     }
 }

@@ -12,7 +12,7 @@ import java.util.function.Function;
  * @author 730002704
  * @version 1.0
  */
-public class Race extends Entity {
+class Race extends Entity {
     private final String name;
     private final String description;
     private final HashMap<Integer, Stage> stages = new HashMap<>(); // Hashmap of the stages belonging to this race
@@ -25,7 +25,7 @@ public class Race extends Entity {
      * @throws InvalidNameException When the name is empty/null, too long/short, or
      *                              contains whitespace
      */
-    public Race(String name, String description) throws InvalidNameException {
+    protected Race(String name, String description) throws InvalidNameException {
         super(); // Call the entity constructor
 
         // Check for invalid (rule breaking) name
@@ -44,7 +44,7 @@ public class Race extends Entity {
      *
      * @return The name of the Race instance
      */
-    public String getName() {
+    protected String getName() {
         return name;
     }
 
@@ -56,7 +56,7 @@ public class Race extends Entity {
      *
      * @return The formatted descriptor string
      */
-    public String getDetails() {
+    protected String getDetails() {
         int numStages = stages.size();
 
         double length = 0.0; // sum up the lengths of all stages
@@ -79,7 +79,7 @@ public class Race extends Entity {
     }
 
     @Override
-    public void remove() {
+    protected void remove() {
         // This cannot be done with a for each loop as it throws concurrent modification
         // exception
 
@@ -95,7 +95,7 @@ public class Race extends Entity {
      *
      * @param stage The stage to add to the list
      */
-    public void addStage(Stage stage) {
+    protected void addStage(Stage stage) {
         int stagesBefore = stages.size();
         stages.put(stage.getId(), stage);
         // Check that the stage was added to the list
@@ -108,7 +108,7 @@ public class Race extends Entity {
      *
      * @param stageId The stage ID to remove from the list
      */
-    public void removeStage(int stageId) {
+    protected void removeStage(int stageId) {
         int stagesBefore = stages.size();
         stages.remove((Integer) stageId);
         // assert that the stage was removed from the list
@@ -120,7 +120,7 @@ public class Race extends Entity {
      *
      * @return The stage IDs belonging to this race
      */
-    public HashMap<Integer, Stage> getStages() {
+    protected HashMap<Integer, Stage> getStages() {
         return stages;
     }
 
@@ -130,7 +130,7 @@ public class Race extends Entity {
      *
      * @return An array of Localtimes of the riders' general classification times
      */
-    public LocalTime[] getRidersGeneralClassificationTimes() {
+    protected LocalTime[] getRidersGeneralClassificationTimes() {
         Function<Integer, LocalTime> func = this::getRiderGeneralClassificationTime;
         PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false,
                 new ArrayList<Stage>(stages.values()));
@@ -142,7 +142,7 @@ public class Race extends Entity {
      *
      * @return The ordered riderIds of who came 1st 2nd etc
      */
-    public int[] getRidersGeneralClassificationRanks() {
+    protected int[] getRidersGeneralClassificationRanks() {
         Function<Integer, LocalTime> func = this::getRiderGeneralClassificationTime;
         PointsHandler<LocalTime> pointsHandler = new PointsHandler<LocalTime>(func, false,
                 new ArrayList<Stage>(stages.values()));
@@ -184,7 +184,7 @@ public class Race extends Entity {
      * @return An array of the mountain points for each rider ordered by their GC
      *         time
      */
-    public int[] getRidersMountainPoints() {
+    protected int[] getRidersMountainPoints() {
         int[] ridersGeneralClassificationRanks = getRidersGeneralClassificationRanks();
         int[] ridersMountainPoints = new int[ridersGeneralClassificationRanks.length];
 
@@ -200,7 +200,7 @@ public class Race extends Entity {
      *
      * @return An int array of the riderIds ordered by their mountain points
      */
-    public int[] getRidersMountainPointsRankings() {
+    protected int[] getRidersMountainPointsRankings() {
         Function<Integer, Integer> func = this::getRiderMountainPoints;
         PointsHandler<Integer> pointsHandler = new PointsHandler<Integer>(func, true,
                 new ArrayList<Stage>(stages.values()));
@@ -213,7 +213,7 @@ public class Race extends Entity {
      *
      * @return An int array of the riderIds ordered by their sprint points
      */
-    public int[] getRidersSprintPointsRankings() {
+    protected int[] getRidersSprintPointsRankings() {
         Function<Integer, Integer> func = this::getRiderSprintPoints;
         PointsHandler<Integer> pointsHandler = new PointsHandler<Integer>(func, true,
                 new ArrayList<Stage>(stages.values()));
@@ -226,7 +226,7 @@ public class Race extends Entity {
      *
      * @return An int array of the sprint points for each rider ordered by their GC time
      */
-    public int[] getRidersSprintPoints() {
+    protected int[] getRidersSprintPoints() {
         int[] ridersGeneralClassificationRanks = getRidersGeneralClassificationRanks();
         int[] ridersSprintPoints = new int[ridersGeneralClassificationRanks.length];
 

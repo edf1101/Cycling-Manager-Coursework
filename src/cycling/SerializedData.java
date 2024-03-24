@@ -11,7 +11,7 @@ import java.util.HashMap;
  * @author 730002704
  * @version 1.0
  */
-public class SerializedData implements java.io.Serializable {
+class SerializedData implements java.io.Serializable {
 
     private final HashMap<Integer, Race> RACES = new HashMap<>();
     private final HashMap<Integer, Team> TEAMS = new HashMap<>();
@@ -24,7 +24,7 @@ public class SerializedData implements java.io.Serializable {
      * @param portal   the portal to save
      * @throws IOException if an I/O error occurs
      */
-    public static void saveData(String filename, CyclingPortalImpl portal) throws IOException {
+    protected static void saveData(String filename, CyclingPortalImpl portal) throws IOException {
         // Convert the portal to a serialised data object and write it to a file
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename));
 
@@ -49,7 +49,7 @@ public class SerializedData implements java.io.Serializable {
      * @throws ClassNotFoundException if the class of a serialized object cannot be
      *                                found
      */
-    public static void loadData(String filename, CyclingPortalImpl newPortal)
+    protected static void loadData(String filename, CyclingPortalImpl newPortal)
             throws IOException, ClassNotFoundException {
 
         // Open up the serialised data file and read the data into a new instance of
@@ -68,12 +68,12 @@ public class SerializedData implements java.io.Serializable {
         HashMap<Integer, Team> teamMap = newPortal.getMyTeamsMap();
 
         // Add in all the new data
-        for (Race race : loadedPortal.getRACES().values()) {
+        for (Race race : loadedPortal.getRaces().values()) {
             raceMap.put(race.getId(), race);
         }
 
-        for (int teamId : loadedPortal.getTEAMS().keySet()) {
-            teamMap.put(teamId, loadedPortal.getTEAMS().get(teamId));
+        for (int teamId : loadedPortal.getTeams().keySet()) {
+            teamMap.put(teamId, loadedPortal.getTeams().get(teamId));
         }
     }
 
@@ -83,7 +83,7 @@ public class SerializedData implements java.io.Serializable {
      * @param portal the portal to be serialized
      * @throws IDNotRecognisedException if an ID is not recognised
      */
-    public SerializedData(CyclingPortalImpl portal) throws IDNotRecognisedException {
+    protected SerializedData(CyclingPortalImpl portal) throws IDNotRecognisedException {
         for (int raceId : portal.getRaceIds()) {
             Race race = portal.getRaceById(raceId);
             RACES.put(raceId, race);
@@ -100,7 +100,7 @@ public class SerializedData implements java.io.Serializable {
      *
      * @return The map of races
      */
-    public HashMap<Integer, Race> getRACES() {
+    protected HashMap<Integer, Race> getRaces() {
         return RACES;
     }
 
@@ -109,7 +109,7 @@ public class SerializedData implements java.io.Serializable {
      *
      * @return The map of teams
      */
-    public HashMap<Integer, Team> getTEAMS() {
+    protected HashMap<Integer, Team> getTeams() {
         return TEAMS;
     }
 }

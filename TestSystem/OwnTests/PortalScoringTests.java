@@ -268,7 +268,6 @@ public class PortalScoringTests {
 
         // Test getting the sprint points
         try {
-            System.out.println(Arrays.toString(portal.getRidersPointsInRace(raceId)));
             assert Arrays.equals(portal.getRidersPointsInRace(raceId),
                     new int[]{187, 138, 145, 122}) : "Sprint points for race failed";
             assert Arrays.equals(portal.getRidersPointClassificationRank(raceId),
@@ -278,7 +277,6 @@ public class PortalScoringTests {
         }
 
         // test if removing a rider modifies scores
-        System.out.println(Arrays.toString(GC));
         LocalTime[] oldGC = GC;
         // try removing a time
         try {

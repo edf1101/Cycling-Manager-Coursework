@@ -10,7 +10,7 @@ import java.util.HashMap;
  * @author 730002704
  * @version 1.0
  */
-public class Climb extends Checkpoint {
+class Climb extends Checkpoint {
 
     private static final HashMap<CheckpointType, int[]> POINTS = new HashMap<CheckpointType, int[]>();
     static {
@@ -36,7 +36,7 @@ public class Climb extends Checkpoint {
      * @throws InvalidStageStateException if the stage is not in the correct state
      * @throws InvalidStageTypeException if the stage is not of the correct type
      */
-    public Climb(CheckpointType type, Double location, Double length, Double avgGradient, Stage parentStage)
+    protected Climb(CheckpointType type, Double location, Double length, Double avgGradient, Stage parentStage)
             throws InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
 
         super(type, location, parentStage);
@@ -54,7 +54,7 @@ public class Climb extends Checkpoint {
      * @return the mountain points for the rider
      */
     @Override
-    public int getMountainPoints(int riderId) {
+    protected int getMountainPoints(int riderId) {
         // We will calculate position by going through the list of times going through
         // the checkpoint
         // If there is a smaller time then we will increment the position
