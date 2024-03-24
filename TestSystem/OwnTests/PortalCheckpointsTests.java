@@ -34,7 +34,7 @@ public class PortalCheckpointsTests {
                 int stage2Id = portal.addStageToRace(race1Id, "Stage2", "Test stage 2", 20.0,
                         LocalDateTime.of(2021, 1, 1, 12, 0), StageType.TT);
 
-                int check1Id = portal.addCategorizedClimbToStage(stage1Id, 0.0, CheckpointType.C1, 2.0,
+                int check1Id = portal.addCategorizedClimbToStage(stage1Id, 1.0, CheckpointType.C1, 2.0,
                                 5.0);
                 int check2Id = portal.addCategorizedClimbToStage(stage1Id, 10.0, CheckpointType.C2,
                                 3.0, 10.0);

@@ -38,7 +38,7 @@ class Checkpoint extends Entity {
         // Check conditions are Ok for the checkpoint
         this.parentStage = parentStage;
 
-        if (location < 0 || location > parentStage.getLength()) {
+        if (location <= 0 || location > parentStage.getLength()) {
             throw new InvalidLocationException("Location of checkpoint must be within the stage");
         }
 
