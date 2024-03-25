@@ -322,15 +322,8 @@ class Stage extends Entity {
      * @return the elapsed time
      */
     private LocalTime getElapsedTime(int riderId) {
-        if (type == StageType.TT) {
-            return LocalTime
-                    .ofNanoOfDay(finishTimes.get(riderId).toNanoOfDay() - startTimes.get(riderId).toNanoOfDay());
-        } else {
-            // get the start time of the stage as localTime not LocalDateTime
-            LocalTime startTime = startStageTime.toLocalTime();
-            return LocalTime
-                    .ofNanoOfDay(finishTimes.get(riderId).toNanoOfDay() - startTime.toNanoOfDay());
-        }
+        return LocalTime
+                .ofNanoOfDay(finishTimes.get(riderId).toNanoOfDay() - startTimes.get(riderId).toNanoOfDay());
     }
 
     /**
@@ -440,7 +433,7 @@ class Stage extends Entity {
         for (int checkpointId : checkpointOrder) {
             checkpoints.add(myCheckpoints.get(checkpointId));
         }
-        
+
         return checkpoints;
     }
 
