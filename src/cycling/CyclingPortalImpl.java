@@ -38,7 +38,7 @@ public class CyclingPortalImpl implements CyclingPortal {
    * @param description Race's description (can be null).
    * @return The ID of the race created
    * @throws IllegalNameException When the name is already taken
-   * @throws InvalidNameException When the name is null, empty, >30 chars, or
+   * @throws InvalidNameException When the name is null, empty, greater than 30 chars, or
    *                              contains whitespace
    */
   @Override
