@@ -10,110 +10,111 @@ import java.util.HashMap;
  * @version 1.0
  */
 class Team extends Entity {
-    private final String name; // Name of the team
-    private final String description; // Description of the team
-    private final HashMap<Integer, Rider> myRiders = new HashMap<>(); // Holds all the riders in this team
+  private final String name; // Name of the team
+  private final String description; // Description of the team
+  private final HashMap<Integer, Rider> myRiders = new HashMap<>(); // Holds the riders in the team
 
-    /**
-     * Constructor for the Team class.
-     *
-     * @param name        Name of the team
-     * @param description Description of the team
-     * @throws InvalidNameException if the name is invalid (too long/short or
-     *                              contains whitespace)
-     */
-    protected Team(String name, String description) throws InvalidNameException {
-        super(); // Call the entity constructor
+  /**
+   * Constructor for the Team class.
+   *
+   * @param name        Name of the team
+   * @param description Description of the team
+   * @throws InvalidNameException if the name is invalid (too long/short or
+   *                              contains whitespace)
+   */
+  protected Team(String name, String description) throws InvalidNameException {
+    super(); // Call the entity constructor
 
-        // Check for invalid (rule breaking) name
-        if (name == null || name.length() > 30 || name.isEmpty() || name.contains(" ")) {
-            freeId(); // as super() has been called, we need to free the ID
-            throw new InvalidNameException(" name broke naming rules. Length must be 0<length<=30, and no whitespace");
-        }
-
-        // Set up this new instance with the essential details
-        this.name = name;
-        this.description = description;
+    // Check for invalid (rule breaking) name
+    if (name == null || name.length() > 30 || name.isEmpty() || name.contains(" ")) {
+      freeId(); // as super() has been called, we need to free the ID
+      throw new InvalidNameException(" name broke naming rules. "
+          + "Length must be 0<length<=30, and no whitespace");
     }
 
-    /**
-     * Getter for the riders' Ids that belong to this team
-     *
-     * @return a hashmap of ints for the rider Ids in the team
-     */
-    protected HashMap<Integer, Rider> getRiders() {
-        return myRiders;
-    }
+    // Set up this new instance with the essential details
+    this.name = name;
+    this.description = description;
+  }
 
-    /**
-     * Getter for the name attribute on the team class
-     *
-     * @return this instance of a team's name
-     */
-    protected String getName() {
-        return name;
-    }
+  /**
+   * Getter for the riders' Ids that belong to this team.
+   *
+   * @return a hashmap of ints for the rider Ids in the team
+   */
+  protected HashMap<Integer, Rider> getRiders() {
+    return myRiders;
+  }
 
-    /**
-     * Gets details about the team.
-     * Format: "Name: [name] Description: [description]"
-     *
-     * @return A short description of the team
-     */
-    protected String getDetails() {
-        return String.format("Name: %s  Description: %s", name, description);
-    }
+  /**
+   * Getter for the name attribute on the team class.
+   *
+   * @return this instance of a team's name
+   */
+  protected String getName() {
+    return name;
+  }
 
-    /**
-     * Gets a short description of the team.
-     *
-     * @return A string description of this object
-     */
-    @Override
-    public String toString() {
-        return "Team Class " + getDetails();
-    }
+  /**
+   * Gets details about the team.
+   * Format: "Name: [name] Description: [description]"
+   *
+   * @return A short description of the team
+   */
+  protected String getDetails() {
+    return String.format("Name: %s  Description: %s", name, description);
+  }
 
-    @Override
-    protected void remove() {
-        freeId(); // Remove the team from the usedIds list
+  /**
+   * Gets a short description of the team.
+   *
+   * @return A string description of this object
+   */
+  @Override
+  public String toString() {
+    return "Team Class " + getDetails();
+  }
 
-        // Needs to be a while loop to stop concurrent modification exception
-        while (!new ArrayList<Integer>(myRiders.keySet()).isEmpty()) {
-            try {
-                deleteRider(new ArrayList<Integer>(myRiders.keySet()).get(0));
-            } catch (IDNotRecognisedException e) {
-                assert false : "Rider ID not found in team";
-            }
-        }
-    }
+  @Override
+  protected void remove() {
+    freeId(); // Remove the team from the usedIds list
 
-    /**
-     * Add a rider to the team.
-     *
-     * @param rider The rider object to add
-     */
-    protected void addRider(Rider rider) {
-        int ridersBefore = myRiders.size();
-        myRiders.put(rider.getId(), rider);
-        // assert rider added
-        assert myRiders.size() == ridersBefore + 1 : "Rider not added to team";
+    // Needs to be a while loop to stop concurrent modification exception
+    while (!new ArrayList<Integer>(myRiders.keySet()).isEmpty()) {
+      try {
+        deleteRider(new ArrayList<Integer>(myRiders.keySet()).get(0));
+      } catch (IDNotRecognisedException e) {
+        assert false : "Rider ID not found in team";
+      }
     }
+  }
 
-    /**
-     * Remove a rider from the team.
-     *
-     * @param riderId The Id of the rider to remove
-     * @throws IDNotRecognisedException If the rider Id is not in the team
-     */
-    protected void deleteRider(int riderId) throws IDNotRecognisedException {
-        if (!myRiders.containsKey(riderId)) {
-            throw new IDNotRecognisedException("Rider Id " + riderId + " not found in team ");
-        }
-        int ridersBefore = myRiders.size();
-        myRiders.get(riderId).remove(); // Remove the rider through its own method
-        myRiders.remove((Integer) riderId); // Remove it from our list of riders
-        // assert rider removed
-        assert myRiders.size() == ridersBefore - 1 : "Rider not removed from team";
+  /**
+   * Add a rider to the team.
+   *
+   * @param rider The rider object to add
+   */
+  protected void addRider(Rider rider) {
+    int ridersBefore = myRiders.size();
+    myRiders.put(rider.getId(), rider);
+    // assert rider added
+    assert myRiders.size() == ridersBefore + 1 : "Rider not added to team";
+  }
+
+  /**
+   * Remove a rider from the team.
+   *
+   * @param riderId The Id of the rider to remove
+   * @throws IDNotRecognisedException If the rider Id is not in the team
+   */
+  protected void deleteRider(int riderId) throws IDNotRecognisedException {
+    if (!myRiders.containsKey(riderId)) {
+      throw new IDNotRecognisedException("Rider Id " + riderId + " not found in team ");
     }
+    int ridersBefore = myRiders.size();
+    myRiders.get(riderId).remove(); // Remove the rider through its own method
+    myRiders.remove((Integer) riderId); // Remove it from our list of riders
+    // assert rider removed
+    assert myRiders.size() == ridersBefore - 1 : "Rider not removed from team";
+  }
 }
